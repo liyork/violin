@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo
+	mochahttp://code.alibabatech.com/schema/dubbo/dubbo.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/mvc
+     http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+
+    <!-- 使Spring关注Annotation -->
+    <context:annotation-config />
+    <!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
+    <context:component-scan base-package="com.wolf.test.spring" />
+    <!--自动使用注解代理-->
+    <aop:aspectj-autoproxy/>
+
+    <bean id="personService" class="com.wolf.test.spring.factoryBean.PersonServiceImpl"/>
+
+    <bean id="factoryBeanTest" class="com.wolf.test.spring.factoryBean.MyFactoryBean">
+        <property name="interfaceName" value="com.wolf.test.spring.factoryBean.PersonService" />
+        <property name="target"  ref="personService"/>
+    </bean>
+
+    <bean id="car" class="com.wolf.test.spring.factoryBean.CarFactoryBean">
+        <property name="carInfo" value="法拉利 ,400,2000000"/>
+    </bean>
+
+    <!--用于spring源码测试 start-->
+    <bean name="a" class="com.wolf.test.spring.sourcetest.A">
+        <property name="b" ref="b"/>
+    </bean>
+
+    <bean name="b" class="com.wolf.test.spring.sourcetest.B">
+        <property name="a" ref="a"/>
+    </bean>
+
+    <bean name="c" class="com.wolf.test.spring.sourcetest.C">
+        <property name="b" ref="b"/>
+    </bean>
+
+    <bean name="d" class="com.wolf.test.spring.sourcetest.D">
+    </bean>
+    <!--用于spring源码测试 end-->
+
+</beans>

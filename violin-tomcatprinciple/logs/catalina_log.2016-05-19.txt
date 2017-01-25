@@ -1,0 +1,362 @@
+2016-05-19 11:44:34 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 11:44:40 HttpConnector[8080] Starting background thread
+2016-05-19 11:44:40 HttpProcessor[8080][0] Starting background thread
+2016-05-19 11:44:40 HttpProcessor[8080][1] Starting background thread
+2016-05-19 11:44:40 HttpProcessor[8080][2] Starting background thread
+2016-05-19 11:44:40 HttpProcessor[8080][3] Starting background thread
+2016-05-19 11:44:40 HttpProcessor[8080][4] Starting background thread
+2016-05-19 11:44:45 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 11:45:07 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 11:48:21 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 11:48:42 HttpConnector[8080] Starting background thread
+2016-05-19 11:48:42 HttpProcessor[8080][0] Starting background thread
+2016-05-19 11:48:42 HttpProcessor[8080][1] Starting background thread
+2016-05-19 11:48:42 HttpProcessor[8080][2] Starting background thread
+2016-05-19 11:48:42 HttpProcessor[8080][3] Starting background thread
+2016-05-19 11:48:42 HttpProcessor[8080][4] Starting background thread
+2016-05-19 11:49:45 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 11:50:06 HttpConnector[8080] Starting background thread
+2016-05-19 11:50:06 HttpProcessor[8080][0] Starting background thread
+2016-05-19 11:50:06 HttpProcessor[8080][1] Starting background thread
+2016-05-19 11:50:06 HttpProcessor[8080][2] Starting background thread
+2016-05-19 11:50:06 HttpProcessor[8080][3] Starting background thread
+2016-05-19 11:50:06 HttpProcessor[8080][4] Starting background thread
+2016-05-19 14:19:33 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 14:21:29 HttpConnector[8080] Starting background thread
+2016-05-19 14:21:29 HttpProcessor[8080][0] Starting background thread
+2016-05-19 14:21:29 HttpProcessor[8080][1] Starting background thread
+2016-05-19 14:21:29 HttpProcessor[8080][2] Starting background thread
+2016-05-19 14:21:29 HttpProcessor[8080][3] Starting background thread
+2016-05-19 14:21:29 HttpProcessor[8080][4] Starting background thread
+2016-05-19 14:21:38 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 14:22:56 HttpConnector[8080] Starting background thread
+2016-05-19 14:22:56 HttpProcessor[8080][0] Starting background thread
+2016-05-19 14:22:56 HttpProcessor[8080][1] Starting background thread
+2016-05-19 14:22:56 HttpProcessor[8080][2] Starting background thread
+2016-05-19 14:22:56 HttpProcessor[8080][3] Starting background thread
+2016-05-19 14:22:56 HttpProcessor[8080][4] Starting background thread
+2016-05-19 15:14:31 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 15:14:34 HttpConnector[8080] Starting background thread
+2016-05-19 15:14:34 HttpProcessor[8080][0] Starting background thread
+2016-05-19 15:14:34 HttpProcessor[8080][1] Starting background thread
+2016-05-19 15:14:34 HttpProcessor[8080][2] Starting background thread
+2016-05-19 15:14:34 HttpProcessor[8080][3] Starting background thread
+2016-05-19 15:14:34 HttpProcessor[8080][4] Starting background thread
+2016-05-19 15:16:05 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 15:16:17 HttpConnector[8080] Starting background thread
+2016-05-19 15:16:17 HttpProcessor[8080][0] Starting background thread
+2016-05-19 15:16:17 HttpProcessor[8080][1] Starting background thread
+2016-05-19 15:16:17 HttpProcessor[8080][2] Starting background thread
+2016-05-19 15:16:17 HttpProcessor[8080][3] Starting background thread
+2016-05-19 15:16:17 HttpProcessor[8080][4] Starting background thread
+2016-05-19 15:38:58 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 15:38:59 HttpConnector[8080] Starting background thread
+2016-05-19 15:38:59 HttpProcessor[8080][0] Starting background thread
+2016-05-19 15:38:59 HttpProcessor[8080][1] Starting background thread
+2016-05-19 15:38:59 HttpProcessor[8080][2] Starting background thread
+2016-05-19 15:38:59 HttpProcessor[8080][3] Starting background thread
+2016-05-19 15:38:59 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:10:53 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:11:00 HttpConnector[8080] Starting background thread
+2016-05-19 20:11:00 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:11:00 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:11:00 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:11:00 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:11:00 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:12:50 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:12:50 HttpConnector[8080] Starting background thread
+2016-05-19 20:12:50 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:12:50 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:12:50 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:12:50 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:12:50 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:14:21 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:14:31 HttpConnector[8080] Starting background thread
+2016-05-19 20:14:31 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:14:31 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:14:31 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:14:31 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:14:31 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:14:37 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:14:41 HttpConnector[8080] Starting background thread
+2016-05-19 20:14:41 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:14:41 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:14:41 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:14:41 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:14:41 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:14:43 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:14:49 HttpConnector[8080] Starting background thread
+2016-05-19 20:14:49 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:14:49 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:14:49 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:14:49 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:14:49 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:14:51 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:17:21 HttpConnector[8080] Starting background thread
+2016-05-19 20:17:21 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:17:21 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:17:21 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:17:21 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:17:21 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:18:22 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:18:24 HttpConnector[8080] Starting background thread
+2016-05-19 20:18:24 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:18:24 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:18:24 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:18:24 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:18:24 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:19:26 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:19:28 HttpConnector[8080] Starting background thread
+2016-05-19 20:19:28 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:19:28 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:19:28 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:19:28 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:19:28 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:20:02 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:20:03 HttpConnector[8080] Starting background thread
+2016-05-19 20:20:03 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:20:03 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:20:03 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:20:03 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:20:03 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:20:29 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:20:31 HttpConnector[8080] Starting background thread
+2016-05-19 20:20:31 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:20:31 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:20:31 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:20:31 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:20:31 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:47:49 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:47:49 HttpConnector httpConnector, io problem: 
+java.net.BindException: Address already in use: JVM_Bind:8080
+	at org.apache.catalina.connector.http.HttpConnector.open(HttpConnector.java:910)
+	at org.apache.catalina.connector.http.HttpConnector.initialize(HttpConnector.java:1115)
+	at org.apache.catalina.core.StandardService.initialize(StandardService.java:572)
+	at org.apache.catalina.core.StandardServer.initialize(StandardServer.java:2208)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:505)
+	at org.apache.catalina.startup.Catalina.execute(Catalina.java:396)
+	at org.apache.catalina.startup.Catalina.process(Catalina.java:176)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:138)
+
+2016-05-19 20:47:58 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:47:59 HttpConnector[8080] Starting background thread
+2016-05-19 20:47:59 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:47:59 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:47:59 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:47:59 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:47:59 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:48:08 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:48:09 HttpConnector[8080] Starting background thread
+2016-05-19 20:48:09 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:48:09 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:48:09 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:48:09 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:48:09 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:49:51 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:49:52 HttpConnector[8080] Starting background thread
+2016-05-19 20:49:52 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:49:52 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:49:52 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:49:52 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:49:52 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:50:21 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:50:22 HttpConnector[8080] Starting background thread
+2016-05-19 20:50:22 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:50:22 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:50:22 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:50:22 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:50:22 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:54:08 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:54:09 HttpConnector[8080] Starting background thread
+2016-05-19 20:54:09 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:54:09 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:54:09 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:54:09 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:54:09 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:56:29 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:56:30 HttpConnector[8080] Starting background thread
+2016-05-19 20:56:30 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:56:30 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:56:30 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:56:30 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:56:30 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:57:35 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 20:57:36 HttpConnector[8080] Starting background thread
+2016-05-19 20:57:36 HttpProcessor[8080][0] Starting background thread
+2016-05-19 20:57:36 HttpProcessor[8080][1] Starting background thread
+2016-05-19 20:57:36 HttpProcessor[8080][2] Starting background thread
+2016-05-19 20:57:36 HttpProcessor[8080][3] Starting background thread
+2016-05-19 20:57:36 HttpProcessor[8080][4] Starting background thread
+2016-05-19 20:59:40 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:01:26 HttpConnector[8080] Starting background thread
+2016-05-19 21:01:26 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:01:26 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:01:26 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:01:26 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:01:26 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:03:33 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:06:51 HttpConnector[8080] Starting background thread
+2016-05-19 21:06:52 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:06:52 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:06:52 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:06:52 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:06:52 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:13:11 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:13:11 HttpConnector[8080] Starting background thread
+2016-05-19 21:13:11 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:13:11 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:13:11 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:13:11 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:13:11 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:19:48 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:19:50 HttpConnector[8080] Starting background thread
+2016-05-19 21:19:50 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:19:50 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:19:50 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:19:50 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:19:50 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:20:26 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:20:27 HttpConnector[8080] Starting background thread
+2016-05-19 21:20:27 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:20:27 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:20:27 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:20:27 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:20:27 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:20:53 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:20:54 HttpConnector[8080] Starting background thread
+2016-05-19 21:20:54 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:20:54 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:20:54 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:20:54 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:20:54 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:22:36 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:22:37 HttpConnector[8080] Starting background thread
+2016-05-19 21:22:37 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:22:37 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:22:37 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:22:37 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:22:37 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:23:56 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:23:57 HttpConnector[8080] Starting background thread
+2016-05-19 21:23:57 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:23:57 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:23:57 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:23:57 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:23:57 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:24:52 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:24:53 HttpConnector[8080] Starting background thread
+2016-05-19 21:24:53 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:24:53 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:24:53 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:24:53 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:24:53 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:32:51 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:32:53 HttpConnector[8080] Starting background thread
+2016-05-19 21:32:53 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:32:53 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:32:53 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:32:53 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:32:53 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:36:15 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:36:16 HttpConnector[8080] Starting background thread
+2016-05-19 21:36:16 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:36:16 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:36:16 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:36:16 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:36:16 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:36:31 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:36:47 HttpConnector[8080] Starting background thread
+2016-05-19 21:36:47 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:36:47 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:36:47 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:36:47 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:36:47 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:37:00 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:37:50 HttpConnector[8080] Starting background thread
+2016-05-19 21:37:50 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:37:50 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:37:50 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:37:50 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:37:50 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:37:55 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:38:40 HttpConnector[8080] Starting background thread
+2016-05-19 21:38:40 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:38:40 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:38:40 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:38:40 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:38:40 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:39:05 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:39:07 HttpConnector[8080] Starting background thread
+2016-05-19 21:39:07 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:39:07 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:39:07 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:39:07 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:39:07 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:43:03 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:43:54 HttpConnector[8080] Starting background thread
+2016-05-19 21:43:54 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:43:54 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:43:54 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:43:54 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:43:54 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:47:00 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:47:03 HttpConnector[8080] Starting background thread
+2016-05-19 21:47:03 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:47:03 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:47:03 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:47:03 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:47:03 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:48:01 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:48:05 HttpConnector[8080] Starting background thread
+2016-05-19 21:48:05 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:48:05 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:48:05 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:48:05 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:48:05 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:50:26 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:50:29 HttpConnector[8080] Starting background thread
+2016-05-19 21:50:29 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:50:29 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:50:29 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:50:29 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:50:29 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:51:46 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:51:47 HttpConnector[8080] Starting background thread
+2016-05-19 21:51:47 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:51:47 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:51:47 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:51:47 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:51:47 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:55:52 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:55:53 HttpConnector[8080] Starting background thread
+2016-05-19 21:55:53 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:55:53 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:55:53 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:55:53 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:55:53 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:56:32 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:56:55 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:56:56 HttpConnector[8080] Starting background thread
+2016-05-19 21:56:56 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:56:56 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:56:56 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:56:56 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:56:56 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:58:58 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:58:59 HttpConnector[8080] Starting background thread
+2016-05-19 21:58:59 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:58:59 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:58:59 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:58:59 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:58:59 HttpProcessor[8080][4] Starting background thread
+2016-05-19 21:59:14 HttpConnector Opening server socket on all host IP addresses
+2016-05-19 21:59:15 HttpConnector[8080] Starting background thread
+2016-05-19 21:59:15 HttpProcessor[8080][0] Starting background thread
+2016-05-19 21:59:15 HttpProcessor[8080][1] Starting background thread
+2016-05-19 21:59:15 HttpProcessor[8080][2] Starting background thread
+2016-05-19 21:59:15 HttpProcessor[8080][3] Starting background thread
+2016-05-19 21:59:15 HttpProcessor[8080][4] Starting background thread

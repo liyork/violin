@@ -1,0 +1,39 @@
+Encapsulating Variation
+Whenan aspect
+of a program changes frequently, these patterns define anobject that encapsulates
+that aspect.
+
+Objects as Arguments
+
+
+The difference between
+them is that Observerdistributes communication by introducing Observer and Subject
+objects,whereas a Mediator object encapsulates the communication between
+otherobjects.
+
+Command, Observer, Mediator,and Chain of Responsibility address how
+you can decouple senders andreceivers, but with different trade-offs.
+
+With few exceptions, behavioral design patterns complement andreinforce each other.
+A class in a chain of responsibility, forexample, will probably include at least
+one application of Template Method (360).The template method can useprimitive
+operations to determine whether the object should handle therequest and to choose
+the object to forward to. The chain can use theCommand pattern to represent requests
+as objects. Interpreter (274) can use the State pattern todefine parsing contexts.
+An iterator can traverse an aggregate, and avisitor can apply an operation to
+each element in the aggregate.
+Behavioral patterns work well with other patterns, too. For example, asystem that
+uses the Composite (183) pattern might usea visitor to perform operations on
+components of thecomposition. It could use Chain of Responsibility to let
+componentsaccess global properties through their parent. It could also use
+
+
+Decorator (196) to override these properties on partsof the composition. It could
+use the Observer pattern to tie oneobject structure to another and the State pattern
+to let a componentchange its behavior as its state changes. The composition itself
+mightbe created using the approach in Builder (110), and itmight be treated as
+a Prototype (133) by some otherpart of the system.
+Well-designed object-oriented systems are just like this—they havemultiple
+patterns embedded in them—but not because their designersnecessarily thought in
+these terms. Composition at the patternlevel rather than the class or object levels
+lets us achieve the samesynergy with greater ease.

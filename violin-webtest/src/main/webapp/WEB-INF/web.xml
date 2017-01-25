@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <!--                     servlet                 -->
+    <servlet>
+        <servlet-name>servletTest</servlet-name>
+        <servlet-class>com.wolf.servlet.UrlEncodingTest</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>servletTest</servlet-name>
+        <url-pattern>/urlencoding/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>webPathTest</servlet-name>
+        <servlet-class>com.wolf.servlet.WebPathTest</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>webPathTest</servlet-name>
+        <url-pattern>/webpath/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>jndiWebTest</servlet-name>
+        <servlet-class>com.wolf.servlet.JndiWebTest</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jndiWebTest</servlet-name>
+            <url-pattern>/jndiWeb/*</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>myFirstServlet</servlet-name>
+        <servlet-class>com.wolf.servlet.MyFirstServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>myFirstServlet</servlet-name>
+        <url-pattern>/myFirstServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>dynamicContentServlet</servlet-name>
+        <servlet-class>com.wolf.servlet.DynamicContentServlet</servlet-class>
+        <!-- Servlet init param -->
+        <init-param>
+            <param-name>name</param-name>
+            <param-value>downloadFile</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dynamicContentServlet</servlet-name>
+        <url-pattern>/dynamicContentServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>downloadServlet</servlet-name>
+        <servlet-class>com.wolf.servlet.DownloadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>downloadServlet</servlet-name>
+        <url-pattern>/downloadServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>secondServlet</servlet-name>
+        <servlet-class>com.wolf.servlet.SecondServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>secondServlet</servlet-name>
+        <url-pattern>/secondServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>cookieServlet</servlet-name>
+        <servlet-class>com.wolf.servlet.CookieServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>cookieServlet</servlet-name>
+        <url-pattern>/cookieServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <!--                             filter-->
+    <filter>
+        <filter-name>firstFilter</filter-name>
+        <filter-class>com.wolf.filter.FirstFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>firstFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>secondFilter</filter-name>
+        <filter-class>com.wolf.filter.SecondFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>secondFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>

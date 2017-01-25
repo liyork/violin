@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀)
+-->
+<mapper namespace="me.gacl.mapping.userMapper">
+    <!-- 在select标签中编写查询的SQL语句， 设置select标签的id属性为getUser，id属性值必须是唯一的，不能够重复
+ 使用parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型
+ resultType="me.gacl.domain.User"就表示将查询结果封装成一个User类的对象返回
+User类就是users表所对应的实体类
+-->
+    <!--
+    根据id查询得到一个user对象
+ -->
+
+    <select id="getAllUser"
+            resultType="User">
+        select * from users
+    </select>
+
+    <select id="getAllUser1"
+            resultType="User">
+        select name,age from users
+    </select>
+
+    <select id="getUser" parameterType="int"
+            resultType="User" useCache="false" flushCache="true">
+             select * from users where id=#{id}
+         </select>
+
+
+
+    <!--这个和下面的配置insertUser是一样的效果-->
+    <!--<insert id="insertUser1" parameterType="User"  useGeneratedKeys="true" keyProperty="id"  >-->
+        <!--insert into users(name,age) values(#{name},#{age})-->
+    <!--</insert>-->
+
+    <insert id="insertUser" parameterType="User">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into users(name,age) values(#{name},#{age})
+    </insert>
+
+
+    <!--这个是sqlserver的新增配置-->
+    <!--<insert id="addAsynOper" parameterType="asynOperMessage">-->
+        <!--<selectKey resultType="java.lang.String" keyProperty="unitId">-->
+            <!--<![CDATA[-->
+	 	<!--insert into dbo.t_sys_async_result(flag,oper_name,employee_id,oper_time)-->
+	 	<!--values(#status#,#operName#,#userId#,getDate());-->
+		<!--SELECT SCOPE_IDENTITY()  AS ID-->
+		<!--]]>-->
+        <!--</selectKey>-->
+    <!--</insert>-->
+
+
+    <!--这个是oracle的新增配置-->
+    <!--<insert id="saveUserInfo" parameterType="UserInfo">-->
+        <!--<selectKey resultType="int"  keyProperty="userId" order="BEFORE">-->
+            <!--<![CDATA[-->
+              <!--SELECT SEQ_COMMON.NEXTVAL AS ID FROM DUAL-->
+            <!--]]>-->
+        <!--</selectKey>-->
+        <!--<![CDATA[-->
+            <!--insert into userinfo(userId,userName,phone,age,birthday,remark)-->
+              <!--values(#{userId},#{userName},#{phone},#{age},#{birthday},#{remark})-->
+        <!--]]>-->
+    <!--</insert>-->
+
+
+    <!--关联插入-->
+    <insert id="insertUserRef" parameterType="UserRef" >
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into user_ref(name,userid) values(#{name},#{userid})
+    </insert>
+
+
+    <update id="updateUser" parameterType="User">
+        update users set name=#{name} where id=#{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="User">
+        delete from users where id=#{id}
+    </delete>
+
+
+    <select id="getChooseUser" parameterType="User" resultType="User">
+        <choose>
+            <when test="name == 'a'.toString() ">
+                select * from users where  age=#{age}
+            </when>
+            <when test="name == '33' " >
+                select * from users where name = #{name}
+            </when>
+            <otherwise>
+                select * from users
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <select id="getWhereUser"  resultType="User">
+        select * from users
+        <where>
+           1=1
+        </where>
+    </select>
+
+    <select id="getTrimUser" parameterType="User"  resultType="User">
+        select * from users
+        <trim prefix="where" prefixOverrides="and">
+           <if test="name == '33'.toString() ">
+               and 1=1
+           </if>
+            <if test="age == '11'.toString() ">
+                and 2=2
+            </if>
+        </trim>
+    </select>
+
+    <select id="getForEachListUser" parameterType="User"  resultType="User">
+        select * from users where id IN 
+        <foreach collection="list" open="(" close=")" index="index" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getForEachArrayUser" parameterType="User"  resultType="User">
+        select * from users where id IN
+        <foreach collection="array" open="(" close=")" index="index" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getForEachMapUser" parameterType="User"  resultType="User">
+        select * from users where id IN
+        <foreach collection="users" open="(" close=")" index="index" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+
+
+    <!--//=================批量插入====================-->
+    <!--sqlserver批量-->
+    <!--INSERT INTO TStudent(name,age)-->
+    <!--<foreach collection="list" item="item" index="index" open="(" close=")" separator="union all">-->
+        <!--SELECT #{item.name} as a, #{item.age} as b-->
+    <!--</foreach>-->
+    <!--该方式与方式2效果一样，若为Oracle则采用-->
+
+    <!--oracle批量-->
+    <!--INSERT INTO TStudent(name,age)-->
+    <!--<foreach collection="list" item="item" index="index" open="(" close=")" separator="union all">-->
+        <!--SELECT #{item.name} as a, #{item.age} as b FROM DUAL-->
+    <!--</foreach>-->
+</mapper>
