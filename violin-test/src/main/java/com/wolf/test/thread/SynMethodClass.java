@@ -12,25 +12,22 @@ package com.wolf.test.thread;
  */
 public class SynMethodClass {
 
-	public void test3(){
-		System.out.println("test3...");
-		test1();
-	}
+    public void test3() {
+        System.out.println("test3...");
+        test1();
+    }
 
-	private synchronized void test1(){
-		System.out.println("test1...");
-		//模拟长时间
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	synchronized void test2(){
-		System.out.println("test2...");
-	}
+    private synchronized void test1() {
+        System.out.println("test1...");
+        ThreadTest.simulateLongTimeOperation(5000000);
+    }
 
-	synchronized static void test4(){
-		System.out.println("test4...");
-	}
+    synchronized void test2() {
+        System.out.println("test2...");
+    }
+
+    //静态方法使用的锁是类变量
+    synchronized static void test4() {
+        System.out.println("test4...");
+    }
 }

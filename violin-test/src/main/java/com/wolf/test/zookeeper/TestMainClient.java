@@ -13,28 +13,27 @@ import java.io.IOException;
  * Created Date: 2010-9-7 14:11:44
  */
 public class TestMainClient implements Watcher {
-	protected static ZooKeeper zk = null;
-	protected static Integer mutex;
-	int sessionTimeout = 10000;
-	protected String root;
+    protected static ZooKeeper zk = null;
+    protected static Integer mutex;
+    int sessionTimeout = 200002;
+    protected String root;
 
+    public TestMainClient(String connectString) {
+        if(zk == null) {
+            try {
+                System.out.println("创建一个新的连接:");
+                zk = new ZooKeeper(connectString, sessionTimeout, null);
+                mutex = new Integer(-1);
+            } catch (IOException e) {
+                zk = null;
+            }
+        }
+    }
 
-
-
-	public TestMainClient(String connectString) {
-		if(zk == null){
-			try {
-				System.out.println("创建一个新的连接:");
-				zk = new ZooKeeper("127.0.0.1:2181", 200002, null);
-				mutex = new Integer(-1);
-			} catch (IOException e) {
-				zk = null;
-			}
-		}
-	}
-	synchronized public void process(WatchedEvent event) {
-		synchronized (mutex) {
-			mutex.notify();
-		}
-	}
+    @Override
+    synchronized public void process(WatchedEvent event) {
+        synchronized(mutex) {
+            mutex.notify();
+        }
+    }
 }

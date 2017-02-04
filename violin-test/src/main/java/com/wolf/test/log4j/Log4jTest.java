@@ -56,6 +56,12 @@ public class Log4jTest {
 				LogManager.getLoggerRepository());
 		logger.error("yyyyyy");
 	}
+
+	@Test
+	public void testInvokeExceptionToString(){
+		logger.error("",new RuntimeException("xxx"));
+	}
+
 }
 
 

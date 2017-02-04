@@ -10,7 +10,7 @@ package com.wolf.test.thread.runnable;
  * @version 1.0
  * @since 1.0
  */
-public class ThreadTesterA  implements Runnable {
+public class ThreadJoinA implements Runnable {
 
 	private int counter;
 
@@ -19,7 +19,7 @@ public class ThreadTesterA  implements Runnable {
 		while (counter <= 10) {
 			System.out.print("Counter = " + counter + " ");
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

@@ -1,11 +1,16 @@
 package com.wolf.test.zookeeper;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -55,218 +60,229 @@ import java.util.List;
  */
 public class ZooKeeperTest {
 
-	@Test
-	public void testSimple() throws IOException, KeeperException, InterruptedException {
-		Watcher defaultGlobalWatch = new Watcher() {
-			@Override
-			public void process(WatchedEvent watchedEvent) {
-				System.out.println("new ZooKeeper watch 1 :" + watchedEvent.getType());
-			}
-		};
-		ZooKeeper zooKeeper = new ZooKeeper("127.0.0.1:2181", 20000, defaultGlobalWatch);
+    String charsetName = "utf-8";
+    static ZooKeeper zooKeeper;
 
-		long sessionId = zooKeeper.getSessionId();
-		System.out.println("sessionId=" + sessionId);
+    @Before
+    public void beforeTest() throws IOException {
+        Watcher defaultGlobalWatch = new Watcher() {
+            @Override
+            public void process(WatchedEvent watchedEvent) {
+                //第一次初始化构造ZooKeeper时触发一次，以后如果有用watch但是没有指定的话，作为默认watch
+                System.out.println("new ZooKeeper watch 1 :" + watchedEvent.getType());
+            }
+        };
+        //zk构造使用多线程
+        zooKeeper = new ZooKeeper("127.0.0.1:2181", 20000, defaultGlobalWatch);
+    }
 
-		//exists触发new ZooKeeper watch 1 ,type = node
-		Stat exists4 = zooKeeper.exists("/yy", false);
-		if (null == exists4) {
-			System.out.println("create node /yy");
-			zooKeeper.create("/yy", "yydata".getBytes("UTF-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-		}
+    @Test
+    public void testCreateNodeAndSub() throws IOException, KeeperException, InterruptedException {
 
-		Stat exists5 = zooKeeper.exists("/yy/yy1", false);
-		if (null == exists5) {
-			System.out.println("create node /yy/yy1");
-			zooKeeper.create("/yy/yy1", "yy1data".getBytes("UTF-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-		}
+        long sessionId = zooKeeper.getSessionId();
+        System.out.println("sessionId=" + sessionId);
+
+        createNodeIfNotExist(zooKeeper, "/yy", "create node /yy", "yydata".getBytes("UTF-8"), CreateMode.PERSISTENT);
+        List<String> children = zooKeeper.getChildren("/yy", true);
+        if(CollectionUtils.isNotEmpty(children)) {
+            for(String child : children) {
+                System.out.println("child ==>" + child);
+            }
+        }
+
+        createNodeIfNotExist(zooKeeper, "/yy/yy1", "create node /yy/yy1", "yy1data".getBytes("UTF-8"), CreateMode.PERSISTENT);
+        System.out.println("set node data /yy/yy1");
+        //version=-1 表示忽略版本
+        zooKeeper.setData("/yy/yy1", "yy2data".getBytes(charsetName), -1);
+
+        Stat exists = zooKeeper.exists("/yy/yy1", true);
+        System.out.println(" node Stat /yy/yy1 : " + JSON.toJSONString(exists));
+    }
+
+    @Test
+    public void testAsyncCallback() throws KeeperException, InterruptedException {
+        Stat testNodeStat = zooKeeper.exists("/test", false);
+        if(null == testNodeStat) {
+            System.out.println("create node /test");
+            zooKeeper.create("/test", "test".getBytes(),
+            ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, new AsyncCallback.StringCallback() {
+                @Override
+                public void processResult(int rc, String path, Object ctx, String name) {
+                    System.out.println("AsyncCallback ... ");
+                }
+            }, null);
+        }
+    }
+
+    @Test
+    public void testUseDefaultWatch() throws KeeperException, InterruptedException, UnsupportedEncodingException {
+        Stat stat = zooKeeper.exists("/xx", true);
+
+        if(null != stat) {
+            System.out.println("node /xx exist");
+            //触发exists的watch后再重新赋予watch
+            byte[] data = zooKeeper.getData("/xx", new Watcher() {
+                @Override
+                public void process(WatchedEvent watchedEvent) {
+                    System.out.println("get /xx data watchtype :" + watchedEvent.getType());
+                }
+            }, null);
+
+            System.out.println("get data from /xx : " + new String(data));
+        } else {
+            System.out.println("create node /xx");
+            zooKeeper.create("/xx", "xx1".getBytes(charsetName), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        }
+    }
+
+    @Test
+    public void testPersistentSequential() throws KeeperException, InterruptedException, UnsupportedEncodingException {
+        createNodeIfNotExist(zooKeeper, "/xxy", "create node /xxy", "xx2".getBytes(charsetName), CreateMode.PERSISTENT_SEQUENTIAL);
+    }
+
+    @Test
+    public void testTempNode() throws KeeperException, InterruptedException, IOException {
+
+        zooKeeper.create("/temporary", "temporaryDir".getBytes(charsetName), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+
+        //临时节点
+        Stat stat = zooKeeper.exists("/temporary/temp1", false);
+        if(null == stat) {
+            System.out.println("create node /temporary/temp1、temp2、temp3");
+            zooKeeper.create("/temporary/temp1", "temp1".getBytes(charsetName), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+            zooKeeper.create("/temporary/temp2", "temp2".getBytes(charsetName), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+            zooKeeper.create("/temporary/temp3", "temp3".getBytes(charsetName), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+        }
+
+        System.out.println("print children from node /temporary");
+        List<String> children = zooKeeper.getChildren("/temporary", false);
+        for(String s : children) {
+            System.out.println(s);
+        }
+    }
+
+    @Test
+    public void testTrigger() throws KeeperException, InterruptedException, IOException {
+        zooKeeper.create("/trigger", "triggerDir".getBytes(charsetName), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+
+        ZooKeeper zooKeeper2 = new ZooKeeper("127.0.0.1:2181", 20000, new Watcher() {
+            @Override
+            public void process(WatchedEvent watchedEvent) {
+                System.out.println("new ZooKeeper watch 2 :" + watchedEvent.getType());
+            }
+        });
+
+        //添加watch
+        zooKeeper.exists("/trigger", new Watcher() {
+            @Override
+            public void process(WatchedEvent event) {
+                System.out.println("zooKeeper watch node /trigger exists====>type:" + event.getType() + " ,path:" + event.getPath() + " ,state:" + event.getState()
+                + " wrapper:" + event.getWrapper());
+            }
+        });
+        zooKeeper2.exists("/trigger", new Watcher() {
+            @Override
+            public void process(WatchedEvent event) {
+                System.out.println("zooKeeper2 watch node /trigger exists====>type:" + event.getType() + " ,path:" + event.getPath() + " ,state:" + event.getState()
+                + " wrapper:" + event.getWrapper());
+            }
+        });
+        zooKeeper2.getChildren("/trigger", new Watcher() {
+            @Override
+            public void process(WatchedEvent event) {
+                System.out.println("zooKeeper2 watch node /trigger getChildren====>type:" + event.getType() + " path:" + event.getPath() + " state:" + event.getState()
+                + " wrapper:" + event.getWrapper());
+            }
+        });
+        zooKeeper2.getData("/trigger", new Watcher() {
+            @Override
+            public void process(WatchedEvent event) {
+                System.out.println("zooKeeper2 watch node /trigger getdata====>type:" + event.getType() + " path:" + event.getPath() + " state:" + event.getState()
+                + " wrapper:" + event.getWrapper());
+            }
+        }, null);
+
+        //一个更新能同时触发zooKeeper的exists和zooKeeper2的exists和getdata
+        zooKeeper.setData("/trigger", "triggerDir1".getBytes(charsetName), -1);
+    }
+
+    private void createNodeIfNotExist(ZooKeeper zooKeeper, String path, String x, byte[] bytes, CreateMode persistent) throws KeeperException, InterruptedException, UnsupportedEncodingException {
+        Stat yyNodeStat = zooKeeper.exists(path, false);
+        if(null == yyNodeStat) {
+            System.out.println(x);
+            zooKeeper.create(path, bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, persistent);
+        }
+    }
+
+    @Test
+    public void deleteAllNode() throws Exception {
+        deleteAllNode("/");
+    }
+
+    private static void deleteAllNode(String path) throws Exception {
+        List<String> children = zooKeeper.getChildren(path, false);
+        for(String child : children) {
+            //默认初始节点
+            if(child.equals("zookeeper")) {
+                continue;
+            }
+            String deletePath;
+            //zookeeper已/作为根节点
+            if(path.equals("/")) {
+                deletePath = path + child;
+            } else {
+                deletePath = path + "/" + child;
+            }
+            deleteAllNode(deletePath);
+        }
+
+        //上面删除所有子节点后，这里删除父节点
+        if(!path.equals("/")) {
+            zooKeeper.delete(path, -1);
+        }
+    }
 
 
-		List<String> children = zooKeeper.getChildren("/yy", true);
-		if (null != children && children.size() > 0) {
-			System.out.println("get child ... ");
-			for (String child : children) {
-				System.out.println("child ==>" + child);
-			}
-		}
+    /**
+     * 如果指定版本不匹配，报错，更新后版本+1，如果指定-1都能更新,但原版本还是+1
+     *
+     * @throws java.io.IOException
+     * @throws org.apache.zookeeper.KeeperException
+     * @throws InterruptedException
+     */
+    @Test
+    public void testVersion() throws IOException, KeeperException, InterruptedException {
 
-		Stat exists1 = zooKeeper.exists("/xx", true);
-		if (null != exists1) {
-			byte[] data = zooKeeper.getData("/xx", new Watcher() {
-				@Override
-				public void process(WatchedEvent watchedEvent) {
-					System.out.println("get data watchtype :" + watchedEvent.getType());
-				}
-			}, null);
+        String path = "/xx";
 
-			System.out.println("get data from /xx : " + new String(data));
-		} else {
-			System.out.println("create node /xx");
-			zooKeeper.create("/xx", "xx1".getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-		}
+        createNodeIfNotExist(zooKeeper, path, "create node /xx", "xx".getBytes("UTF-8"), CreateMode.PERSISTENT);
 
-		Stat exists6 = zooKeeper.exists("/xxy", false);
-		if (null == exists6) {
-			System.out.println("create node /xxy");
-			//使用当前路径xx作为前缀+自动生成序列号
-			zooKeeper.create("/xxy", "xx2".getBytes("utf-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL);
-		}
+        Stat stat1 = zooKeeper.exists(path, false);
+        //新建node的version是0
+        System.out.println("stat1==>" + JSON.toJSONString(stat1));
 
-		System.out.println("set node data /yy/yy1");
-		//version=-1 表示忽略版本
-		zooKeeper.setData("/yy/yy1", "yy2data".getBytes("utf-8"), -1);
+        byte[] data = zooKeeper.getData(path, false, null);
+        System.out.println("data==>" + new String(data));
 
-		Stat exists = zooKeeper.exists("/yy/yy1", true);
-		System.out.println(" node Stat /yy/yy1 : " + exists);
+        Stat stat2 = new Stat();
+        //将当前节点信息放入参数stat中
+        zooKeeper.getData(path, false, stat2);
+        System.out.println("stat2==>" + JSON.toJSONString(stat2));
 
-		//zooKeeper.delete("/xx",-1);
+        //指定版本修改，必须与目前版本匹配，否则报错BadVersion for /xx
+        Stat stat3 = zooKeeper.setData(path, "yy".getBytes(), 0);
+        //修改完version+1
+        System.out.println("stat3==>" + JSONObject.toJSONString(stat3));
 
-		Stat exists2 = zooKeeper.exists("/test", false);
-		if (null == exists2) {
-			System.out.println("create node /test");
-			zooKeeper.create("/test", "test".getBytes(),
-					ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, new AsyncCallback.StringCallback() {
-						@Override
-						public void processResult(int rc, String path, Object ctx, String name) {
-							System.out.println("AsyncCallback ... ");
-						}
-					}, null);
-		}
+        //使用上步的版本号修改
+        Stat stat4 = zooKeeper.setData(path, "yy".getBytes(), stat3.getVersion());
+        //修改完version+1
+        System.out.println("stat4==>" + JSONObject.toJSONString(stat4));
 
+    }
 
-		//zooKeeper2监听
-		ZooKeeper zooKeeper2 = new ZooKeeper("127.0.0.1:2181", 20000, new Watcher() {
-			@Override
-			public void process(WatchedEvent watchedEvent) {
-				System.out.println("new ZooKeeper watch 2 :" + watchedEvent.getType());
-			}
-		});
-
-		Stat exists3 = zooKeeper.exists("/temporary", new Watcher() {
-			@Override
-			public void process(WatchedEvent event) {
-				System.out.println("watch node /temporary exists====>type:" + event.getType() + " ,path:" + event.getPath() + " ,state:" + event.getState()
-						+ " wrapper:" + event.getWrapper());
-			}
-		});
-
-		if (null != exists3) {
-			zooKeeper2.getChildren("/temporary", new Watcher() {
-				@Override
-				public void process(WatchedEvent event) {
-					System.out.println("watch node /temporary getChildren====>type:" + event.getType() + " path:" + event.getPath() + " state:" + event.getState()
-							+ " wrapper:" + event.getWrapper());
-				}
-			});
-
-			zooKeeper2.getData("/temporary", new Watcher() {
-				@Override
-				public void process(WatchedEvent event) {
-					System.out.println("watch node /temporary getdata====>type:" + event.getType() + " path:" + event.getPath() + " state:" + event.getState()
-							+ " wrapper:" + event.getWrapper());
-				}
-			}, null);
-		} else {
-			System.out.println("create node /temporary");
-			zooKeeper.create("/temporary", "temporaryDir".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-		}
-
-		//一个更新能同时触发exists和getdata
-		zooKeeper.setData("/temporary", "temporaryDir1".getBytes(), -1);
-		//zooKeeper.delete("/temporary",-1);
-
-		//临时节点
-		Stat exists7 = zooKeeper.exists("/temporary/temp1", false);
-		if (null == exists7) {
-			System.out.println("create node /temporary/temp1、temp2、temp3");
-			zooKeeper.create("/temporary/temp1", "temp1".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-			zooKeeper.create("/temporary/temp2", "temp2".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-			zooKeeper.create("/temporary/temp3", "temp3".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-		}
-
-		System.out.println("print children from node /temporary");
-		List<String> children1 = zooKeeper.getChildren("/temporary", true);
-		for (String s : children1) {
-			System.out.println(s);
-		}
-
-		zooKeeper.close();
-	}
-
-	@Test
-	public void deleteAllNode() throws Exception {
-		ZooKeeper zooKeeper = new ZooKeeper("127.0.0.1:2181", 2000000000, null);
-		deleteAllNode(zooKeeper, "/");
-	}
-
-	private static void deleteAllNode(ZooKeeper zooKeeper, String path) throws Exception {
-		List<String> children = zooKeeper.getChildren(path, false);
-		for (String child : children) {
-			//默认初始节点
-			if (child.equals("zookeeper")) {
-				continue;
-			}
-			String deletePath;
-			//zookeeper已/作为根节点
-			if (path.equals("/")) {
-				deletePath = path + child;
-			} else {
-				deletePath = path + "/" + child;
-			}
-			deleteAllNode(zooKeeper, deletePath);
-		}
-
-		//上面删除所有子节点后，这里删除父节点
-		if (!path.equals("/")) {
-			zooKeeper.delete(path, -1);
-		}
-	}
-
-
-	/**
-	 * 如果指定版本不匹配，报错，更新后版本+1，如果指定-1都能更新,但原版本还是+1
-	 *
-	 * @throws java.io.IOException
-	 * @throws org.apache.zookeeper.KeeperException
-	 * @throws InterruptedException
-	 */
-	@Test
-	public void testVersion() throws IOException, KeeperException, InterruptedException {
-		ZooKeeper zooKeeper = new ZooKeeper("127.0.0.1:2181", 20000, new Watcher() {
-			@Override
-			public void process(WatchedEvent watchedEvent) {
-				System.out.println("1111 :" + watchedEvent.getType());
-			}
-		});
-
-		String path = "/xx";
-
-		if (null == zooKeeper.exists(path, false)) {
-			zooKeeper.create(path, "xx".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-			System.out.println("create node...");
-		}
-
-		Stat stat1 = zooKeeper.exists(path, false);
-		//新建node的version是0
-		System.out.println("stat1==>" + JSONObject.toJSONString(stat1));
-
-		byte[] data = zooKeeper.getData(path, false, null);
-		System.out.println("data==>" + new String(data));
-
-		Stat stat2 = new Stat();
-		//将当前节点信息放入参数stat中
-		zooKeeper.getData(path, false, stat2);
-		System.out.println("stat2==>" + JSONObject.toJSONString(stat2));
-
-		//指定版本修改，必须与目前版本匹配，否则报错BadVersion for /xx
-		Stat stat3 = zooKeeper.setData(path, "yy".getBytes(), 0);
-		//修改完version+1
-		System.out.println("stat3==>" + JSONObject.toJSONString(stat3));
-
-		//使用上步的版本号修改
-		Stat stat4 = zooKeeper.setData(path, "yy".getBytes(), stat3.getVersion());
-		//修改完version+1
-		System.out.println("stat4==>" + JSONObject.toJSONString(stat4));
-
-	}
+    @After
+    public void after() throws InterruptedException {
+        zooKeeper.close();
+    }
 }

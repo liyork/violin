@@ -12,23 +12,21 @@ package com.wolf.test.thread.runnable;
  */
 public class InterruptedStateRunnable implements Runnable {
 
-	public void run() {
+    public void run() {
 
-		//这里也可以使用一个成员变量记录是否死循环下去。
-		while (!Thread.currentThread().isInterrupted()) {
-			System.out.println(Thread.currentThread().getName()+"1111:"+ Thread.currentThread().isInterrupted());
-			try {
-				Thread.sleep(4000);
-			} catch (InterruptedException e) {
-				System.out.println(Thread.currentThread().getName()+"2222:"+ Thread.currentThread().isInterrupted());
-				//The interrupted status of the current thread is cleared when this exception is thrown
-				e.printStackTrace();
-				//由于抛出异常会重置打断状态，所以需要再设定，不然就会退不出循环了。。。
-				Thread.currentThread().interrupt();
-
-			}
-			System.out.println(Thread.currentThread().getName()+"3333:"+ Thread.currentThread().isInterrupted());
-		}
-		System.out.println("ATask.run() interrupted!");
-	}
+        //这里也可以使用一个成员变量记录是否死循环下去。
+        while(!Thread.currentThread().isInterrupted()) {
+            System.out.println(Thread.currentThread().getName() + "1111:" + Thread.currentThread().isInterrupted());
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                //The interrupted status of the current thread is cleared when this exception is thrown
+                System.out.println(Thread.currentThread().getName() + "2222:" + Thread.currentThread().isInterrupted());
+                //由于抛出异常会重置打断状态，所以需要再设定，不然就会退不出循环了。。。
+                Thread.currentThread().interrupt();
+            }
+            System.out.println(Thread.currentThread().getName() + "3333:" + Thread.currentThread().isInterrupted());
+        }
+        System.out.println("ATask.run() interrupted!");
+    }
 }

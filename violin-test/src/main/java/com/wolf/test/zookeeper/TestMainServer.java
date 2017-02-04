@@ -7,64 +7,63 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * TestMainServer
- * <p/>
- * Author By: junshan
- * Created Date: 2010-9-3 16:17:21
+ * 单独启动zk
  */
 public class TestMainServer extends ZooKeeperServerMain {
-	public static final int CLIENT_PORT = 2181;
-	public static class MainThread extends Thread {
-		final File confFile;
-		final TestMainServer main;
+    public static final int CLIENT_PORT = 2181;
 
-		public MainThread(int clientPort) throws IOException {
-			super("Standalone server with clientPort:" + clientPort);
-			File tmpDir = new File("D:\\zookeepertest\\");
-			confFile = new File(tmpDir, "zoo.cfg");
+    public static class MainThread extends Thread {
+        final File confFile;
+        final TestMainServer main;
 
-			FileWriter fwriter = new FileWriter(confFile);
-			fwriter.write("tickTime=2000\n");
-			fwriter.write("initLimit=10\n");
-			fwriter.write("syncLimit=5\n");
+        public MainThread(int clientPort) throws IOException {
+            super("Standalone server with clientPort:" + clientPort);
+            File tmpDir = new File("D:\\zookeepertest\\");
+            confFile = new File(tmpDir, "zoo.cfg");
 
-			File dataDir = new File(tmpDir, "data");
-			if(!dataDir.exists()&&!dataDir.mkdir()){
-				throw new IOException("unable to mkdir " + dataDir);
-			}
+            FileWriter fwriter = new FileWriter(confFile);
+            fwriter.write("tickTime=2000\n");
+            fwriter.write("initLimit=10\n");
+            fwriter.write("syncLimit=5\n");
 
-			String df = org.apache.commons.lang.StringUtils.replace(dataDir.toString(),"\\","/");
-			fwriter.write("dataDir=" + df + "\n");
+            File dataDir = new File(tmpDir, "data");
+            if(!dataDir.exists() && !dataDir.mkdir()) {
+                throw new IOException("unable to mkdir " + dataDir);
+            }
 
-			fwriter.write("clientPort=" + clientPort + "\n");
-			fwriter.flush();
-			fwriter.close();
+            String df = org.apache.commons.lang.StringUtils.replace(dataDir.toString(), "\\", "/");
+            fwriter.write("dataDir=" + df + "\n");
 
-			main = new TestMainServer();
-		}
+            fwriter.write("clientPort=" + clientPort + "\n");
+            fwriter.flush();
+            fwriter.close();
 
-		public void run() {
-			String args[] = new String[1];
-			args[0] = confFile.toString();
-			try {
-				main.initializeAndRun(args);
-			} catch (Exception e) {
+            main = new TestMainServer();
+        }
 
-			}
-		}
-	}
-	public static void start(){
+        public void run() {
+            String args[] = new String[1];
+            args[0] = confFile.toString();
+            try {
+                main.initializeAndRun(args);
+            } catch (Exception e) {
 
-		MainThread main = null;
-		try {
-			main = new MainThread(CLIENT_PORT);
-		} catch (IOException e) {
-			return ;
-		}
-		main.start();
-	}
+            }
+        }
+    }
 
-	public static void main(String[] args) {
-		TestMainServer.start();
-	}
+    public static void start() {
+
+        MainThread main = null;
+        try {
+            main = new MainThread(CLIENT_PORT);
+        } catch (IOException e) {
+            return;
+        }
+        main.start();
+    }
+
+    public static void main(String[] args) {
+        TestMainServer.start();
+    }
 }
