@@ -1,10 +1,18 @@
 package com.wolf.test.thread;
 
-import com.wolf.test.thread.runnable.*;
-import org.junit.Test;
+import com.wolf.test.thread.runnable.ThreadInterruptJoinB;
+import com.wolf.test.thread.runnable.ThreadJoinA;
 
 /**
  * 线程简单测试
+ *
+ * 在JAVA环境中，线程Thread有如下几个状态：
+ *
+ * 1，新建状态
+ * 2，就绪状态
+ * 3，运行状态
+ * 4，阻塞状态
+ * 5，死亡状态
  * Date: 2015/9/23
  * Time: 17:02
  *
@@ -17,11 +25,12 @@ public class ThreadTest {
     private static Object monitor = new Object();
 
     public static void main(String[] args) throws InterruptedException {
+        testDaemon();
 //        testJoin1();
 //        testJoin2();
 //        testJoin3();
 //        testSynMethod();
-        testWaitShouldInSynScope();
+//        testWaitShouldInSynScope();
     }
 
     /**
@@ -31,15 +40,14 @@ public class ThreadTest {
      * main以及其他创建的线程都是非守护线程
      * thread.setDaemon(true)必须在thread.start()之前设置
      */
-    @Test
-    public void testDaemon() {
+    public static void testDaemon() {
         System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
             }
-        });
+        },"first");
         thread.setDaemon(true);
         thread.start();
 
@@ -48,7 +56,7 @@ public class ThreadTest {
             public void run() {
                 System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
             }
-        });
+        },"second");
         thread1.start();
     }
 

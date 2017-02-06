@@ -35,8 +35,8 @@ public class ReentrantLockTest {
 //        lockInterrupt();
 //        lockInterrupt2();
 //        lockInterruptUnLock();
-//        testReentrant();
-        testWaitAndSleep();
+        testReentrant();
+//        testWaitAndSleep();
     }
 
     public static void testInterruptLock(final boolean isCanInterrupt) throws InterruptedException {
@@ -90,6 +90,14 @@ public class ReentrantLockTest {
     }
 
 
+    /**
+     * trylock 用途
+     * a、用在定时任务时，如果任务执行时间可能超过下次计划执行时间，确保该有状态任务只有一个正在执行，忽略重复触发。
+     * b、用在界面交互时点击执行较长时间请求操作时，防止多次点击导致后台重复执行（忽略重复触发）。
+     *
+     * @param isWait
+     * @throws InterruptedException
+     */
     public static void testTryLock(final boolean isWait) throws InterruptedException {
 
         final ReentrantLockTest reentrantLockTest = new ReentrantLockTest();
@@ -161,6 +169,11 @@ public class ReentrantLockTest {
         thread.interrupt();
     }
 
+    /**
+     * 这种情况主要用于取消某些操作对资源的占用
+     *
+     * @throws InterruptedException
+     */
     public static void lockInterrupt() throws InterruptedException {
         final Lock lock = new ReentrantLock();
         //主线程上锁了
@@ -218,6 +231,11 @@ public class ReentrantLockTest {
         lock.unlock();
     }
 
+    /**
+     * 每次重入不会引起线程抢夺，保证当前获取所得线程执行未完成
+     *
+     * @throws InterruptedException
+     */
     public static void testReentrant() throws InterruptedException {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -247,6 +265,7 @@ public class ReentrantLockTest {
         reentrantLock.lock();
         try {
             System.out.println("get1_" + Thread.currentThread().getName());
+            Thread.sleep(2000);
             get2();
         } catch (Exception e) {
             e.printStackTrace();
