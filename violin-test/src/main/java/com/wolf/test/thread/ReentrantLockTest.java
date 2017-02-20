@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 3.具有公平锁功能，每个到来的线程都将排队等候
  * <br/> Created on 2017/2/4 13:44
  *
- * @author 李超(lichao07@zuche.com)20141022
+ * @author 李超
  * @since 1.0.0
  */
 public class ReentrantLockTest {
@@ -35,8 +35,9 @@ public class ReentrantLockTest {
 //        lockInterrupt();
 //        lockInterrupt2();
 //        lockInterruptUnLock();
-        testReentrant();
+//        testReentrant();
 //        testWaitAndSleep();
+        testNormalLock();
     }
 
     public static void testInterruptLock(final boolean isCanInterrupt) throws InterruptedException {
@@ -319,5 +320,42 @@ public class ReentrantLockTest {
             }
         }
         exec.shutdown();
+    }
+
+    /**
+     * 一般使用
+     * 本来想测测源码中的是否中断当前线程，原来看错了，是由于if没有{}导致看错了。。
+     * @throws InterruptedException
+     */
+    public static void testNormalLock() throws InterruptedException {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLockMethod();
+            }
+        });
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLockMethod();
+            }
+        });
+
+        thread.start();
+        thread2.start();
+    }
+
+    private static void testLockMethod() {
+        reentrantLock.lock();
+        try {
+            System.out.println("testLockMethod_" + Thread.currentThread().getName());
+            System.out.println("isInterrupted_"+Thread.currentThread().isInterrupted());
+            Thread.sleep(10000);
+            System.out.println("testLockMethod_" + Thread.currentThread().getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            reentrantLock.unlock();
+        }
     }
 }

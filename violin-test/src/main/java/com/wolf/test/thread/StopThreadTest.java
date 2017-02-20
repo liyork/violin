@@ -6,7 +6,7 @@ import com.wolf.test.thread.runnable.TestStopRunnable;
  * Description:
  * <br/> Created on 2017/2/4 11:21
  *
- * @author 李超(lichao07@zuche.com)20141022
+ * @author 李超
  * @since 1.0.0
  */
 public class StopThreadTest {

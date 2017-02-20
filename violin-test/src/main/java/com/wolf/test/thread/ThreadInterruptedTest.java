@@ -19,7 +19,7 @@ import com.wolf.test.thread.runnable.*;
  *
  * <br/> Created on 2017/2/4 9:09
  *
- * @author 李超(lichao07@zuche.com)20141022
+ * @author 李超
  * @since 1.0.0
  */
 public class ThreadInterruptedTest {

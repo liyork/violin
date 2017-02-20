@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 import org.junit.After;
 import org.junit.Before;
@@ -11,6 +12,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -104,8 +106,7 @@ public class ZooKeeperTest {
         Stat testNodeStat = zooKeeper.exists("/test", false);
         if(null == testNodeStat) {
             System.out.println("create node /test");
-            zooKeeper.create("/test", "test".getBytes(),
-            ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, new AsyncCallback.StringCallback() {
+            zooKeeper.create("/test", "test".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, new AsyncCallback.StringCallback() {
                 @Override
                 public void processResult(int rc, String path, Object ctx, String name) {
                     System.out.println("AsyncCallback ... ");
@@ -176,29 +177,25 @@ public class ZooKeeperTest {
         zooKeeper.exists("/trigger", new Watcher() {
             @Override
             public void process(WatchedEvent event) {
-                System.out.println("zooKeeper watch node /trigger exists====>type:" + event.getType() + " ,path:" + event.getPath() + " ,state:" + event.getState()
-                + " wrapper:" + event.getWrapper());
+                System.out.println("zooKeeper watch node /trigger exists====>type:" + event.getType() + " ,path:" + event.getPath() + " ,state:" + event.getState() + " wrapper:" + event.getWrapper());
             }
         });
         zooKeeper2.exists("/trigger", new Watcher() {
             @Override
             public void process(WatchedEvent event) {
-                System.out.println("zooKeeper2 watch node /trigger exists====>type:" + event.getType() + " ,path:" + event.getPath() + " ,state:" + event.getState()
-                + " wrapper:" + event.getWrapper());
+                System.out.println("zooKeeper2 watch node /trigger exists====>type:" + event.getType() + " ,path:" + event.getPath() + " ,state:" + event.getState() + " wrapper:" + event.getWrapper());
             }
         });
         zooKeeper2.getChildren("/trigger", new Watcher() {
             @Override
             public void process(WatchedEvent event) {
-                System.out.println("zooKeeper2 watch node /trigger getChildren====>type:" + event.getType() + " path:" + event.getPath() + " state:" + event.getState()
-                + " wrapper:" + event.getWrapper());
+                System.out.println("zooKeeper2 watch node /trigger getChildren====>type:" + event.getType() + " path:" + event.getPath() + " state:" + event.getState() + " wrapper:" + event.getWrapper());
             }
         });
         zooKeeper2.getData("/trigger", new Watcher() {
             @Override
             public void process(WatchedEvent event) {
-                System.out.println("zooKeeper2 watch node /trigger getdata====>type:" + event.getType() + " path:" + event.getPath() + " state:" + event.getState()
-                + " wrapper:" + event.getWrapper());
+                System.out.println("zooKeeper2 watch node /trigger getdata====>type:" + event.getType() + " path:" + event.getPath() + " state:" + event.getState() + " wrapper:" + event.getWrapper());
             }
         }, null);
 
@@ -279,6 +276,39 @@ public class ZooKeeperTest {
         //修改完version+1
         System.out.println("stat4==>" + JSONObject.toJSONString(stat4));
 
+    }
+
+
+    @Test
+    public void testAuth() throws IOException, KeeperException, InterruptedException {
+        String PATH1 = "/auth_test1";
+
+        String authentication_type = "digest";
+
+        String correctAuthentication = "123";
+
+        List<ACL> acls = new ArrayList<ACL>(1);
+        for(ACL ids_acl : ZooDefs.Ids.CREATOR_ALL_ACL) {
+            acls.add(ids_acl);
+        }
+
+        zooKeeper.addAuthInfo(authentication_type, correctAuthentication.getBytes());
+        Stat exists = zooKeeper.exists(PATH1, false);
+        if(null != exists) {
+            zooKeeper.delete(PATH1, -1);
+        }
+        zooKeeper.create(PATH1, "qqq".getBytes("UTF-8"), acls, CreateMode.PERSISTENT);
+
+        ZooKeeper zooKeeper2 = new ZooKeeper("127.0.0.1:2181", 20000, new Watcher() {
+            @Override
+            public void process(WatchedEvent watchedEvent) {
+                System.out.println("new ZooKeeper watch 2 :" + watchedEvent.getType());
+            }
+        });
+        //需要授权
+        zooKeeper2.addAuthInfo(authentication_type, correctAuthentication.getBytes());
+        byte[] data = zooKeeper2.getData(PATH1, false, null);
+        System.out.println(new String(data));
     }
 
     @After
