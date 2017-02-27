@@ -1,5 +1,7 @@
 package com.wolf.test.generics.entity;
 
+import com.wolf.test.entity.Person;
+
 import java.io.Serializable;
 
 /**

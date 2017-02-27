@@ -1,6 +1,6 @@
 package com.wolf.test.thread.runnable;
 
-import com.wolf.test.thread.ThreadTest;
+import com.wolf.utils.BaseUtils;
 
 /**
  * <p> Description:
@@ -16,7 +16,7 @@ public class ThreadJoinD implements Runnable {
 
     @Override
     public void run() {
-        ThreadTest.simulateLongTimeOperation(5000000);
+        BaseUtils.simulateLongTimeOperation(5000000);
         System.out.println("finish simulateLongTimeOperation");
         try {
             //抛出异常，由于主线程中调用了t1.interrupt

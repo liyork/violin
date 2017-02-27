@@ -1,6 +1,7 @@
 package com.wolf.test.thread;
 
 import com.wolf.test.thread.runnable.TestStopRunnable;
+import com.wolf.utils.BaseUtils;
 
 /**
  * Description:
@@ -22,7 +23,7 @@ public class StopThreadTest {
             @Override
             public void run() {
                 System.out.println("====>111");
-                ThreadTest.simulateLongTimeOperation(5000000);
+                BaseUtils.simulateLongTimeOperation(5000000);
                 System.out.println("====>222");
             }
         });

@@ -1,5 +1,7 @@
 package com.wolf.test.thread;
 
+import com.wolf.utils.BaseUtils;
+
 /**
  * <p> Description:
  * <p/>
@@ -19,7 +21,7 @@ public class SynMethodClass {
 
     private synchronized void test1() {
         System.out.println("test1...");
-        ThreadTest.simulateLongTimeOperation(5000000);
+        BaseUtils.simulateLongTimeOperation(5000000);
     }
 
     synchronized void test2() {

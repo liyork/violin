@@ -9,13 +9,13 @@ package com.wolf.test.thread.threadlocal;
  */
 public class ContainMultiTL {
 
-	ThreadLocal<String> threadLocal1 = new ThreadLocal<String>(){
+	static ThreadLocal<String> threadLocal1 = new ThreadLocal<String>(){
 		@Override
 		protected String initialValue() {
 			return "a";
 		}
 	};
-	ThreadLocal<String> threadLocal2 = new ThreadLocal<String>(){
+	static ThreadLocal<String> threadLocal2 = new ThreadLocal<String>(){
 		@Override
 		protected String initialValue() {
 			return "b";

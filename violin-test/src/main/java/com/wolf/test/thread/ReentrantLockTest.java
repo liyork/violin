@@ -1,9 +1,8 @@
 package com.wolf.test.thread;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.wolf.utils.BaseUtils;
+
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -36,7 +35,6 @@ public class ReentrantLockTest {
 //        lockInterrupt2();
 //        lockInterruptUnLock();
 //        testReentrant();
-//        testWaitAndSleep();
         testNormalLock();
     }
 
@@ -79,7 +77,7 @@ public class ReentrantLockTest {
 
             System.out.println(Thread.currentThread().getName() + "_locked...");
             System.out.println("simulateLongTimeOperation...");
-            ThreadTest.simulateLongTimeOperation(10000000);
+            BaseUtils.simulateLongTimeOperation(10000000);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -140,7 +138,7 @@ public class ReentrantLockTest {
             if(isLock) {
                 System.out.println(Thread.currentThread().getName() + "_locked...");
                 System.out.println("simulateLongTimeOperation...");
-                ThreadTest.simulateLongTimeOperation(10000000);
+                BaseUtils.simulateLongTimeOperation(10000000);
             } else {
                 System.out.println(Thread.currentThread().getName() + " not get lock");
             }
@@ -286,40 +284,6 @@ public class ReentrantLockTest {
         } finally {
             reentrantLock.unlock();
         }
-    }
-
-    public static void testWaitAndSleep() {
-        final ExecutorService exec = Executors.newFixedThreadPool(4);
-        final ReentrantLock lock = new ReentrantLock();
-        final Condition con = lock.newCondition();
-        final int time = 5;
-        final Runnable add = new Runnable() {
-            public void run() {
-                System.out.println("Pre " + lock.toString());
-                lock.lock();
-                try {
-                    //释放锁
-//                    con.await(time, TimeUnit.SECONDS);
-                    //不释放锁
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    System.out.println("Post " + lock.toString());
-                    lock.unlock();
-                }
-            }
-        };
-
-        for(int index = 0; index < 4; index++) {
-            exec.submit(add);
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        exec.shutdown();
     }
 
     /**

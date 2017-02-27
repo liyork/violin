@@ -1,6 +1,7 @@
 package com.wolf.test.thread;
 
 import com.wolf.test.thread.runnable.*;
+import com.wolf.utils.BaseUtils;
 
 /**
  * <p> Description: 测试中断
@@ -221,7 +222,7 @@ public class ThreadInterruptedTest {
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                ThreadTest.simulateLongTimeOperation(5000000);
+                BaseUtils.simulateLongTimeOperation(5000000);
                 System.out.println(Thread.interrupted());
                 System.out.println(Thread.interrupted());
             }
@@ -230,7 +231,7 @@ public class ThreadInterruptedTest {
         Thread thread2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                ThreadTest.simulateLongTimeOperation(5000000);
+                BaseUtils.simulateLongTimeOperation(5000000);
                 System.out.println(Thread.currentThread().isInterrupted());
                 System.out.println(Thread.currentThread().isInterrupted());
             }

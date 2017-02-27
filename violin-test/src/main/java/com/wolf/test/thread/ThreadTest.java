@@ -3,6 +3,10 @@ package com.wolf.test.thread;
 import com.wolf.test.thread.runnable.ThreadInterruptJoinB;
 import com.wolf.test.thread.runnable.ThreadJoinA;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * 线程简单测试
  *
@@ -25,12 +29,13 @@ public class ThreadTest {
     private static Object monitor = new Object();
 
     public static void main(String[] args) throws InterruptedException {
-        testDaemon();
+//        testDaemon();
 //        testJoin1();
 //        testJoin2();
 //        testJoin3();
 //        testSynMethod();
 //        testWaitShouldInSynScope();
+        testWaitAndSleep();
     }
 
     /**
@@ -47,7 +52,7 @@ public class ThreadTest {
             public void run() {
                 System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
             }
-        },"first");
+        }, "first");
         thread.setDaemon(true);
         thread.start();
 
@@ -56,7 +61,7 @@ public class ThreadTest {
             public void run() {
                 System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
             }
-        },"second");
+        }, "second");
         thread1.start();
     }
 
@@ -159,13 +164,39 @@ public class ThreadTest {
         monitor.wait();
     }
 
-    public static void simulateLongTimeOperation(int maxCounter) {
-        int counter = 0;
-        while(counter <= maxCounter) {
-            double hypot = Math.hypot(counter, counter);
-            Math.atan2(hypot, counter);
-            counter++;
+
+    public static void testWaitAndSleep() {
+        final ExecutorService exec = Executors.newFixedThreadPool(4);
+        final ReentrantLock lock = new ReentrantLock();
+
+        final Runnable add = new Runnable() {
+            public void run() {
+                System.out.println("Pre " + lock.toString());
+                lock.lock();
+                try {
+                    //释放锁
+//                    final Condition con = lock.newCondition();
+//                    con.await(5, TimeUnit.SECONDS);
+                    //不释放锁
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    System.out.println("Post " + lock.toString());
+                    lock.unlock();
+                }
+            }
+        };
+
+        for(int index = 0; index < 4; index++) {
+            exec.submit(add);
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        exec.shutdown();
     }
 
 }

@@ -1,7 +1,7 @@
 package com.wolf.test.generics;
 
 import com.wolf.test.generics.entity.Children;
-import com.wolf.test.generics.entity.Person;
+import com.wolf.test.entity.Person;
 
 import java.util.Comparator;
 

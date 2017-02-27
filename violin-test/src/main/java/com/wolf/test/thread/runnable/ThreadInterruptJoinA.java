@@ -1,6 +1,6 @@
 package com.wolf.test.thread.runnable;
 
-import com.wolf.test.thread.ThreadTest;
+import com.wolf.utils.BaseUtils;
 
 /**
  * <p> Description:
@@ -16,7 +16,7 @@ public class ThreadInterruptJoinA implements Runnable {
 
 	@Override
 	public void run() {
-		ThreadTest.simulateLongTimeOperation(7000000);
+		BaseUtils.simulateLongTimeOperation(7000000);
 		System.out.println("ThreadTesterC...");
 	}
 }

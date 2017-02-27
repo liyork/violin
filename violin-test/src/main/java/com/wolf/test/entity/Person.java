@@ -1,4 +1,4 @@
-package com.wolf.test.generics.entity;
+package com.wolf.test.entity;
 
 import java.io.Serializable;
 
