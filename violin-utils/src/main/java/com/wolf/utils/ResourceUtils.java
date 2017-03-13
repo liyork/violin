@@ -32,8 +32,8 @@ public class ResourceUtils {
 	}
 
 	//==================resource from class path start
-	public static URL getResourceFromClassPath(String path) {
-		return ResourceUtils.class.getClassLoader().getResource(path);
+	public static URL getResourceFromClassPath(Class clazz,String path) {
+		return clazz.getClassLoader().getResource(path);
 	}
 	public static URL getResourceFromClassPathStartWithSlash(String path) {
 		return ResourceUtils.class.getResource(path);

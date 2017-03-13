@@ -30,13 +30,13 @@ public class ResourceUtilsTest {
 
 	@Test
 	public void testGetResourceFromClassPath() {
-		URL url1 = ResourceUtils.getResourceFromClassPath("com/wolf/utils");
+		URL url1 = ResourceUtils.getResourceFromClassPath(ResourceUtilsTest.class,"com/wolf/utils");
 		System.out.println(url1.getPath());
-		URL url2 = ResourceUtils.getResourceFromClassPath("com/wolf/utils/");
+		URL url2 = ResourceUtils.getResourceFromClassPath(ResourceUtilsTest.class,"com/wolf/utils/");
 		System.out.println(url2.getPath());
-		URL url3 = ResourceUtils.getResourceFromClassPath("com/wolf/utils/JsonUtils.class");
+		URL url3 = ResourceUtils.getResourceFromClassPath(ResourceUtilsTest.class,"com/wolf/utils/JsonUtils.class");
 		System.out.println(url3.getPath());
-		URL url4 = ResourceUtils.getResourceFromClassPath("ftp.properties");
+		URL url4 = ResourceUtils.getResourceFromClassPath(ResourceUtilsTest.class,"ftp.properties");
 		System.out.println(url4.getPath());
 	}
 

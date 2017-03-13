@@ -33,7 +33,7 @@ public class UrlAndUriTest {
 
 	public static void main(String[] args) throws Exception {
 
-		URL url = new URL("http://xxx.yyyy.com:9080/cartp;remoteClientMark=true;jsessionid=null/remoteHessian.do_?serviceId=cartp.creditcardbind.query&remote_client_projectName=xx&remote_client_grayValue=null");
+		URL url = new URL("http://xxx.yyyy.com:9080/cartp;remoteClientMark=true;jsessionid=null/remoteHessian.do_?serviceId=xx&remote_client_projectName=xx&remote_client_grayValue=null");
 		URLConnection urlConnection = url.openConnection();
 //		try
 //		{
