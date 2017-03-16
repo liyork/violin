@@ -6,8 +6,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -20,20 +20,26 @@ import java.util.Map;
 public class FundTest {
 
     public static void main(String argv[]) {
-        String fivePath = "fund/fiveyear.txt";
-        Map<String, String> fiveMap = new HashMap<String, String>();
+//        performance("stock");
+//        performance("mixture");
+        performance("index");
+    }
+
+    private static void performance(String type) {
+        String fivePath = "fund/" + type + "/fiveyear.txt";
+        Map<String, String> fiveMap = new LinkedHashMap<>();
         readFile(fivePath, fiveMap);
 
-        String threePath = "fund/threeyear.txt";
-        Map<String, String> threeMap = new HashMap<String, String>();
+        String threePath = "fund/" + type + "/threeyear.txt";
+        Map<String, String> threeMap = new LinkedHashMap<String, String>();
         readFile(threePath, threeMap);
 
-        String twoPath = "fund/twoyear.txt";
-        Map<String, String> twoMap = new HashMap<String, String>();
+        String twoPath = "fund/" + type + "/twoyear.txt";
+        Map<String, String> twoMap = new LinkedHashMap<String, String>();
         readFile(twoPath, twoMap);
 
-        String onePath = "fund/oneyear.txt";
-        Map<String, String> oneMap = new HashMap<String, String>();
+        String onePath = "fund/" + type + "/oneyear.txt";
+        Map<String, String> oneMap = new LinkedHashMap<String, String>();
         readFile(onePath, oneMap);
         System.out.println(fiveMap.size());
         Iterator<String> iterator = fiveMap.keySet().iterator();
@@ -57,13 +63,11 @@ public class FundTest {
                 iterator.remove();
             }
         }
-        iterator = fiveMap.keySet().iterator();
-        while(iterator.hasNext()) {
-            String s1 = iterator.next();
-            System.out.println(s1);
+
+        for(Map.Entry<String, String> entry : fiveMap.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue());
         }
         System.out.println(fiveMap.size());
-
     }
 
     private static void readFile(String filePath, Map<String, String> fiveMap) {
@@ -75,8 +79,9 @@ public class FundTest {
             BufferedReader bufferedReader = new BufferedReader(read);
             String lineTxt;
             while((lineTxt = bufferedReader.readLine()) != null) {
-                String $1 = lineTxt.replaceAll("(.*(\\d{6}).*)", "$2");
-                fiveMap.put($1, $1);
+                String string = lineTxt.replaceAll("(.*(\\d{6})(\\t[\\u4E00-\\u9FA5].*?\\t).*)", "$2 $3");
+                String[] split = string.split(" ");
+                fiveMap.put(split[0], split[1]);
             }
             read.close();
 

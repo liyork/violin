@@ -385,5 +385,17 @@ public class RegexTest {
 		System.out.println(matcher2.find());
 	}
 
-
+	@Test
+	public void testCaseInsensitive() {
+		String x1 = "Https://xxx.jpg".replaceFirst("(?i)https", "http");//https忽略
+		System.out.println(x1);
+		String x2 = "hTtps://xxx.jpg".replaceFirst("h(?i)ttps", "http");//ttps忽略
+		System.out.println(x2);
+		String x3 = "httPs://xxx.jpg".replaceFirst("htt((?i)p)s", "http");//p忽略
+		System.out.println(x3);
+		Pattern pattern = Pattern.compile("https", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher("Https://xxx.jpg");
+		boolean b = matcher.find();
+		System.out.println(b);
+	}
 }
