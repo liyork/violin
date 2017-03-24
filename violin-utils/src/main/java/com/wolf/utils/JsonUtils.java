@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -20,28 +19,32 @@ import java.util.Map;
  */
 public class JsonUtils {
 
-	public static String toJsonString(Object object) {
-		return JSON.toJSONString(object);
-	}
+    public static String toJsonString(Object object) {
+        return JSON.toJSONString(object);
+    }
 
-	public static String toJsonString(Date date, SerializerFeature serializerFeature) {
-		return JSON.toJSONString(date,serializerFeature);
-	}
+    public static String toJsonString(Object data, SerializerFeature ...serializerFeature) {
+        return JSON.toJSONString(data, serializerFeature);
+    }
 
-	public static Map<String, String> toMap(String string) {
-		return JSON.parseObject(string, new TypeReference<Map<String, String>>() {
-		});
-	}
+    public static String toJsonString(Object data, String dateFormat, SerializerFeature serializerFeature) {
+        return JSON.toJSONStringWithDateFormat(data, dateFormat, serializerFeature);
+    }
 
-	public static <T> T toPointType(String string,TypeReference<T> typeReference) {
-		return JSON.parseObject(string, typeReference);
-	}
+    public static Map<String, String> toMap(String string) {
+        return JSON.parseObject(string, new TypeReference<Map<String, String>>() {
+        });
+    }
 
-	public static JSONObject toJSONObject(String string) {
-		return JSON.parseObject(string);
-	}
+    public static <T> T toPointType(String string, TypeReference<T> typeReference) {
+        return JSON.parseObject(string, typeReference);
+    }
 
-	public static <T> T toBean(String string, Class<T> clazz) {
-		return JSON.parseObject(string,clazz);
-	}
+    public static JSONObject toJSONObject(String string) {
+        return JSON.parseObject(string);
+    }
+
+    public static <T> T toBean(String string, Class<T> clazz) {
+        return JSON.parseObject(string, clazz);
+    }
 }
