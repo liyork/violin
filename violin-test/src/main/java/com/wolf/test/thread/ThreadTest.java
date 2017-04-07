@@ -35,7 +35,8 @@ public class ThreadTest {
 //        testJoin3();
 //        testSynMethod();
 //        testWaitShouldInSynScope();
-        testWaitAndSleep();
+//        testWaitAndSleep();
+        testLocalVariable();
     }
 
     /**
@@ -198,5 +199,35 @@ public class ThreadTest {
         }
         exec.shutdown();
     }
+
+    /**
+     * 局部变量不会产生线程问题，只有修改公用的地方才会有线程问题
+     */
+    public static void testLocalVariable() {
+        final ExecutorService exec = Executors.newFixedThreadPool(4);
+
+        final Runnable add = new Runnable() {
+            public void run() {
+                test();
+            }
+        };
+
+        for(int index = 0; index < 20; index++) {
+            exec.submit(add);
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        exec.shutdown();
+    }
+
+    private static void test() {
+        int a = 1;
+        a = a + 2;
+        System.out.println(a);
+    }
+
 
 }

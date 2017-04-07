@@ -21,44 +21,45 @@ import java.io.IOException;
 public final class HessianSerializerUtils {
 
 
-	private static SerializerFactory serializerFactory = new SerializerFactory();
-	private static final Logger LOG = LoggerFactory.getLogger(HessianSerializerUtils.class);
+    private static SerializerFactory serializerFactory = new SerializerFactory();
+    private static final Logger LOG = LoggerFactory.getLogger(HessianSerializerUtils.class);
 
-	private HessianSerializerUtils(){
+    private HessianSerializerUtils() {
 
-	}
-	public static byte[] serialize(Object obj) {
+    }
 
-		ByteArrayOutputStream ops = new ByteArrayOutputStream();
-		AbstractHessianOutput out = new ExtendHessian2Output(ops);
+    public static byte[] serialize(Object obj) {
 
-		out.setSerializerFactory(serializerFactory);
-		try {
-			out.writeObject(obj);
-			out.close();
-		} catch (IOException e) {
-			LOG.error("hessian序列化失败", e);
-			throw new RuntimeException("hessian序列化失败",e);
-		}
+        ByteArrayOutputStream ops = new ByteArrayOutputStream();
+        AbstractHessianOutput out = new ExtendHessian2Output(ops);
 
-		byte[] bytes = ops.toByteArray();
-		return bytes;
-	}
-	public static Object deserialize(byte[] bytes) {
-		ByteArrayInputStream ips = new ByteArrayInputStream(bytes);
-		AbstractHessianInput in = new ExtendHessian2Input(ips);
+        out.setSerializerFactory(serializerFactory);
+        try {
+            out.writeObject(obj);
+            out.close();
+        } catch (IOException e) {
+            LOG.error("hessian序列化失败", e);
+            throw new RuntimeException("hessian序列化失败", e);
+        }
 
-		in.setSerializerFactory(serializerFactory);
-		Object value = null;
-		try {
-			value = in.readObject();
-			in.close();
-		} catch (IOException e) {
-			LOG.error("hessian反序列化失败", e);
-			throw new RuntimeException("hessian反序列化失败",e);
-		}
+        return ops.toByteArray();
+    }
 
-		return value != null ? value : bytes;
-	}
+    public static Object deserialize(byte[] bytes) {
+        ByteArrayInputStream ips = new ByteArrayInputStream(bytes);
+        AbstractHessianInput in = new ExtendHessian2Input(ips);
+
+        in.setSerializerFactory(serializerFactory);
+        Object value;
+        try {
+            value = in.readObject();
+            in.close();
+        } catch (IOException e) {
+            LOG.error("hessian反序列化失败", e);
+            throw new RuntimeException("hessian反序列化失败", e);
+        }
+
+        return value != null ? value : bytes;
+    }
 
 }

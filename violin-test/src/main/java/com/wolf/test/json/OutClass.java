@@ -7,11 +7,11 @@ package com.wolf.test.json;
  * @author 李超
  * @since 1.0.0
  */
-public class OuterClass {
+public class OutClass {
 
     private Integer id;
 
-    private InnerClass innerClass;
+    private InClass inClass;
 
     public Integer getId() {
         return id;
@@ -21,11 +21,11 @@ public class OuterClass {
         this.id = id;
     }
 
-    public InnerClass getInnerClass() {
-        return innerClass;
+    public InClass getInClass() {
+        return inClass;
     }
 
-    public void setInnerClass(InnerClass innerClass) {
-        this.innerClass = innerClass;
+    public void setInClass(InClass inClass) {
+        this.inClass = inClass;
     }
 }

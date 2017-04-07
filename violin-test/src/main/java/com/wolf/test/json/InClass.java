@@ -7,7 +7,7 @@ package com.wolf.test.json;
  * @author 李超
  * @since 1.0.0
  */
-public class InnerClass {
+public class InClass {
 
     private String cityName;
     private String districtName;

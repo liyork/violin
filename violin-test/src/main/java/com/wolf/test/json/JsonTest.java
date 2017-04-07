@@ -256,11 +256,11 @@ public class JsonTest {
         q.put("lat", "39.171112");
 
         //错误方式
-        InnerClass innerClass = new InnerClass();
-        innerClass.setDistrictName("红桥区");
-        innerClass.setCityName("天津市");
+        InClass inClass = new InClass();
+        inClass.setDistrictName("红桥区");
+        inClass.setCityName("天津市");
         //这样的字符串中带有转译的""
-        String s4 = JSONObject.toJSONString(innerClass);
+        String s4 = JSONObject.toJSONString(inClass);
         q.put("innerClass", s4);
 
         //正确方式
@@ -281,8 +281,8 @@ public class JsonTest {
         String jsonParam = JSONObject.toJSONString(map4);
         System.out.println("jsonParam=" + value);
         //这里的字符串中，如果是对象不能这样aa:"{，要这样aa:{
-        OuterClass outerClass = JSONObject.parseObject(jsonParam, OuterClass.class);
-        System.out.println(JSON.toJSONString(outerClass));
+        OutClass outClass = JSONObject.parseObject(jsonParam, OutClass.class);
+        System.out.println(JSON.toJSONString(outClass));
 
     }
 
