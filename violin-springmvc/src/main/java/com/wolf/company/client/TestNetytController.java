@@ -42,8 +42,28 @@ public class TestNetytController {
         objects[1] = null;
         objects[2] = new Object[]{"xxxxx"};
 
-
+        //todo 一个远程工程就这样直接使用，如果是多个远程工程，需要对每个工程进行tcpclient缓存
         InvokeModel sendInvokeModel = new InvokeModel(null, null, claszz, objects, serviceId, null);
+        sendData(tcpClient, serviceId, sendInvokeModel);
+
+        //休息一下，迎接第二个请求
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        sendData(tcpClient, serviceId, sendInvokeModel);
+
+        //不中断当前主线程
+        try {
+            Thread.sleep(500000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendData(TcpClient tcpClient, String serviceId, InvokeModel sendInvokeModel) {
         InvokeModel reInvokeModel = (InvokeModel) tcpClient.sendData(sendInvokeModel, serviceId);
         //判断返回结果是否为null
         if(reInvokeModel == null) {
