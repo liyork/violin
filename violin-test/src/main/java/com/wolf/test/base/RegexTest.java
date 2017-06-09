@@ -398,4 +398,19 @@ public class RegexTest {
 		boolean b = matcher.find();
 		System.out.println(b);
 	}
+
+	//matches匹配全部，find匹配部分
+	@Test
+	public void testFindAndMatches() {
+		Pattern p = Pattern.compile("/resouce/d/.*");
+		Matcher m = p.matcher("/resouce/d/yy/qq");
+
+		System.out.println(m.matches());
+
+		m.reset();
+		while(m.find()){
+			String group = m.group(0);
+			System.out.println(group);
+		}
+	}
 }

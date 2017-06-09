@@ -1,6 +1,6 @@
 package com.wolf.service;
 
-import com.wolf.company.server.AbstractRemoteService;
+import com.wolf.companytcp.server.AbstractRemoteService;
 import org.springframework.stereotype.Component;
 
 /**

@@ -62,6 +62,19 @@ public class Log4jTest {
 		logger.error("",new RuntimeException("xxx"));
 	}
 
+	@Test
+	public void testLogException(){
+		int a = 1;
+		try {
+			if(a == 1) {
+                throw new RuntimeException("xxx");
+            }
+		} catch (RuntimeException e) {
+			logger.error("",e);
+		}
+
+	}
+
 }
 
 

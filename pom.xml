@@ -64,7 +64,7 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>2.0.0</version>
+            <version>2.7.3</version>
             <type>jar</type>
             <!--type默认是jar，当引入的只是一个jar时就不用加了，如果是引入的一个项目包含多个jar的时候，就要加上type标签值为pom-->
             <scope>compile</scope>

@@ -8,12 +8,12 @@ package com.wolf.test.base.reflect;
  * @since 1.0.0
  */
 public class B implements A {
-	@Override
-	public void test() {
+    @Override
+    public void test() {
 
-	}
+    }
 
-	protected void test1(){
-
-	}
+    private int test1() {
+        return 1;
+    }
 }

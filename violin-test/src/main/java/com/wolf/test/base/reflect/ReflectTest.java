@@ -16,7 +16,8 @@ import java.lang.reflect.Method;
  */
 public class ReflectTest {
 
-	public static void main(String[] args) throws NoSuchMethodException {
+	public static void main(String[] args) throws Exception {
+		//仅能取到公共方法
 		Method test1 = C.class.getMethod("test", null);
 		System.out.println(test1);
 		Method test2 = B.class.getMethod("test", null);
@@ -26,9 +27,14 @@ public class ReflectTest {
 		System.out.println(test3);
 		System.out.println(test1.equals(test3));
 
-		Method test4 = B.class.getMethod("test1", null);
-		//protected不能被getDeclaringClass获取到
-		//System.out.println(test4.getDeclaringClass());
+		//所有声明的方法
+		Method test4 = B.class.getDeclaredMethod("test1", null);
+		System.out.println(test4);
+		//不让jvm检查方法修饰符，我们可以直接访问到任何修饰符的方法
+		test4.setAccessible(true);
+		Object invoke = test4.invoke(new B(), null);
+		System.out.println(invoke);
+		test4.setAccessible(false);
 	}
 
 	@Test

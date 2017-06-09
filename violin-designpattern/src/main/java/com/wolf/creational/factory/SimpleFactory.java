@@ -18,13 +18,6 @@ import java.util.Map;
  */
 public class SimpleFactory {
 
-	private static Map<String,Class> relation = new HashMap<String, Class>();
-
-	public static void register(String productName,Class productClass) {
-		relation.put(productName, productClass);
-	}
-
-
 	//1==================
 	/**
 	 * 简单直接的实现，使用参数判断返回哪个产品。
@@ -46,6 +39,11 @@ public class SimpleFactory {
 
 
 	//2==================
+	private static Map<String,Class> relation = new HashMap<String, Class>();
+
+	public static void register(String productName,Class productClass) {
+		relation.put(productName, productClass);
+	}
 	/**
 	 * 使用反射获取已经注册到的产品，调用对应产品的创建方法。
 	 * 新增：如果有新的类型加入：1.添加新类型。2.客户端使用新类型
@@ -90,11 +88,14 @@ public class SimpleFactory {
 
 
 	//4==================,先静态加载指定包下的所有类(触发他们的静态注册方法，注册到当前工厂)
+	private static Map<String,Class> relationForDynamic = new HashMap<String, Class>();
+
 	static {
 		List<String> classes = ClassSearchUtils.getClassesFromPackage("com.car.designpattern.creational.factory");
 		for (String className : classes) {
 			try {
-				Class.forName(className);
+				Class<?> aClass = Class.forName(className);
+				relationForDynamic.put(className, aClass);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -108,7 +109,7 @@ public class SimpleFactory {
 	 * @return
 	 */
 	public static Product getInstance4(String productName){
-		Class productClass = relation.get(productName);
+		Class productClass = relationForDynamic.get(productName);
 		try {
 			return ((Product)productClass.newInstance()).getProduct();
 		} catch (InstantiationException e) {

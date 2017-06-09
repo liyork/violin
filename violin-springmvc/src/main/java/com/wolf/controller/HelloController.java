@@ -196,6 +196,7 @@ public class HelloController {
 
 	//http://localhost:8080/springmvc/helloController/testResponseStatusExceptionResolver?id1=1&name1=a
 	//用于测试ExceptionHandlerExceptionResolver处理不了的情况，使用ResponseStatusExceptionResolver处理
+	//注：需要注释掉AllControllerException，不然ExceptionHandlerExceptionResolver会用全局的处理
 	@RequestMapping(value = "/testResponseStatusExceptionResolver")
 	public String testResponseStatusExceptionResolver(@RequestParam(value = "id1") Integer id,
 													  @RequestParam(value = "name1") String name) {
@@ -208,6 +209,7 @@ public class HelloController {
 		return "/hello";
 	}
 
+	//如果所有都exceptionresolver都处理不了则直接返回异常
 	@RequestMapping("/testError")
 	public String testError() {
 		int i = 5 / 0;

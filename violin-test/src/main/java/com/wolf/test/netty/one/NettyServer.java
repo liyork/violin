@@ -3,8 +3,6 @@ package com.wolf.test.netty.one;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.jboss.netty.handler.codec.serialization.ClassResolvers;
-import org.jboss.netty.handler.codec.serialization.ObjectDecoder;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -37,15 +35,17 @@ public class NettyServer {
 	}
 
 	private static ChannelPipelineFactory getPipelineTransformObjectFactory() {
-		return new ChannelPipelineFactory() {
-			@Override
-			public ChannelPipeline getPipeline()throws Exception {
-				//需要顺序,write时，从tail-->head，是down过程。read时，从head-->tail，是up过程
-				return Channels.pipeline(
-						new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())),
-						new ObjectServerHandler());
-			}
-		};
+		//基于3.7.0先暂时注掉
+//		return new ChannelPipelineFactory() {
+//			@Override
+//			public ChannelPipeline getPipeline()throws Exception {
+//				//需要顺序,write时，从tail-->head，是down过程。read时，从head-->tail，是up过程
+//				return Channels.pipeline(
+//						new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())),
+//						new ObjectServerHandler());
+//			}
+//		};
+		return null;
 	}
 
 	private static ChannelPipelineFactory getSimplePipelineFactory() {

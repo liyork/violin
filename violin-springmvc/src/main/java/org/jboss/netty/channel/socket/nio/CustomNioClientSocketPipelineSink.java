@@ -4,7 +4,7 @@
  */
 package org.jboss.netty.channel.socket.nio;
 
-import com.wolf.company.SoftMark;
+import com.wolf.companytcp.SoftMark;
 import org.jboss.netty.channel.*;
 
 import java.lang.ref.SoftReference;

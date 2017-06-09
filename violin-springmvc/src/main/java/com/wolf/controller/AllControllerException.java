@@ -1,7 +1,5 @@
 package com.wolf.controller;
 
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -11,10 +9,10 @@ import org.springframework.web.servlet.ModelAndView;
  * @author 李超()
  * @since 1.0.0
  */
-@ControllerAdvice
+//@ControllerAdvice
 public class AllControllerException {
 
-	@ExceptionHandler
+	//@ExceptionHandler
 	public ModelAndView exceptionHandler(Exception ex){
 		ModelAndView mv = new ModelAndView("error");
 		mv.addObject("exceptionall", ex);

@@ -9,11 +9,12 @@ import java.util.Map;
  * @author 李超()
  * @since 1.0.0
  */
-class Company extends Parent {
+class Company  {
 
 	private String companyName;
 	private Map<String, String> attrs;
 	private String id;
+	private Parent parent;
 
 	public String getCompanyName() {
 		return companyName;
@@ -37,5 +38,14 @@ class Company extends Parent {
 
 	private void setId(String id) {
 		this.id = id;
+	}
+
+
+	public Parent getParent() {
+		return parent;
+	}
+
+	public void setParent(Parent parent) {
+		this.parent = parent;
 	}
 }

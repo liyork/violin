@@ -7,7 +7,7 @@ package com.wolf.creational.abstractfactory;
  * 		奔驰：1系，2系。。。
  * 要创建多个产品族
  * 		1系族(宝马奔驰)，2系族(宝马奔驰)
- * 	应该是按照产品族使用场景，即：需要一个工厂产生一个系的所有车，如果一个树的产品则使用factory method
+ * 	应该是按照产品族使用场景，即：需要一个工厂产生一个系的所有车，如果一个树的产品则使用FactoryMethod
  * <p/>
  * Date: 2016/6/14
  * Time: 16:55

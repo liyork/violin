@@ -22,9 +22,9 @@ public class TestUpload {
 
 	public static void main(String[] args) throws Exception {
 		List<InputStream> list = new ArrayList<>();
-		list.add(new FileInputStream(new File("E:\\baidu.png")));
+		list.add(new FileInputStream(new File("E:\\baidu.jpg")));
 		String fileNames[] = new String[1];
 		fileNames[0] = "baidu123.png";
-		UploadUtils.uploadInputStream(list, fileNames, 30);
+		UploadUtils.uploadInputStream(list, fileNames, 21);
 	}
 }

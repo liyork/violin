@@ -188,7 +188,7 @@ public class MetaSpout implements IRichSpout {
 
 		// 获取连接zk配置(metaq)
 		ZKConfig zkconf = new ZKConfig();
-		// zkconf.zkConnect // ="192.168.1.154:2181";//
+		// zkconf.zkConnect // ="127.0.0.1:2181";//
 		zkconf.zkConnect = MetaZkConnect;
 		// zkconf.zkRoot = "/meta";
 		zkconf.zkRoot = MetaZkRoot;

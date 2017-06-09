@@ -63,6 +63,8 @@ public class AsyncConsumer {
 		//subscribe仅是将订阅信息保存在本地，并没有实际跟meta服务器交互，要使得订阅关系生效必须调用一次completeSubscribe，
 		// completeSubscribe仅能被调用一次，多次调用将抛出异常
 		consumer.completeSubscribe();
+
+		System.out.println("111111");
 	}
 
 }

@@ -1,7 +1,7 @@
 package com.wolf.creational.abstractfactory;
 
 /**
- * <p> Description:
+ * <p> Description:能创建所有一系产品
  * <p/>
  * Date: 2016/6/14
  * Time: 16:56

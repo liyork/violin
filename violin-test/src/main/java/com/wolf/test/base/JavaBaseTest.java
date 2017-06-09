@@ -9,6 +9,9 @@ package com.wolf.test.base;
  */
 public class JavaBaseTest {
 
-
+    public static void main(String[] args) {
+        //启动java的目录
+        System.out.println(System.getProperty("user.dir"));
+    }
 
 }

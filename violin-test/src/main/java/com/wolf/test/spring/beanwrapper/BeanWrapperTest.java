@@ -24,8 +24,11 @@ import java.util.Map;
 public class BeanWrapperTest {
 
 	@Test
-	public void testBeanWrapperSourceCode() throws InvocationTargetException, IllegalAccessException {
-		Company company = new Company();
+	public void testBeanWrapperSourceCode() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+//		Company company = new Company();
+		//spring中通过name反射得到实例，然后设定相应属性即可，应用广泛
+		Company company = (Company) Class.forName("com.wolf.test.spring.beanwrapper.Company").newInstance();
+
 		BeanWrapperImpl companyBeanWrapper = new BeanWrapperImpl(company);
 
 		PropertyDescriptor companyPD = companyBeanWrapper.getPropertyDescriptor("companyName");
@@ -40,8 +43,12 @@ public class BeanWrapperTest {
 
 		Employee employee = new Employee();
 		employee.setCompany(company);
+		Parent parent = new Parent();
+		parent.setName("xxxqq");
+		company.setParent(parent);
 		BeanWrapperImpl employeeBeanWrapper = new BeanWrapperImpl(employee);
-		PropertyDescriptor companyPD1 = employeeBeanWrapper.getPropertyDescriptor("company.companyName");
+		PropertyDescriptor companyPD1 = employeeBeanWrapper.getPropertyDescriptor("company.parent.name");
+        System.out.println("companyPD1:"+companyPD1.getName());
 
 		List<Company> list = new ArrayList<>();
 		Map<String,String> map = new HashMap<>();
@@ -54,14 +61,19 @@ public class BeanWrapperTest {
 		list.add(company2);
 		employee.setCompanies(list);
 		PropertyDescriptor companyPD2 = employeeBeanWrapper.getPropertyDescriptor("companies[0].attrs");
+		System.out.println("companyPD2:"+companyPD2.getName());
 
 		Object propertyValue1 = employeeBeanWrapper.getPropertyValue("company.companyName");
-		Object propertyValue2 = employeeBeanWrapper.getPropertyValue("company.attrs[\"a\"]");
+        System.out.println("propertyValue1:"+propertyValue1);
+        Object propertyValue2 = employeeBeanWrapper.getPropertyValue("company.attrs[\"a\"]");
+        System.out.println("propertyValue2:"+propertyValue2);
 		//错误示范
 		//PropertyDescriptor companyPD3 = employeeBeanWrapper.getPropertyDescriptor("company.attrs[“a”]");
 
 		employeeBeanWrapper.setPropertyValue("company.companyName",111);
+        System.out.println("company.companyName:"+employee.getCompany().getCompanyName());
 		employeeBeanWrapper.setPropertyValue("company.attrs[\"a\"]","2");
+        System.out.println("company.attrs:"+employee.getCompany().getAttrs().get("a"));
 	}
 	@Test
 	public void testUseBeanWrapper() {
