@@ -1,8 +1,6 @@
 package com.wolf.test.concurrent.thread;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * shutdown 和shutdownnow区别
@@ -15,10 +13,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class ExecutorsTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 //        test1();
 //        test2();
-        test3();
+//        test3();
+//        testFeatureSimple();
+//        testFeatureAlwaysWait();
+//        testFeatureWaitTimeOut();
+//        testFixedThreadPool();
+        testCachedThreadPool();
     }
 
     /**
@@ -125,6 +128,106 @@ public class ExecutorsTest {
                 System.out.println(Thread.currentThread().getName() + " after awaitTermination");
             }
         }).start();
+
+        executorService.shutdown();
+    }
+
+    private static void testFeatureSimple() throws Exception {
+        final ExecutorService executorService = Executors.newFixedThreadPool(22);
+        Future<?> submit = executorService.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return "ABC";
+            }
+        });
+
+        Object o = submit.get();
+        System.out.println(o);
+
+        executorService.shutdown();
+    }
+
+    private static void testFeatureAlwaysWait() throws Exception {
+        final ExecutorService executorService = Executors.newFixedThreadPool(22);
+        Future<?> submit = executorService.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                Thread.sleep(10 * 1000);
+                return "ABC";
+            }
+        });
+
+        //一直等
+        Object o = submit.get();
+        System.out.println(o);
+
+        executorService.shutdown();
+    }
+
+    /**
+     * 可以解决控制目标方法超时操作
+     * 底层用过的unsafe的休眠，如果没有获取锁则进入队列，然后休眠，超时则抛出异常，如果feature执行完则唤醒他
+     *
+     * @throws Exception
+     */
+    private static void testFeatureWaitTimeOut() throws Exception {
+        final ExecutorService executorService = Executors.newFixedThreadPool(22);
+        Future<?> submit = executorService.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                System.out.println("111");
+                Thread.sleep(10 * 1000);
+                return "ABC";
+            }
+        });
+
+        //用错单位了。。还跟了下代码以为一直需要等到任务执行完呢，但是一想不对既然有超时应该就有提前停止的可能
+//        Object o = submit.get(3000L, TimeUnit.SECONDS);
+        //等3秒
+        Object o = submit.get(3L, TimeUnit.SECONDS);//内部抛出TimeoutException
+        System.out.println(o);
+
+        executorService.shutdown();
+    }
+
+    //内部用LinkedBlockingQueue
+    private static void testFixedThreadPool() throws Exception {
+
+        final ExecutorService executorService = Executors.newFixedThreadPool(2);
+        for(int i = 0; i < 4; i++) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(Thread.currentThread().getName() + "__xxx");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        executorService.shutdown();
+    }
+
+    //内部用SynchronousQueue的offer永远返回false，一直添加线程
+    private static void testCachedThreadPool() throws Exception {
+
+        final ExecutorService executorService = Executors.newCachedThreadPool();
+        for(int i = 0; i < 50; i++) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(Thread.currentThread().getName() + "__xxx");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
 
         executorService.shutdown();
     }

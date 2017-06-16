@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * Synchronizing
  * <p/>
- * Author By: junshan
  * Created Date: 2010-9-3 15:09:50
  */
 public class Synchronizing extends TestMainClient {

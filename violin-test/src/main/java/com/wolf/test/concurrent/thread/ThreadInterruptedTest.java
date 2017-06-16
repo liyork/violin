@@ -1,7 +1,6 @@
 package com.wolf.test.concurrent.thread;
 
 import com.wolf.test.concurrent.thread.runnable.*;
-import com.wolf.test.thread.runnable.*;
 import com.wolf.utils.BaseUtils;
 
 /**

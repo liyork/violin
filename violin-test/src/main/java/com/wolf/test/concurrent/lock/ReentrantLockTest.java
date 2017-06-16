@@ -18,6 +18,9 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * reentrant语义：可重入，即获取锁的线程当进入还需要同步锁的方法或者递归，不需要再次竞争，直接进入，不然如果不可重入则还需要获取锁，
  * 则由于之前获取过了，永远等待
+ *
+ * 不公平的语义就是获取锁时，不管以前有没有人排队，自己先试试获取锁，没有获取则排队
+ * 公平的语义是获取锁时，看看前面如果有人排队，则自己直接进入队尾
  * <br/> Created on 2017/2/4 13:44
  *
  * @author 李超
@@ -30,7 +33,7 @@ public class ReentrantLockTest {
     public static void main(String[] args) throws InterruptedException {
 //        testInterruptLock(true);
 //        testInterruptLock(false);
-//        testTryLock(true);
+        testTryLock(true);
 //        testTryLock(false);
 
 //        lock();
@@ -38,7 +41,7 @@ public class ReentrantLockTest {
 //        lockInterrupt2();
 //        lockInterruptUnLock();
 //        testReentrant();
-        testNormalLock();
+//        testNormalLock();
     }
 
     public static void testInterruptLock(final boolean isCanInterrupt) throws InterruptedException {
@@ -97,6 +100,8 @@ public class ReentrantLockTest {
      * a、用在定时任务时，如果任务执行时间可能超过下次计划执行时间，确保该有状态任务只有一个正在执行，忽略重复触发。
      * b、用在界面交互时点击执行较长时间请求操作时，防止多次点击导致后台重复执行（忽略重复触发）。
      *
+     * trylock内部实现：如果未获取锁则排队并且调用底层unsafe进行休眠指定时间，别打断或者锁释放notify了或者时间到了就会醒来
+     *
      * @param isWait
      * @throws InterruptedException
      */
@@ -124,7 +129,7 @@ public class ReentrantLockTest {
 
         //2秒后中断thread2
         Thread.sleep(2000);
-        thread2.interrupt();
+//        thread2.interrupt();
     }
 
     private void test2(boolean isWait) {

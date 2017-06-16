@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * FIFOQueue
  * <p/>
- * Author By: junshan
  * Created Date: 2010-9-7 14:09:19
  */
 public class FIFOQueue extends TestMainClient {
