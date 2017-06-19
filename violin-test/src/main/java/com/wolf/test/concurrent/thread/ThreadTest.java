@@ -36,7 +36,8 @@ public class ThreadTest {
 //        testSynMethod();
 //        testWaitShouldInSynScope();
 //        testWaitAndSleep();
-        testLocalVariable();
+//        testLocalVariable();
+        testYield();
     }
 
     /**
@@ -77,7 +78,7 @@ public class ThreadTest {
                     System.out.println(i);
                 }
             }
-        },"threadname");
+        }, "threadname");
 
         thread.start();
         //优先执行thread，后才执行main,可以注掉这行试试
@@ -88,8 +89,8 @@ public class ThreadTest {
     }
 
     public static void testJoin2() {
-        Thread t1 = new Thread(new ThreadJoinA(),"threadname1");
-        Thread t2 = new Thread(new ThreadInterruptJoinB(t1),"threadname2");
+        Thread t1 = new Thread(new ThreadJoinA(), "threadname1");
+        Thread t2 = new Thread(new ThreadInterruptJoinB(t1), "threadname2");
         t1.start();
         t2.start();
 
@@ -108,7 +109,7 @@ public class ThreadTest {
                     System.out.println("xxxx==>" + i);
                 }
             }
-        },"threadname1");
+        }, "threadname1");
 
         final Thread thread2 = new Thread(new Runnable() {
             @Override
@@ -117,7 +118,7 @@ public class ThreadTest {
                     System.out.println("yyyy==>" + i);
                 }
             }
-        },"threadname2");
+        }, "threadname2");
 
 
         thread.start();
@@ -143,21 +144,21 @@ public class ThreadTest {
             public void run() {
                 twoSynMethodClass.test3();
             }
-        },"threadname1").start();
+        }, "threadname1").start();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 twoSynMethodClass.test2();
             }
-        },"threadname2").start();
+        }, "threadname2").start();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 twoSynMethodClass.test4();
             }
-        },"threadname3").start();
+        }, "threadname3").start();
     }
 
     //wait方法需要在同步范围内被调用，否则IllegalMonitorStateException
@@ -227,6 +228,30 @@ public class ThreadTest {
         int a = 1;
         a = a + 2;
         System.out.println(a);
+    }
+
+
+    private static void testYield() {
+        final ExecutorService exec = Executors.newFixedThreadPool(2);
+
+        final Runnable add = new Runnable() {
+            public void run() {
+                for(int i = 0; i < 30; i++) {
+                    System.out.println(Thread.currentThread().getName() + "test yield " + i);
+                    if(i == 29) {
+                        //让出当前线程，与其他线程一起竞争
+                        Thread.yield();
+                    }
+                }
+
+
+            }
+        };
+
+        exec.submit(add);
+        exec.submit(add);
+
+        exec.shutdown();
     }
 
 
