@@ -13,17 +13,9 @@ class VolatileTest {
 
     private volatile int a;
 
-    public void set(int l) {
-        a = l;
-    }
-
-
-    public int get() {
-        return a;
-    }
-
     public static void main(String[] args) {
-        new VolatileTest().test2();
+//        volatileTest.test2();
+        VolatileTest.test3();
     }
 
     /**
@@ -95,5 +87,44 @@ class VolatileTest {
         volatileTest.set(2);
 
         executorService.shutdown();
+    }
+
+
+    private static void test3() {
+
+        final VolatileTest volatileTest = new VolatileTest();
+        ExecutorService executorService = Executors.newCachedThreadPool();
+
+        for(int i = 0; i < 20000; i++) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    volatileTest.increase();
+                }
+            });
+        }
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(volatileTest.a);
+
+        executorService.shutdown();
+    }
+
+    //volatile变量只能保证多个线程之间的操作可见性，但是不能保证多个操作的原子性
+    private void increase(){
+        a = a +1;//与a++一样，都不能保证原子执行
+    }
+
+
+    public void set(int l) {
+        a = l;
+    }
+
+    public int get() {
+        return a;
     }
 }

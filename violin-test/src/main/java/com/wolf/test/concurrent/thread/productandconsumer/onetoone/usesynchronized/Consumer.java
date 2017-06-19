@@ -10,31 +10,24 @@ package com.wolf.test.concurrent.thread.productandconsumer.onetoone.usesynchroni
  * @version 1.0
  * @since 1.0
  */
-public class Consumer implements Runnable
-{
+public class Consumer implements Runnable {
 
-	private Clerk clerk;
+    private Clerk clerk;
 
-	public Consumer(Clerk clerk)
-	{
-		this.clerk = clerk;
-	}
+    public Consumer(Clerk clerk) {
+        this.clerk = clerk;
+    }
 
-	public void run()
-	{
-		System.out.println("消费者开始取走产品.");
-		while(true)
-		{
-			try
-			{
-				Thread.sleep((int)(Math.random() * 10) * 100);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-			clerk.getProduct();  //取产品
-		}
-	}
+    public void run() {
+        System.out.println("消费者开始取走产品.");
+        while(true) {
+            try {
+                Thread.sleep((int) (Math.random() * 10) * 100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            clerk.getProduct();  //取产品
+        }
+    }
 
 }

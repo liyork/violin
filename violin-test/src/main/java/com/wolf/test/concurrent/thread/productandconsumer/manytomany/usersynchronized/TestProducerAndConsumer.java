@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.thread.productandconsumer.manytomany.test2;
+package com.wolf.test.concurrent.thread.productandconsumer.manytomany.usersynchronized;
 
 /**
  * <p> Description:这个不太靠谱，还有个未解决的问题。

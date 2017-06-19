@@ -12,24 +12,27 @@ import java.util.concurrent.BlockingQueue;
  * @version 1.0
  * @since 1.0
  */
-public class Producer implements Runnable{
+public class Producer implements Runnable {
 
-	private BlockingQueue<Food> foods;
-	Producer(BlockingQueue<Food> foods) {
-		this.foods = foods;
-	}
+    private BlockingQueue<Food> foods;
 
-	@Override
-	public void run() {
-		int i = 0;
-		while (true){
-			try {
-				//当生产的食品数量装满了容器，那么在while里面该食品容器(阻塞队列)会自动阻塞  wait状态 等待消费
-				foods.put(new Food("食品"+i));
-				i++;
-			} catch (InterruptedException e) {
-				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			}
-		}
-	}
+    public Producer(BlockingQueue<Food> foods) {
+        this.foods = foods;
+    }
+
+    @Override
+    public void run() {
+        int i = 0;
+        while(true) {
+            try {
+                Thread.sleep(1000);
+                //当生产的食品数量装满了容器，那么在while里面该食品容器(阻塞队列)会自动阻塞  wait状态 等待消费
+                Food food = new Food("食品" + i);
+                foods.put(food);
+                i++;
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+    }
 }

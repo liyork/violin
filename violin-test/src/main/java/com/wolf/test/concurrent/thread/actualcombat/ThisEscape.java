@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.actualcombat;
+package com.wolf.test.concurrent.thread.actualcombat;
 
 /**
  * ThisEscape

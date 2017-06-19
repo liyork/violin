@@ -15,16 +15,15 @@ package com.wolf.test.concurrent.thread.productandconsumer.onetoone.usesynchroni
  */
 public class TestProducerAndConsumer {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-		Clerk clerk = new Clerk();
-		Thread producerThread = new Thread(new Producer(clerk));
-		Thread consumerThread = new Thread(new Consumer(clerk));
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        Clerk clerk = new Clerk();
+        Thread producerThread = new Thread(new Producer(clerk));
+        Thread consumerThread = new Thread(new Consumer(clerk));
 
-		producerThread.start();
-		consumerThread.start();
-	}
+        producerThread.start();
+        consumerThread.start();
+    }
 }

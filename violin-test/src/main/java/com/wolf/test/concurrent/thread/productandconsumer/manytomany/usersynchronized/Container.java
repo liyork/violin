@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.thread.productandconsumer.manytomany.test2;
+package com.wolf.test.concurrent.thread.productandconsumer.manytomany.usersynchronized;
 
 import java.util.ArrayList;
 import java.util.List;
