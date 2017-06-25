@@ -4,6 +4,6 @@
 /.project
 /.externalToolBuilders
 /.idea/
-/.ipr/
-/.iml/
-/.iws/
+*.ipr
+*.iml
+*.iws

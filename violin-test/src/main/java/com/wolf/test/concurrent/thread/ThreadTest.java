@@ -30,14 +30,14 @@ public class ThreadTest {
 
     public static void main(String[] args) throws InterruptedException {
 //        testDaemon();
-//        testJoin1();
+        testJoin1();
 //        testJoin2();
 //        testJoin3();
 //        testSynMethod();
 //        testWaitShouldInSynScope();
 //        testWaitAndSleep();
 //        testLocalVariable();
-        testYield();
+//        testYield();
     }
 
     /**

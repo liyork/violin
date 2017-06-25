@@ -12,8 +12,8 @@ package com.wolf.test.concurrent.thread.runnable;
  */
 public class TestStopRunnable implements Runnable {
 
-    //如果有多个线程公用一个runnable，需要考虑使用volatile
-    private boolean isNeedRun = true;
+    //使用volatile保持多线程间的可见性
+    private volatile boolean isNeedRun = true;
 
     public void setNeedRun(boolean isNeedRun) {
         this.isNeedRun = isNeedRun;
@@ -30,6 +30,8 @@ public class TestStopRunnable implements Runnable {
                 int c = z + 333 - 999 * 333 / 4444;
                 int i = c * 45559 * 2232 - 22;
                 System.out.println(i);
+            }else{
+                break;
             }
         }
         System.out.println("====>222");

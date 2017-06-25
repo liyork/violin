@@ -1,5 +1,7 @@
 package com.wolf.test.concurrent.thread;
 
+import com.wolf.test.concurrent.cache.LaunderThrowable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -173,7 +175,7 @@ public class ExecutorsTest {
      *
      * @throws Exception
      */
-    private static void testFeatureWaitTimeOut() throws Exception {
+    private static void testFeatureWaitTimeOut() {
         final ExecutorService executorService = Executors.newFixedThreadPool(22);
         Future<?> submit = executorService.submit(new Callable<String>() {
             @Override
@@ -187,8 +189,20 @@ public class ExecutorsTest {
         //用错单位了。。还跟了下代码以为一直需要等到任务执行完呢，但是一想不对既然有超时应该就有提前停止的可能
 //        Object o = submit.get(3000L, TimeUnit.SECONDS);
         //等3秒
-        Object o = submit.get(3L, TimeUnit.SECONDS);//内部抛出TimeoutException
-        System.out.println(o);
+        try {
+            Object o = submit.get(3L, TimeUnit.SECONDS);//内部抛出TimeoutException
+            System.out.println(o);
+        } catch (TimeoutException e) {
+            // task will be cancelled below
+        } catch (ExecutionException e) {
+            // exception thrown in task; rethrow
+            throw LaunderThrowable.launderThrowable(e.getCause());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            // Harmless if task already completed
+            submit.cancel(true); // interrupt if running
+        }
 
         executorService.shutdown();
     }

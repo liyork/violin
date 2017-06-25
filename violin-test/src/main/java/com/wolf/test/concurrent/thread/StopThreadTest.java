@@ -42,6 +42,7 @@ public class StopThreadTest {
     //可以让非运行时状况的线程(sleep、wait、I/O阻塞)停止
     //注：调用interrupt()的情况是依赖与实际运行的平台的。
     // 在Solaris和Linux平台上将会抛出InterruptedIOException的异常，但是Windows上面不会有这种异常
+    //socket中的inputstream和outputstream的read和write方法都不响应中断，可以通过关闭底层socket
     private static void testRightWayToStopThread1() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -72,7 +73,7 @@ public class StopThreadTest {
         thread.interrupt();
     }
 
-    //这个应该比较推荐
+    //这个应该比较推荐,但是如果遇到阻塞方法则检查不到标志位
     private static void testRightWayToStopThread2() {
         TestStopRunnable testStopRunnable = new TestStopRunnable();
         Thread thread = new Thread(testStopRunnable);
