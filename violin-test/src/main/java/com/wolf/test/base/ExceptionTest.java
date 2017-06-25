@@ -33,31 +33,31 @@ import org.junit.Test;
  */
 public class ExceptionTest {
 
-	//一个源异常,无Caused by:
+    //一个源异常,无Caused by:
 //	java.lang.RuntimeException: xxx
 //	at com.wolf.test.base.ExceptionTest.test4(ExceptionTest.java:48)
 //	at com.wolf.test.base.ExceptionTest.testSimpleException(ExceptionTest.java:43)
-	@Test
-	public void testSimpleException() {
-		System.out.println("1111");
-		test4();
-	}
+    @Test
+    public void testSimpleException() {
+        System.out.println("1111");
+        test4();
+    }
 
-	private static void test4() {
-		System.out.println("2222");
-		throw new RuntimeException("xxx");
-	}
+    private static void test4() {
+        System.out.println("2222");
+        throw new RuntimeException("xxx");
+    }
 
-	@Test
-	public void testCausedBy() {
-		System.out.println("main");
-		try {
-			test1();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("qqq", e);
-		}
-		//三个源异常，有两个Caused by:
+    @Test
+    public void testCausedBy() {
+        System.out.println("main");
+        try {
+            test1();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("qqq", e);
+        }
+        //三个源异常，有两个Caused by:
 //		java.lang.RuntimeException: qqq
 //		at com.wolf.test.base.ExceptionTest.testCausedBy(ExceptionTest.java:57)
 //		at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -96,20 +96,55 @@ public class ExceptionTest {
 //		at com.wolf.test.base.ExceptionTest.test1(ExceptionTest.java:65)
 //	... 28 more
 
-	}
+    }
 
-	private static void test1() {
-		System.out.println("1111");
-		try {
-			test2();
-		} catch (Exception e) {
-			throw new RuntimeException("x1", e);
-		}
-	}
+    private static void test1() {
+        System.out.println("1111");
+        try {
+            test2();
+        } catch (Exception e) {
+            throw new RuntimeException("x1", e);
+        }
+    }
 
-	private static void test2() {
-		System.out.println("2222");
-		throw new RuntimeException("x2");
-	}
+    private static void test2() {
+        System.out.println("2222");
+        throw new RuntimeException("x2");
+    }
 
+    @Test
+    public void testExceptionName() {
+//        wrapperExceptionName1(1);
+        wrapperExceptionName1(2);
+    }
+
+    private void wrapperExceptionName1(int a) {
+        try {
+            wrapperExceptionName2(a);
+        } catch (Throwable t) {
+            if(a == 1) {
+                t.printStackTrace();
+            } else {
+                if(t instanceof RuntimeException) {
+                    throw (RuntimeException) t;//不论转换成什么，最后打印时也是抛出来的那个异常名称
+                }
+            }
+        }
+    }
+
+    private void wrapperExceptionName2(int a) {
+        throw new CustomException("qqqqq");
+    }
+
+
+    class CustomException extends RuntimeException {
+        public CustomException() {
+            super();
+        }
+
+        public CustomException(String message) {
+            super(message);
+        }
+    }
 }
+

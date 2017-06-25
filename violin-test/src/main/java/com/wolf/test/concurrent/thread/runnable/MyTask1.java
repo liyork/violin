@@ -1,5 +1,6 @@
 package com.wolf.test.concurrent.thread.runnable;
 
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 /**
@@ -12,22 +13,19 @@ import java.util.concurrent.Callable;
  * @version 1.0
  * @since 1.0
  */
-public class MyTask implements Callable<Boolean> {
-
-    private Thread thread;
+public class MyTask1 implements Callable<Boolean> {
 
     @Override
     public Boolean call() throws Exception {
-        thread = Thread.currentThread();
+        System.out.println(Thread.currentThread().getName() + " is in call");
+        Random random = new Random();
         // 总计耗时约10秒
-        for(int i = 0; i < 100L; i++) {
-            Thread.sleep(100); // 睡眠0.1秒
+        for(int i = 0; i < 10L; i++) {
+            int millis = random.nextInt(5000);
+            Thread.sleep(millis);
             System.out.print('-');
         }
         return Boolean.TRUE;
     }
 
-    public void stop(){
-        thread.interrupt();
-    }
 }

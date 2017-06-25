@@ -24,7 +24,7 @@ public class SemaphoreTest {
                 public void run() {
                     try {
                         semaphore.acquire();
-                        System.out.println(Thread.currentThread().getName()+" after1 acquire");
+                        System.out.println(Thread.currentThread().getName() + " after1 acquire");
                         Thread.sleep(7000);
                         System.out.println();
                     } catch (InterruptedException e) {

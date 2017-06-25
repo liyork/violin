@@ -1,5 +1,7 @@
 package com.wolf.test.concurrent.thread;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -21,7 +23,8 @@ public class ExecutorsTest {
 //        testFeatureAlwaysWait();
 //        testFeatureWaitTimeOut();
 //        testFixedThreadPool();
-        testCachedThreadPool();
+//        testCachedThreadPool();
+        testMultiFuture();
     }
 
     /**
@@ -227,6 +230,30 @@ public class ExecutorsTest {
                     }
                 }
             });
+        }
+
+        executorService.shutdown();
+    }
+
+
+    private static void testMultiFuture() throws Exception {
+
+        final ExecutorService executorService = Executors.newCachedThreadPool();
+
+        List<Callable<String>> list = new ArrayList<>();
+
+        for(int i = 0; i < 4; i++) {
+            Callable<String> stringCallable = new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    return Thread.currentThread().getName() + "a";
+                }
+            };
+            list.add(stringCallable);
+        }
+        List<Future<String>> futures = executorService.invokeAll(list);
+        for(Future<String> future : futures) {
+            System.out.println(future.get());
         }
 
         executorService.shutdown();
