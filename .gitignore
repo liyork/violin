@@ -2,8 +2,8 @@
 /.settings/
 /.classpath
 /.project
+/*.iml
 /.externalToolBuilders
 /.idea/
-*.ipr
-*.iml
-*.iws
+/*.ipr
+/*.iws
