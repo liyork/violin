@@ -30,7 +30,7 @@ public class ThreadTest {
 
     public static void main(String[] args) throws InterruptedException {
 //        testDaemon();
-        testJoin1();
+//        testJoin1();
 //        testJoin2();
 //        testJoin3();
 //        testSynMethod();
@@ -38,6 +38,7 @@ public class ThreadTest {
 //        testWaitAndSleep();
 //        testLocalVariable();
 //        testYield();
+        testUncaughtExceptionHandler();
     }
 
     /**
@@ -252,6 +253,41 @@ public class ThreadTest {
         exec.submit(add);
 
         exec.shutdown();
+    }
+
+
+    public static void testUncaughtExceptionHandler() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("111");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                throw new RuntimeException("you wenti ");
+
+            }
+        });
+
+        thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+
+                System.out.println("xxxxxx");
+                e.printStackTrace();
+                //有问题重新连接
+//                try {
+//                    testUncaughtExceptionHandler();
+//                } catch (Exception e1) {
+//                    e1.printStackTrace();
+//                }
+            }
+        });
+
+        thread.start();
     }
 
 

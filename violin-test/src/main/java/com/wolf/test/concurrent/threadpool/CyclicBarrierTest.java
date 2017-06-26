@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.thread;
+package com.wolf.test.concurrent.threadpool;
 
 import com.wolf.utils.BaseUtils;
 

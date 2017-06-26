@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent;
+package com.wolf.test.concurrent.threadpool;
 
 import com.wolf.test.concurrent.thread.runnable.MyTask1;
 

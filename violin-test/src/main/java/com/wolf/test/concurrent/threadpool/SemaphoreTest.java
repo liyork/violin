@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent;
+package com.wolf.test.concurrent.threadpool;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

@@ -870,40 +870,6 @@ public class EasyError {
 	//多线程，只复写run方法，不要复写start方法
 	//想终止一个线程，使用标志位(volatile)或者isInterated。
 
-	//setUncaughtExceptionHandler
-	public void test51() throws Exception {
-		executeStuff();
-	}
-
-	private void executeStuff() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				System.out.println("111");
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				throw new RuntimeException("you wenti ");
-
-			}
-		});
-
-		thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				//有问题重新连接
-				System.out.println("xxxxxx");
-				e.printStackTrace();
-				executeStuff();
-			}
-		});
-
-		thread.start();
-	}
-
 	//volatile不能保证多线程更新安全，只能保证获取最新值
 	public void test52() throws Exception {
 
