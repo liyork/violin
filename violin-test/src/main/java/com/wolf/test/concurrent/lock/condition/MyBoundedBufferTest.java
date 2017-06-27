@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author 李超
  * @since 1.0.0
  */
-public class BoundedBufferTest {
+public class MyBoundedBufferTest {
 
     private final Lock lock = new ReentrantLock();
     private final Condition notFull = lock.newCondition();
@@ -69,7 +69,7 @@ public class BoundedBufferTest {
     }
 
     public static void main(String[] args) {
-        final BoundedBufferTest boundedBuffer = new BoundedBufferTest();
+        final MyBoundedBufferTest boundedBuffer = new MyBoundedBufferTest();
 
         Thread t1 = new Thread(new Runnable() {
             @Override

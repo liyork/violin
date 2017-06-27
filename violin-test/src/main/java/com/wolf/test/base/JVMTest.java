@@ -26,7 +26,7 @@ public class JVMTest {
         for(int i = 0; i < 10; i++) {
             String key = "i" + i;
             hashMap.put(key, "i" + i + 2);
-            System.out.println("key:"+key+" ");
+            System.out.println("key:" + key + " ");
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {

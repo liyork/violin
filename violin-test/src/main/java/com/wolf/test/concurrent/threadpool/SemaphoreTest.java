@@ -15,6 +15,11 @@ public class SemaphoreTest {
 
     public static void main(String[] args) {
 
+//        baseTest();
+        baseTest1();
+    }
+
+    private static void baseTest() {
         final Semaphore semaphore = new Semaphore(5);
 
         ExecutorService executorService = Executors.newFixedThreadPool(20);
@@ -34,6 +39,41 @@ public class SemaphoreTest {
                 }
             });
         }
+
+        executorService.shutdown();
+    }
+
+    //semaphore.acquire();会进行--，只有小于0时就会入队阻塞。
+    //semaphore.release();会++,释放由于阻塞的线程
+    //new Semaphore(0)的目的可能是想一次只有一个线程执行，或者先让一个线程执行release时才能acquire
+    private static void baseTest1() {
+        final Semaphore semaphore = new Semaphore(0);
+
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        for(int i = 0; i < 20; i++) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        semaphore.acquire();
+                        System.out.println(Thread.currentThread().getName() + " after1 acquire");
+                        Thread.sleep(7000);
+                        System.out.println();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    semaphore.release();
+                }
+            });
+        }
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //semaphore.release();
 
         executorService.shutdown();
     }
