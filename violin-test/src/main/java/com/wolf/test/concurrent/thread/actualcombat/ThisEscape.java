@@ -5,7 +5,8 @@ package com.wolf.test.concurrent.thread.actualcombat;
  * <p/>
  * Implicitly allowing the this reference to escape
  * this逸出条件：构造器中有内部类，把内部类发布出去。
- * 解决方案：构造完后再暴露内部类
+ * 解决方案：构造完后再暴露内部类，就是别在未构造好前就把本身给别人用
+ * 构造方法中执行thread.start也同样会有问题，也可以先构造，再调用一个方法执行start
  *
  * @author Brian Goetz and Tim Peierls
  */
@@ -57,12 +58,12 @@ public class ThisEscape {
             }
         };
 
-        //构造线程，直接暴露ThisEscape内部属性
+        //构造线程，模拟直接暴露ThisEscape内部属性，模拟并发时，同时访问对象属性。
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1000);//休息一秒，让id赋值
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -75,7 +76,7 @@ public class ThisEscape {
     }
 
 
-     class ThisSafe {
+    class ThisSafe {
 
         public final int id;
         public final String name;
@@ -83,16 +84,16 @@ public class ThisEscape {
 
         private ThisSafe() {
             id = 1;
-            listener = new EventListener(){
+            listener = new EventListener() {
                 public void onEvent(Event e) {
-                    System.out.println("id: "+ThisSafe.this.id);
-                    System.out.println("name: "+ThisSafe.this.name);
+                    System.out.println("id: " + ThisSafe.this.id);
+                    System.out.println("name: " + ThisSafe.this.name);
                 }
             };
             name = "flysqrlboy";
         }
 
-        public  ThisSafe getInstance(EventSource source) {
+        public ThisSafe getInstance(EventSource source) {
             ThisSafe safe = new ThisSafe();
             source.registerListener(safe.listener);
             return safe;

@@ -3,6 +3,7 @@ package com.wolf.test.jdbc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.util.Random;
 
 /**
  * Description:
@@ -14,11 +15,14 @@ import java.sql.PreparedStatement;
 public class MySqlBatchInsert {
 
     public static void main(String[] args) throws Exception {
-        batchInsert();
+//        batchInsert1();
+        batchInsert2("class1");
+        batchInsert2("book");
+        batchInsert2("phone");
     }
 
 
-    public static void batchInsert() throws Exception {
+    public static void batchInsert1() throws Exception {
         long start = System.currentTimeMillis();
         Class.forName("com.mysql.jdbc.Driver");
         Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test?useServerPrepStmts=false&rewriteBatchedStatements=true", "root", "");
@@ -44,4 +48,33 @@ public class MySqlBatchInsert {
         long end = System.currentTimeMillis();
         System.out.println("批量插入需要时间:" + (end - start)); //批量插入需要时间:4675
     }
+
+    public static void batchInsert2(String tableName) throws Exception {
+        long start = System.currentTimeMillis();
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test?useServerPrepStmts=false&rewriteBatchedStatements=true", "root", "");
+
+        connection.setAutoCommit(false);
+        String sql = "insert into " + tableName + "(card) values(?)";
+        PreparedStatement cmd = connection.prepareStatement(sql);
+
+        Random random = new Random();
+        for(int i = 0; i < 10000; i++) {
+            cmd.setInt(1, random.nextInt(20));
+            cmd.addBatch();
+            if(i % 1000 == 0) {
+                cmd.executeBatch();
+            }
+        }
+        cmd.executeBatch();
+        connection.commit();
+
+        cmd.close();
+        connection.close();
+
+        long end = System.currentTimeMillis();
+        System.out.println("批量插入需要时间:" + (end - start)); //批量插入需要时间:4675
+    }
+
+
 }

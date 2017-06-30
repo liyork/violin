@@ -6,7 +6,7 @@ import net.jcip.annotations.*;
  * SleepyBoundedBuffer
  * <p/>
  * Bounded buffer using crude blocking
- * 带有等待重试机制
+ * 带有等待重试机制，将前提条件管理封装起来，简化客户端对缓存使用
  *
  * @author Brian Goetz and Tim Peierls
  */
@@ -30,7 +30,7 @@ public class SleepyBoundedBuffer<V> extends BaseBoundedBuffer<V> {
                     return;
                 }
             }
-            Thread.sleep(SLEEP_GRANULARITY);
+            Thread.sleep(SLEEP_GRANULARITY);//同步外休眠，避免同步中长期持有锁。
         }
     }
 

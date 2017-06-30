@@ -5,6 +5,7 @@ package com.wolf.test.base;
  * 推荐使用内部类方式1
  * 如使用双重检查需保证是对的方式4
  * 3是在jdk1.5之前有问题，之后修复了
+ *
  * <br/> Created on 2016/8/11 16:52
  *
  * @author 李超()
@@ -20,6 +21,8 @@ public class SingletonTest {
         return SingletonTestHolder.instance;
     }
 
+    //使用静态内部类应该是本静态类中还有其他属性，使用时不涉及初始化单例对象，
+//不然如果没有的话则直接就可以使用这种形式，因为jvm能保证类加载到线程使用前，静态域的安全初始化
     //1.第一次被使用时才会被jvm加载而且jvm保证内部类加载线程安全
     private static class SingletonTestHolder {
         //final 类型的域是不能修改的（但如果 final 域所引用的对象时可变的，那么这些被引用的对象是可以修改的）。
@@ -40,6 +43,7 @@ public class SingletonTest {
         System.out.println(instance);
     }
 
+    //=====双重检查锁，在现代已经被废弃了，推荐使用静态内部类，之所以出现的双重的原因是：早期的jvm，无竞争同步的执行速度很慢，jvm启动时很慢
 
     private static SingletonTest instance = null;
 
