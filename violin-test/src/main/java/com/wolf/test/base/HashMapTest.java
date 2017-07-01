@@ -14,6 +14,10 @@ import java.util.Set;
 public class HashMapTest {
 
     public static void main(String[] args) {
+        baseTest();
+    }
+
+    private static void baseTest() {
         HashMap<String, Integer> map = new HashMap<>();
         map.put("a", 1);
         map.put("b", 2);

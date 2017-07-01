@@ -3,6 +3,9 @@ package com.wolf.utils;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * <p> Description:
@@ -330,6 +333,75 @@ public class FileUtils {
 
         for(File file : files) {
             copyFile(file, new File(directDir, file.getName()));
+        }
+    }
+
+
+
+    public static void findReplication() {
+        HashMap<String, Integer> map = new HashMap<>();
+
+        LineNumberReader reader = null;
+        try {
+            reader = new LineNumberReader(new InputStreamReader(new FileInputStream("D:\\test.txt"), "utf-8"));
+            String tempString;
+            // 一次读入一行，直到读入null为文件结束
+            while((tempString = reader.readLine()) != null) {
+                Integer integer = map.get(tempString);
+                if(null == integer) {
+                    integer = 1;
+                } else {
+                    integer++;
+                }
+                map.put(tempString, integer);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        for(Map.Entry<String, Integer> entry : map.entrySet()) {
+            Integer value = entry.getValue();
+            if(value > 2) {
+                System.out.println(entry.getKey() + " " + value);
+            }
+        }
+    }
+
+    public static void removeReplication() {
+        TreeSet<String> set = new TreeSet<>();
+
+        LineNumberReader reader = null;
+        try {
+            reader = new LineNumberReader(new InputStreamReader(new FileInputStream("D:\\test.txt"), "utf-8"));
+            String tempString;
+            // 一次读入一行，直到读入null为文件结束
+            while((tempString = reader.readLine()) != null) {
+                set.add(tempString);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        for(String s : set) {
+            System.out.println(s);
         }
     }
 
