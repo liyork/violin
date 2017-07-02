@@ -125,15 +125,15 @@ public class ExceptionTest {
             if(a == 1) {
                 t.printStackTrace();
             } else {
-                if(t instanceof RuntimeException) {
-                    throw (RuntimeException) t;//不论转换成什么，最后打印时也是抛出来的那个异常名称
+                if(t instanceof CustomException) {
+                    throw (CustomException) t;//不论转换成什么，最后打印时也是抛出来的那个真正异常名称
                 }
             }
         }
     }
 
     private void wrapperExceptionName2(int a) {
-        throw new CustomException("qqqqq");
+        throw new SubCustomException("qqqqq");
     }
 
 
@@ -143,6 +143,16 @@ public class ExceptionTest {
         }
 
         public CustomException(String message) {
+            super(message);
+        }
+    }
+
+    class SubCustomException extends CustomException {
+        public SubCustomException() {
+            super();
+        }
+
+        public SubCustomException(String message) {
             super(message);
         }
     }
