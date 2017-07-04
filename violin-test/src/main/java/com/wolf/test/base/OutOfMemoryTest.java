@@ -21,8 +21,10 @@ public class OutOfMemoryTest {
     private static Map<Integer, String> map = new HashMap<>();
 
     public static void main(String[] args) {
-//        test1();
-        test2();
+//        test1();  有gc，无法溢出
+//        test2();  可以溢出
+        test3();  //可以溢出，但是分析后不对
+//        test4();  //可以溢出
     }
 
     private static void read() {
@@ -63,9 +65,35 @@ public class OutOfMemoryTest {
 
     public static void test2() {
         Vector v = new Vector();
-        for(int i = 0; i < 25; i++)
+        for(int i = 0; i < 250000; i++) {
             v.add(new byte[1 * 1024 * 1024]);
+            System.out.println("i:" + i);
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         System.out.println("1111111");
+    }
+
+    //由于编译器优化代码后将 long[] arr = new long[i];放入每次循环中。
+    // 导致最后一次分配数组内存不足时先进行了gc，然后dump出的文件没有任何long[]相关信息
+    public static void test3() {
+        long arr[];
+        for(int i = 1; i <= 10000000; i *= 2) {
+            arr = new long[i];
+            System.out.println("i:" + i);
+        }
+    }
+
+    //编译器没有进行优化，最后一次分配数组内存不足时还保留上一个大数组，dump出来后就有long[]了。。
+    public static void test4() {
+
+        long[] arr = new long[0];
+        for(int i = 1; i <= 10000000; i *= 2) {
+            arr = new long[i];
+        }
     }
 }

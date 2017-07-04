@@ -16,9 +16,9 @@ public class JVMTest {
         runtime.addShutdownHook(new Thread() {
             @Override
             public void run() {
-                System.out.println(runtime.maxMemory());
-                System.out.println(runtime.freeMemory());
-                System.out.println(runtime.totalMemory());
+                System.out.printf("maxMemory : %.2fM\n", runtime.maxMemory()*1.0/1024/1024);
+                System.out.printf("totalMemory : %.2fM\n", runtime.totalMemory()*1.0/1024/1024);
+                System.out.printf("freeMemory : %.2fM\n", runtime.freeMemory()*1.0/1024/1024);
             }
         });
 

@@ -3,6 +3,7 @@ package com.wolf.test.redis;
 import com.wolf.utils.RedisLockUtils;
 import org.junit.Test;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -35,7 +36,10 @@ public class RedisLockUtilTest {
 
 //        testLock1();
 //        testLock2();
-        testErrorLock();
+//        testErrorLock();
+//        testIncreaseHasTop2();
+//        testIncreaseHasTop3();
+        testIncreaseHasTop4();
     }
 
     private static void testLock2() {
@@ -57,6 +61,7 @@ public class RedisLockUtilTest {
         }
         executorService2.shutdown();
     }
+
     private static void testLock1() {
         ExecutorService executorService = Executors.newFixedThreadPool(20);
         for(int i = 0; i < 10; i++) {
@@ -89,6 +94,108 @@ public class RedisLockUtilTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        executorService2.shutdown();
+    }
+
+    private static void testIncreaseHasTop2() {
+
+        RedisLockUtils.jedis.set("increaseHasTop2", "0");
+
+        RedisLockUtils.init();
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        ExecutorService executorService2 = Executors.newFixedThreadPool(1000);
+        for(int i = 0; i < 1000; i++) {
+            executorService2.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        countDownLatch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Long value = RedisLockUtils.increaseHasTop2("increaseHasTop2");
+                    System.out.println(value);
+                }
+            });
+        }
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        countDownLatch.countDown();
+
+        System.out.println("shutdown");
+        executorService2.shutdown();
+    }
+
+    private static void testIncreaseHasTop3() {
+
+        RedisLockUtils.jedis.set("increaseHasTop3", "0");
+
+        RedisLockUtils.init();
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        ExecutorService executorService2 = Executors.newFixedThreadPool(1000);
+        for(int i = 0; i < 1000; i++) {
+            executorService2.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        countDownLatch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Long value = RedisLockUtils.increaseHasTop3("increaseHasTop3");
+                    System.out.println(value);
+                }
+            });
+        }
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        countDownLatch.countDown();
+
+        System.out.println("shutdown");
+        executorService2.shutdown();
+    }
+
+    private static void testIncreaseHasTop4() {
+
+        RedisLockUtils.jedis.set("increaseHasTop4", "0");
+
+        RedisLockUtils.init();
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        ExecutorService executorService2 = Executors.newFixedThreadPool(1000);
+        for(int i = 0; i < 1000; i++) {
+            executorService2.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        countDownLatch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Long value = RedisLockUtils.increaseHasTop4("increaseHasTop4");
+                    System.out.println(value);
+                }
+            });
+        }
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        countDownLatch.countDown();
+
+        System.out.println("shutdown");
         executorService2.shutdown();
     }
 }
