@@ -13,7 +13,7 @@ package com.wolf.behavioral.visitor;
  * applicability
  * an object structure contains many classes of objects with differing interfaces, and you want
  *  	to perform operations on these objects that depend on their concrete classes
- * you want to avoid "polluting" their classes with these operations
+ * you want to avoid "polluting" their classes with these operations //类似于aop
  * the classes defining the object structure rarely change, but you often want to define
  * 		new operations over the structure
  *

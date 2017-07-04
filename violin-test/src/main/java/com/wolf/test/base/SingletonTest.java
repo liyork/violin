@@ -61,6 +61,7 @@ public class SingletonTest {
         return instance;
     }
 
+    //A a = new A();一共执行3步，分配内存，调用构造方法初始化，分配引用。多线程遇到每一步都有竞态条件。所以需要原子保护+可见性
     //3.由于构造SingletonTest时未完全有可能被其他线程使用了。
     public static SingletonTest getInstanceError() {
         if(instance == null) {
