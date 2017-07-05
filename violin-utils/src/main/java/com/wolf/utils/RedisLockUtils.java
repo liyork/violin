@@ -304,18 +304,25 @@ public class RedisLockUtils {
 
         Long result = 100L;
         Jedis resource = null;
+        //允许服务调用超时，添加重试机制，一开始提示超时连接，这会想找下原因还没有了。。。
         while(null == resource) {
             try {
                 resource = pool2.getResource();
             } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            try {
-                Thread.sleep(random.nextInt(1000));
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+            if(null == resource) {
+                try {
+                    Thread.sleep(random.nextInt(1000));
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
+
+        //每个线程都是自己获取一个自己的的redis客户端
+        System.out.println("resource:"+ resource);
 
 
         boolean flag = true;

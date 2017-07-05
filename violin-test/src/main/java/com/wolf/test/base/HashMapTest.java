@@ -2,10 +2,12 @@ package com.wolf.test.base;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
 
 /**
  * Description:
+ * 一般equals相同的hashcode要相同，因为要放在hashmap的相同槽中。
  * <br/> Created on 2017/6/23 13:35
  *
  * @author 李超
@@ -14,7 +16,8 @@ import java.util.Set;
 public class HashMapTest {
 
     public static void main(String[] args) {
-        baseTest();
+//        baseTest();
+        testResize();
     }
 
     private static void baseTest() {
@@ -36,6 +39,19 @@ public class HashMapTest {
         while(iterator.hasNext()) {
             String next = iterator.next();
             System.out.println(next);
+        }
+    }
+
+    /**
+     * 默认长度16，加载因子是0.75，阈值就是16*0.75=12，当size>=阈值时resize为2倍
+     * 容量一定是2的幂次方
+     */
+    private static void testResize() {
+        HashMap<String, Integer> map = new HashMap<>();
+        Random random = new Random();
+        for(int i = 0; i < 1000; i++) {
+            int i1 = random.nextInt(100);
+            map.put(i1 + "", i1);
         }
     }
 }

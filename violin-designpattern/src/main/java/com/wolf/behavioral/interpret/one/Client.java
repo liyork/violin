@@ -21,7 +21,7 @@ package com.wolf.behavioral.interpret.one;
  *
  *
  * BooleanExp ::= VariableExp | Constant | OrExp | AndExp | NotExp |
- * 				'(' BooleanExp ')'
+ * '(' BooleanExp ')'
  * AndExp ::= BooleanExp 'and' BooleanExp
  * OrExp ::= BooleanExp 'or' BooleanExp
  * NotExp ::= 'not' BooleanExp
@@ -33,34 +33,34 @@ package com.wolf.behavioral.interpret.one;
  */
 public class Client {
 
-	public static void main(String[] args) {
-		//define the Boolean expression use interpret pattern
-		// (true and x) or (y and (not x))
+    public static void main(String[] args) {
+        //define the Boolean expression use interpret pattern
+        // (true and x) or (y and (not x))
 
-		ConstantExp constantExp = new ConstantExp(true);
-		VariableExp x = new VariableExp("x");
-		AndExp andExp1 = new AndExp(constantExp, x);
+        ConstantExp constantExp = new ConstantExp(true);
+        VariableExp x = new VariableExp("x");
+        AndExp andExp1 = new AndExp(constantExp, x);
 
-		VariableExp y = new VariableExp("y");
-		//flyweight
-		NotExp notExp = new NotExp(x);
-		AndExp andExp2 = new AndExp(y, notExp);
+        VariableExp y = new VariableExp("y");
+        //flyweight
+        NotExp notExp = new NotExp(x);
+        AndExp andExp2 = new AndExp(y, notExp);
 
-		OrExp orExp = new OrExp(andExp1, andExp2);
+        OrExp orExp = new OrExp(andExp1, andExp2);
 
-		Context context = new Context();
-		context.assign("x", false);
-		context.assign("y", false);
+        Context context = new Context();
+        context.assign("x", false);
+        context.assign("y", false);
 
-		boolean evaluate = orExp.evaluate(context);
-		System.out.println(evaluate);
+        boolean evaluate = orExp.evaluate(context);
+        System.out.println(evaluate);
 
-		VariableExp z = new VariableExp("z");
-		NotExp notExpZ = new NotExp(z);
-		BooleanExp y1 = orExp.replace("y", notExpZ);
+        VariableExp z = new VariableExp("z");
+        NotExp notExpZ = new NotExp(z);
+        BooleanExp y1 = orExp.replace("y", notExpZ);
 
-		context.assign("z",true);
-		boolean evaluate1 = y1.evaluate(context);
-		System.out.println(evaluate1);
-	}
+        context.assign("z", true);
+        boolean evaluate1 = y1.evaluate(context);
+        System.out.println(evaluate1);
+    }
 }

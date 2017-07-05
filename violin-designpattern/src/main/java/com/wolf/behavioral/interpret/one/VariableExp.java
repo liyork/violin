@@ -6,7 +6,7 @@ package com.wolf.behavioral.interpret.one;
  * @author 李超
  * @Date 2016/7/13
  */
-public class VariableExp implements BooleanExp{
+public class VariableExp implements BooleanExp {
 
 	private String code;
 

@@ -8,9 +8,16 @@ package com.wolf.behavioral.interpret.one;
  */
 public interface BooleanExp {
 
-	public boolean evaluate(Context context);
+    public boolean evaluate(Context context);
 
-	public BooleanExp replace(String target, BooleanExp replaceExp);
+    /**
+     * 替换功能，遇到表达式时，终结节点拷贝或者new，其他节点都进行new
+     *
+     * @param target
+     * @param replaceExp
+     * @return
+     */
+    public BooleanExp replace(String target, BooleanExp replaceExp);
 
-	public BooleanExp copy();
+    public BooleanExp copy();
 }
