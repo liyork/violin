@@ -27,6 +27,7 @@ public class MySqlBatchInsert {
         Class.forName("com.mysql.jdbc.Driver");
         Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test?useServerPrepStmts=false&rewriteBatchedStatements=true", "root", "");
 
+        //这步很关键，下面即使执行了executeBatch也不会发送sql，只有在commit时才会一起提交
         connection.setAutoCommit(false);
         PreparedStatement cmd = connection.prepareStatement("insert into bigtable(name,age,mark) values(?,?,?)");
 
