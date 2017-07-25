@@ -1,5 +1,7 @@
 package com.wolf.test.base;
 
+import org.junit.Test;
+
 /**
  * Description:
  * <br/> Created on 2017/3/23 10:26
@@ -12,6 +14,16 @@ public class JavaBaseTest {
     public static void main(String[] args) {
         //启动java的目录
         System.out.println(System.getProperty("user.dir"));
+    }
+
+    @Test
+    public void testMod(){
+        String s = "abc";
+        int tableNum = 2;
+        int dbNum = 6;
+        int i1 = s.hashCode() % (tableNum*dbNum);//0 -- 11
+        int i = i1 / tableNum;//0 -- 5
+        System.out.println(i);
     }
 
 }

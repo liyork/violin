@@ -169,4 +169,13 @@ public class DecimalFormatTest {
 		System.out.println(fmt.format(1.2367d));
 		System.out.println(fmt.format(1.2364d));
 	}
+
+	@Test
+	public void testFormat(){
+		DecimalFormat df = new DecimalFormat("_0000");
+		String format = df.format(0L);
+		String format1 = df.format(1L);
+		System.out.println(format);
+		System.out.println(format1);
+	}
 }

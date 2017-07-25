@@ -15,20 +15,21 @@ import java.util.Random;
 public class MySqlBatchInsert {
 
     public static void main(String[] args) throws Exception {
-//        batchInsert1();
-        batchInsert2("class1");
-        batchInsert2("book");
-        batchInsert2("phone");
+        batchInsert1();
+//        batchInsert2("class1");
+//        batchInsert2("book");
+//        batchInsert2("phone");
     }
 
 
     public static void batchInsert1() throws Exception {
         long start = System.currentTimeMillis();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test?useServerPrepStmts=false&rewriteBatchedStatements=true", "root", "");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/testdb?useServerPrepStmts=false&rewriteBatchedStatements=true", "root", "123456");
 
         //这步很关键，下面即使执行了executeBatch也不会发送sql，只有在commit时才会一起提交
-        connection.setAutoCommit(false);
+        //后来测试发现setAutoCommit只是保证原子性让所有sql都一起成功或失败。executeBatch是把sql改写成insert xx values(),()，而auto=true最后结果是一批一执行
+        //connection.setAutoCommit(false);
         PreparedStatement cmd = connection.prepareStatement("insert into bigtable(name,age,mark) values(?,?,?)");
 
         for(int i = 0; i < 5000000; i++) {//100万条数据
@@ -36,12 +37,13 @@ public class MySqlBatchInsert {
             cmd.setInt(2, i);
             cmd.setString(3, "mark" + i);
             cmd.addBatch();
-            if(i % 1000 == 0) {
+            if(i != 0 && i % 1000 == 0) {//i!=0防止第一次0就插入一遍
                 cmd.executeBatch();
+                //connection.commit();
             }
         }
         cmd.executeBatch();
-        connection.commit();
+        //connection.commit();
 
         cmd.close();
         connection.close();
