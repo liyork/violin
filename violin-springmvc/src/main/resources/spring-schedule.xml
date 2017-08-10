@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+       default-autowire="byName">
+
+    <bean id="myScheduleTest2" class="com.wolf.schedule.MyScheduleTest2">
+    </bean>
+
+    <!-- 方式1 -->
+    <!--<bean name="exampleJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">-->
+        <!--<property name="jobClass" value="com.wolf.schedule.MyScheduleTest2" />-->
+        <!--<property name="jobDataAsMap">-->
+            <!--<map>-->
+                <!--<entry key="timeout" value="5" />-->
+            <!--</map>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--<bean id="cronTrigger"-->
+          <!--class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+        <!--<property name="jobDetail" ref="exampleJob" />-->
+        <!--&lt;!&ndash; run every morning at 6 AM &ndash;&gt;-->
+        <!--&lt;!&ndash; <property name="cronExpression" value="0 0 6 * * ?" /> &ndash;&gt;-->
+        <!--&lt;!&ndash; <property name="cronExpression" value="0 0/1 * * * ?" /> &ndash;&gt; &lt;!&ndash; 每分钟 &ndash;&gt;-->
+        <!--<property name="cronExpression" value="0/2 * * * * ?" /> &lt;!&ndash; 每秒 &ndash;&gt;-->
+    <!--</bean>-->
+
+    <!-- 方式2 -->
+    <bean id="exampleBusinessObject" class="com.wolf.schedule.MyScheduleTest2" />
+    <bean id="jobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="exampleBusinessObject" />
+        <property name="targetMethod" value="execute" />
+        <!--<property name="concurrent" value="false" />--><!--同步执行，需要等上一个完成，马上执行这个-->
+        <property name="concurrent" value="true" /><!--并发执行，不用等待上一个完成-->
+    </bean>
+
+    <bean id="simpleTrigger"
+          class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <!-- see the example of method invoking job above -->
+        <property name="jobDetail" ref="jobDetail" />
+        <!-- 10 seconds -->
+        <property name="startDelay" value="1000" />
+        <!-- repeat every 50 seconds -->
+        <property name="repeatInterval" value="3000" />
+    </bean>
+
+    <!-- 总调度用于启动Spring定时器 -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <!--<ref bean="cronTrigger" />-->
+                <ref bean="simpleTrigger" />
+            </list>
+        </property>
+    </bean>
+
+</beans>
