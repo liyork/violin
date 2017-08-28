@@ -75,7 +75,7 @@
             <!--system，跟provided 相似，但是在系统中要以外部JAR包的形式提供，maven不会在repository查找它，要提供<systemPath>${java.home}/lib/rt.jar</systemPath>-->
         </dependency>
 
-        <!--依赖pom-->
+        <!--依赖pom，这里要记得先install dependence这个工程-->
         <dependency>
             <groupId>com.wolf</groupId>
             <artifactId>dependence</artifactId>

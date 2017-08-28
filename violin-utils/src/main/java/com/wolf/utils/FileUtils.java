@@ -423,4 +423,15 @@ public class FileUtils {
 
     }
 
+    public static void printFileName(String path) {
+
+        File file = new File(path);
+        File[] files = file.listFiles();
+        for(File file1 : files) {
+            if(file1.isFile()) {
+                System.out.println(file1.getName());
+            }
+        }
+    }
+
 }
