@@ -1,9 +1,7 @@
-/target/
-/.settings/
-/.classpath
-/.project
-/*.iml
-/.externalToolBuilders
-/.idea/
-/*.ipr
-/*.iws
+target/
+settings/
+*.iml
+.externalToolBuilders/
+.idea/
+*.ipr
+*.iws
