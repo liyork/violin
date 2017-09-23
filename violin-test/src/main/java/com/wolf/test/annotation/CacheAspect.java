@@ -55,11 +55,11 @@ public class CacheAspect {
     private static final Logger LOG = LoggerFactory.getLogger(CacheAspect.class);
 
     //定义:缓存切入点
-    @Pointcut("@annotation(com.wolf.annotation.CacheResult)")
+    @Pointcut("@annotation(com.wolf.test.annotation.CacheResult)")
     public void cacheResultAspect() {}
 
     //定义:清除缓存切入点
-    @Pointcut("@annotation(com.wolf.annotation.WipeCache)")
+    @Pointcut("@annotation(com.wolf.test.annotation.WipeCache)")
     public void wipeCacheAspect() {}
 
     //使用:缓存结果集环绕逻辑

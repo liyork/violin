@@ -74,11 +74,11 @@
             <version>6.8.8</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.netty/netty -->
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>3.7.0.Final</version>
+            <artifactId>netty-all</artifactId>
+            <version>4.0.0.Final</version>
         </dependency>
 
         <!--Jedis依赖-->
@@ -125,6 +125,12 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.38</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>4.1.6.RELEASE</version>
         </dependency>
 
 

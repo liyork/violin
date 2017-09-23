@@ -19,7 +19,8 @@ public class FutureTest {
     public static void main(String[] args) {
 
 //        testCommon();
-        testInterrupted();
+//        testInterrupted();
+        testRunnableResult();
     }
 
     private static void testCommon() {
@@ -87,5 +88,27 @@ public class FutureTest {
         }
 
         exec.shutdownNow();
+    }
+
+    public static void testRunnableResult() {
+        ExecutorService exec = Executors.newCachedThreadPool();
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("in running ...");
+            }
+        };
+        Future<?> future = exec.submit(runnable);
+        Object o = null;
+        try {
+            o = future.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        System.out.println(o);//null
+        System.out.println(future.isDone());//true
     }
 }
