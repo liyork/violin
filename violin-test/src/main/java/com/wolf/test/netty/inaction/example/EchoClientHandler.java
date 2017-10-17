@@ -1,4 +1,4 @@
-package com.wolf.test.netty.inaction;
+package com.wolf.test.netty.inaction.example;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;

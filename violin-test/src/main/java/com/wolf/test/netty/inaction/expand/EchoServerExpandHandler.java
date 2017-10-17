@@ -1,4 +1,4 @@
-package com.wolf.test.netty.inaction;
+package com.wolf.test.netty.inaction.expand;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -6,17 +6,17 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
- * Description:netty4.0版本实现
+ * Description:添加ToIntegerDecoder之后channelRead被执行3次，每次一个数字
  * <br/> Created on 9/18/17 8:12 PM
  *
  * @author 李超
  * @since 1.0.0
  */
-public class EchoServerHandler extends ChannelInboundHandlerAdapter {
+public class EchoServerExpandHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         System.out.println("Server received: " + msg);
-        ctx.write(msg);
+        ctx.write(Integer.parseInt((String)msg));
     }
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {

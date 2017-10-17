@@ -133,6 +133,11 @@
             <version>4.1.6.RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.jetty.npn</groupId>
+            <artifactId>npn-api</artifactId>
+            <version>1.0.0.v20120402</version>
+        </dependency>
 
     </dependencies>
 

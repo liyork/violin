@@ -1,7 +1,8 @@
-package com.wolf.test.netty.inaction;
+package com.wolf.test.netty.inaction.expand;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -17,7 +18,7 @@ import java.net.InetSocketAddress;
  * @author 李超
  * @since 1.0.0
  */
-public class EchoClient {
+public class EchoExpandClient {
 
     public void start() throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
@@ -32,12 +33,23 @@ public class EchoClient {
                                 throws Exception {
                             System.out.println("EchoClient initChannel... ");
                             ch.pipeline().addLast(
-                                    new EchoClientHandler());
+                                    new EchoClientExpandHandler());
                         }
                     });
             System.out.println("111");
             ChannelFuture f = b.connect().sync();
             System.out.println("222");
+            f.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture)
+                        throws Exception {
+                    if (channelFuture.isSuccess()) {
+                        System.out.println("Connection established");
+                    } else {
+                        System.err.println("Connection attempt failed");
+                        channelFuture.cause().printStackTrace();
+                    }
+                } });
             f.channel().closeFuture().sync();
             System.out.println("333");
         } finally {
@@ -46,7 +58,7 @@ public class EchoClient {
     }
 
     public static void main(String[] args) throws Exception {
-        new EchoClient().start();
+        new EchoExpandClient().start();
     }
 
 
