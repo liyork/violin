@@ -1,10 +1,11 @@
 package com.wolf.service;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Description:
@@ -14,9 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("/applicationContext.xml")
-//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-@Transactional
-public class InjectionTest extends AbstractTransactionalJUnit4SpringContextTests {
+@ContextConfiguration("/*.xml")
+public class InjectionTest extends AbstractJUnit4SpringContextTests {
 
+    @Autowired
+    private DependenceInjection dependenceInjection ;
+
+    @Test
+    public void testInject(){
+        dependenceInjection.test();
+    }
 }
