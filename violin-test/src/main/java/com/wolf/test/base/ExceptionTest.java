@@ -8,6 +8,7 @@ import org.junit.Test;
  * 打印当前throwable的toString，
  * 获取当前throwable对应的StackTraceElement并打印
  * 执行cause的toString，StackTraceElement(可能有...)，链式调用下个cause
+ * 所以整体看日志是倒过来打印的，最先发生的就是最后一个cause
  * <p>
  * 对于testSimpleException
  * 方法栈:top ---> bottom
@@ -154,6 +155,23 @@ public class ExceptionTest {
 
         public SubCustomException(String message) {
             super(message);
+        }
+    }
+
+    //测试抛出子类异常，父类也能catch，但是反过来不行。哦这和总的Exception是一个道理。。
+    @Test
+    public void testExtendRelation() {
+        try {
+            new ExceptionTest().test3();
+        } catch (CustomException e) {
+            System.out.println("222222");
+        }
+    }
+
+    private void test3() {
+        int a =1;
+        if (a == 1) {
+            throw new SubCustomException("x2");
         }
     }
 }
