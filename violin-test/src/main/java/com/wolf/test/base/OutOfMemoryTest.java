@@ -1,9 +1,6 @@
 package com.wolf.test.base;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,11 +17,12 @@ public class OutOfMemoryTest {
 
     private static Map<Integer, String> map = new HashMap<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 //        test1();  有gc，无法溢出
 //        test2();  可以溢出
-        test3();  //可以溢出，但是分析后不对
+//        test3();  //可以溢出，但是分析后不对
 //        test4();  //可以溢出
+        test5();
     }
 
     private static void read() {
@@ -94,6 +92,21 @@ public class OutOfMemoryTest {
         long[] arr = new long[0];
         for(int i = 1; i <= 10000000; i *= 2) {
             arr = new long[i];
+        }
+    }
+
+    static class OOMObject{
+
+    }
+
+    //-Xms2m -Xmx2m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/Users/chaoli/workspace
+//    jmap -dump:format=b,file=/Users/chaoli/workspace/xxx.bin 1899
+    //在tomcat_home/bin/catalina.sh中加上JAVA_OPTS="$JAVA_OPTS -server -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\heapdump"
+    public static void test5() throws InterruptedException {
+        List<OOMObject> oomObjects = new ArrayList<>();
+        while (true) {
+            oomObjects.add(new OOMObject());
+            Thread.sleep(1);
         }
     }
 }
