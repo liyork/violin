@@ -22,7 +22,8 @@ public class OutOfMemoryTest {
 //        test2();  可以溢出
 //        test3();  //可以溢出，但是分析后不对
 //        test4();  //可以溢出
-        test5();
+//        testHeapOOM();
+        testPermGenOOM();
     }
 
     private static void read() {
@@ -95,18 +96,21 @@ public class OutOfMemoryTest {
         }
     }
 
-    static class OOMObject{
-
-    }
-
     //-Xms2m -Xmx2m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/Users/chaoli/workspace
-//    jmap -dump:format=b,file=/Users/chaoli/workspace/xxx.bin 1899
-    //在tomcat_home/bin/catalina.sh中加上JAVA_OPTS="$JAVA_OPTS -server -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\heapdump"
-    public static void test5() throws InterruptedException {
+    public static void testHeapOOM() throws InterruptedException {
         List<OOMObject> oomObjects = new ArrayList<>();
         while (true) {
             oomObjects.add(new OOMObject());
-            Thread.sleep(1);
+           //Thread.sleep(1);
+        }
+    }
+
+    //new Object[10000000]这个就撑爆了 ：OutOfMemoryError:Java heap space ,似乎jdk7就把方法区移进了heap？
+    public static void testPermGenOOM() throws InterruptedException {
+        Object[] array = new Object[1000000];
+        for(int i=0; i<1000000; i++){
+            String d = String.valueOf(i).intern();//new Object[1000000]：OutOfMemoryError: GC overhead limit exceeded ，
+            array[i]=d;
         }
     }
 }
