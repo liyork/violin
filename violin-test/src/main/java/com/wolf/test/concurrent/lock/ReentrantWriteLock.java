@@ -6,7 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Description:读写分离，读和读不锁，其他都锁
+ * Description:测试使用读写锁控制操作同一个源，读写分离，读和读不锁，其他都锁
  *
  * 特性
  * 重入方面:其内部的WriteLock可以获取ReadLock，但是反过来ReadLock不可以获得WriteLock
@@ -60,7 +60,7 @@ public class ReentrantWriteLock {
 
 
     static class ReadWriteLockRunnable {
-        int count;
+        int count;//由于加锁了能保证happen-before语义，否则需要使用volatile
 
         public void get() {
             try {

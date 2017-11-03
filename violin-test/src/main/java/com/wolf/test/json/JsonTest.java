@@ -286,4 +286,11 @@ public class JsonTest {
 
     }
 
+    @Test
+    public void testRecursion(){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setAge(1111);
+        JSON.toJSON(userInfo);
+    }
+
 }

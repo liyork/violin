@@ -33,4 +33,9 @@ public class UserInfo implements Serializable,UserInfoInterface {
 		return age;
 	}
 
+	//如果有这个，json.tostring时会查找bean中的getxx字段，然后对这个value进行tojson。。。那么又回来了。。
+//	public UserInfo getObject(){
+//		return new UserInfo();
+//	}
+
 }
