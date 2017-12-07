@@ -12,6 +12,7 @@ package com.wolf.test.concurrent.thread.threadlocal;
  */
 class Person{
 	private String name;
+	//ThreadLocal定义为static，他只是一个工具类，具体的map在每个线程对象中。
 	private static ThreadLocal<Integer> threadLocal = new ThreadLocal<Integer>(){
 		@Override
 		protected Integer initialValue() {

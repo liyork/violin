@@ -17,7 +17,8 @@ public class HashMapTest {
 
     public static void main(String[] args) {
 //        baseTest();
-        testResize();
+//        testResize();
+        testSetInitialSize();
     }
 
     private static void baseTest() {
@@ -52,6 +53,23 @@ public class HashMapTest {
         for(int i = 0; i < 1000; i++) {
             int i1 = random.nextInt(100);
             map.put(i1 + "", i1);
+        }
+    }
+
+
+    /**
+     * 有人提议使用map时如果预知多少，直接设定初始大小，size/0.75+1，这个是由于map中的负载因子是0.75，大于等于这个size*0.75则resize，
+     * 下面试了下，看了下源码，不对，源码中使用2的幂次方和给定值算出初始值，如果要放入15个数，一般的话写入15，那么他算出16，那么ok，
+     * 如果使用15/0.75+1=21了。。。那么hashmap只能使用32.。
+     * 结论是使用多大直接给入。
+     */
+    private static void testSetInitialSize() {
+        int size = 15;
+        int initialCapacity = (int)(size / 0.75) + 1;
+        HashMap<String, Integer> map = new HashMap<String, Integer>(initialCapacity);
+
+        for (int i = 0; i < size; i++) {
+            map.put("i:" + i,i);
         }
     }
 }

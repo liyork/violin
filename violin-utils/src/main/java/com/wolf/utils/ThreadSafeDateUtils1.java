@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * <p> Description:日期安全工具类
+ * 直接类中定义好了threadlocal
  * <p/>
  * Date: 2016/3/29
  * Time: 10:39
@@ -16,7 +17,7 @@ import java.util.Date;
  */
 public class ThreadSafeDateUtils1 {
 
-	//会引发多线程问题
+	//SimpleDateFormat不是线程安全的，不要用static
 //	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	private static ThreadLocal<SimpleDateFormat> threadLocal_yyyy_MM_dd = new ThreadLocal<SimpleDateFormat>(){
 		@Override

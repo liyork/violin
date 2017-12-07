@@ -22,6 +22,11 @@ public class MySqlBatchInsert {
     }
 
 
+    /**
+     * 结论：如果使用setAutoCommit需要配合commit一起提交
+     * 否则一起都不用executeBatch每次执行一批修改后sql的数据
+     * @throws Exception
+     */
     public static void batchInsert1() throws Exception {
         long start = System.currentTimeMillis();
         Class.forName("com.mysql.jdbc.Driver");

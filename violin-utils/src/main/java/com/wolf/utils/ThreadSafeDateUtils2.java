@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * <p> Description:日期安全工具类使用map存放pattern对应的threadlocal，被每个线程用
- * 每个pattern对应一个threadLocal，一个threadloca对应到多个thread里
+ * 			每个pattern对应一个threadLocal，一个threadloca对应到多个thread里，懒加载
  * <p/>
  * Date: 2016/3/29
  * Time: 10:39

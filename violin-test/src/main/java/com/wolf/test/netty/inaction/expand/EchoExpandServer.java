@@ -30,7 +30,13 @@ public class EchoExpandServer {
     public void start() throws Exception {
         EventLoopGroup group1 = new NioEventLoopGroup();
         EventLoopGroup group2 = new NioEventLoopGroup();
-        final AttributeKey<Integer> id = new AttributeKey<Integer>("ID");
+//        需要
+//                <dependency>
+//            <groupId>io.netty</groupId>
+//            <artifactId>netty-all</artifactId>
+//            <version>4.0.0.Final</version>
+//        </dependency>
+        final AttributeKey<Integer> id =null;//= new AttributeKey<Integer>("ID");
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(group1, group2)

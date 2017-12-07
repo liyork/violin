@@ -32,7 +32,13 @@ public class SpdyChannelInitializer extends
         NextProtoNego.put(engine, new DefaultServerProvider());
         NextProtoNego.debug = true;
         pipeline.addLast("sslHandler", new SslHandler(engine));
-        pipeline.addLast("chooser",
-                new DefaultSpdyOrHttpChooser(1024 * 1024, 1024 * 1024));
+//        需要
+//                <dependency>
+//            <groupId>io.netty</groupId>
+//            <artifactId>netty-all</artifactId>
+//            <version>4.0.0.Final</version>
+//        </dependency>
+//        pipeline.addLast("chooser",
+//                new DefaultSpdyOrHttpChooser(1024 * 1024, 1024 * 1024));
     }
 }

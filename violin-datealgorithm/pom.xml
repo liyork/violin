@@ -47,14 +47,6 @@
             <version>8.1.14.v20131031</version>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-client -->
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-client</artifactId>
-            <version>0.96.2-hadoop1</version>
-        </dependency>
-
     </dependencies>
 
 
