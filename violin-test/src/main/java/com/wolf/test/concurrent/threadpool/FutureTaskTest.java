@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
- * Description:
+ * Description:Runnable, Future
  * <br/> Created on 2017/6/25 10:27
  *
  * @author 李超
@@ -34,7 +34,7 @@ public class FutureTaskTest {
 
         System.out.println("futureTask.get...before");
         try {
-            String s = futureTask.get();
+            String s = futureTask.get();//目标方法抛出异常则这里也会抛出ExecutionException
             System.out.println(s);
         } catch (InterruptedException e) {
             System.out.println("InterruptedException");

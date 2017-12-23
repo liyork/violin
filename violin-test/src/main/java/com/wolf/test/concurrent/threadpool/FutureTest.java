@@ -5,7 +5,7 @@ import com.wolf.test.concurrent.thread.runnable.MyTask;
 import java.util.concurrent.*;
 
 /**
- * <p> Description:
+ * <p> Description:future可实现超时，可被打断.
  * <p/>
  * Date: 2016/6/23
  * Time: 9:01
@@ -58,6 +58,7 @@ public class FutureTest {
         ExecutorService exec = Executors.newCachedThreadPool();
         final MyTask task = new MyTask();
 
+        //准备终止目标任务的线程
         exec.execute(new Runnable() {
             @Override
             public void run() {
@@ -90,6 +91,7 @@ public class FutureTest {
         exec.shutdownNow();
     }
 
+    //无返回结果，一定要是Callable
     public static void testRunnableResult() {
         ExecutorService exec = Executors.newCachedThreadPool();
 

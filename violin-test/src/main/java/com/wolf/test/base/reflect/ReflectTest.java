@@ -5,6 +5,7 @@ import com.wolf.test.annotation.CacheResult;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -35,6 +36,13 @@ public class ReflectTest {
 		Object invoke = test4.invoke(new B(), null);
 		System.out.println(invoke);
 		test4.setAccessible(false);
+
+		B b = new B();
+		Field name = B.class.getDeclaredField("name");
+		name.setAccessible(true);
+		name.set(b,"XXXX");
+		name.setAccessible(false);
+		System.out.println(b.getName());
 	}
 
 	@Test

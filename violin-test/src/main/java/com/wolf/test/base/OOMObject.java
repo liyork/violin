@@ -8,4 +8,6 @@ package com.wolf.test.base;
  * @since 1.0.0
  */
 public class OOMObject {
+
+    public byte[] placeholder = new byte[64 * 1024];
 }

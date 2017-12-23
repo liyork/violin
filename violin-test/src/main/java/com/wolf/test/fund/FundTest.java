@@ -1,6 +1,6 @@
 package com.wolf.test.fund;
 
-import com.wolf.utils.ResourceUtils;
+import com.wolf.utils.PathGettingUtils;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -73,7 +73,7 @@ public class FundTest {
     private static void readFile(String filePath, Map<String, String> fiveMap) {
         try {
             String encoding = "UTF-8";
-            URL resource = ResourceUtils.getResourceFromClassPath(FundTest.class, filePath);
+            URL resource = PathGettingUtils.getResourceFromClassPath(FundTest.class, filePath);
             System.out.println(resource);
             InputStreamReader read = new InputStreamReader(new FileInputStream(resource.getFile()), encoding);//考虑到编码格式
             BufferedReader bufferedReader = new BufferedReader(read);

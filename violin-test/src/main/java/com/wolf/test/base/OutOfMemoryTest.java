@@ -1,5 +1,13 @@
 package com.wolf.test.base;
 
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.cglib.proxy.MethodProxy;
+import sun.misc.Unsafe;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,13 +25,24 @@ public class OutOfMemoryTest {
 
     private static Map<Integer, String> map = new HashMap<>();
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IllegalAccessException {
 //        test1();  有gc，无法溢出
 //        test2();  可以溢出
 //        test3();  //可以溢出，但是分析后不对
 //        test4();  //可以溢出
 //        testHeapOOM();
-        testPermGenOOM();
+//        testPermGenOOM();
+
+//        try {
+//            testStackLeak();
+//        } catch (Exception e) {
+//            System.out.println("stack length:"+stackLength);
+//            e.printStackTrace();
+//        }
+
+//        testMethodAreaOOM();
+
+        testDirectMemoryOOM();
     }
 
     private static void read() {
@@ -105,12 +124,50 @@ public class OutOfMemoryTest {
         }
     }
 
-    //new Object[10000000]这个就撑爆了 ：OutOfMemoryError:Java heap space ,似乎jdk7就把方法区移进了heap？
+    //-XX:PermSize=10M -XX:MaxPermSize=10M
+    //new Object[10000000]这个就撑爆了 ：OutOfMemoryError:Java heap space ,似乎jdk7就把方法区移进了heap？确实
     public static void testPermGenOOM() throws InterruptedException {
         Object[] array = new Object[1000000];
         for(int i=0; i<1000000; i++){
             String d = String.valueOf(i).intern();//new Object[1000000]：OutOfMemoryError: GC overhead limit exceeded ，
             array[i]=d;
+        }
+    }
+
+    static int stackLength = 1;
+
+    //-Xss128k 栈大小
+    public static void testStackLeak(){
+        stackLength++;
+        testStackLeak();
+    }
+
+    //-XX:PermSize=10M  -XX:PermSize=10M
+    //OutOfMemoryError: PermGen space,要注意jsp动态生成类，不同classloader加载同一个class也被视为不同类
+    public static void testMethodAreaOOM(){
+        while (true) {
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(OOMObject.class);
+            enhancer.setUseCache(false);
+            enhancer.setCallback(new MethodInterceptor() {
+                @Override
+                public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                    return methodProxy.invokeSuper(o,objects);
+                }
+            });
+            enhancer.create();
+        }
+    }
+
+    //-Xmx10M -XX:MaxDirectMemorySize=5M
+    //mac 上没有出现异常。不知道是不是和系统内核有关。应该是:OutOfMemoryError,
+    //由DirectMemory导致的内存溢出，heapDump文件不会有明显异常，而且很小，可能程序中使用了nio
+    public static void testDirectMemoryOOM() throws IllegalAccessException {
+        Field unsafeField = Unsafe.class.getDeclaredFields()[0];
+        unsafeField.setAccessible(true);
+        Unsafe unsafe = (Unsafe) unsafeField.get(null);
+        while (true) {
+            unsafe.allocateMemory(1024 * 1024);
         }
     }
 }
