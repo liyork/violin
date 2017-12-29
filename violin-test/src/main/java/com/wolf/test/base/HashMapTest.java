@@ -1,9 +1,6 @@
 package com.wolf.test.base;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Description:
@@ -18,7 +15,8 @@ public class HashMapTest {
     public static void main(String[] args) {
 //        baseTest();
 //        testResize();
-        testSetInitialSize();
+//        testSetInitialSize();
+        testTreeifyBinInJdk8();
     }
 
     private static void baseTest() {
@@ -37,7 +35,7 @@ public class HashMapTest {
         Set<String> keys = map.keySet();//简单构造KeySet
         Iterator<String> iterator = keys.iterator();//构造KeyIterator HashIterator，初始化一些变量next、index，用于后期遍历
         //过程：从数组第一个不为null的槽开始，遍历数组，遇到entity则next，如果为空则下个槽
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             String next = iterator.next();
             System.out.println(next);
         }
@@ -50,7 +48,7 @@ public class HashMapTest {
     private static void testResize() {
         HashMap<String, Integer> map = new HashMap<>();
         Random random = new Random();
-        for(int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1000; i++) {
             int i1 = random.nextInt(100);
             map.put(i1 + "", i1);
         }
@@ -65,11 +63,40 @@ public class HashMapTest {
      */
     private static void testSetInitialSize() {
         int size = 15;
-        int initialCapacity = (int)(size / 0.75) + 1;
+        int initialCapacity = (int) (size / 0.75) + 1;
         HashMap<String, Integer> map = new HashMap<String, Integer>(initialCapacity);
 
         for (int i = 0; i < size; i++) {
-            map.put("i:" + i,i);
+            map.put("i:" + i, i);
         }
     }
+
+
+    private static void testTreeifyBinInJdk8() {
+        HashMap<Integer, List<String>> map2 = new HashMap<Integer, List<String>>();
+        int h;
+        Random random = new Random();
+        for (int i = 0; i < 1000000; i++) {
+            int i2 = random.nextInt();
+            String s = i2 + "";
+            int i1 = (h = s.hashCode()) ^ (h >>> 16);
+            //System.out.println("s:"+s+" i1:"+i1);
+            List<String> strings = map2.get(i1);
+            if (strings == null) {
+                strings = new ArrayList<String>();
+                map2.put(i1, strings);
+            } else {
+                strings.add(s);
+            }
+        }
+
+        for (Map.Entry<Integer, List<String>> entry : map2.entrySet()) {
+            List<String> value = entry.getValue();
+            if (value.size() > 1) {
+                System.out.println("key:" + entry.getKey() + " value:" + value);
+            }
+        }
+    }
+
+
 }
