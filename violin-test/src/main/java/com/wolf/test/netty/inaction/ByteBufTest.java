@@ -169,7 +169,7 @@ public class ByteBufTest {
     //引用一个，create a view of an existing buffer
     @Test
     public void testSlice() throws UnsupportedEncodingException {
-        ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in Action rocks!", charset);
+        ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in action rocks!", charset);
         ByteBuf slice = byteBuf.slice(0, 14);
         System.out.println(slice.toString(charset));
 
@@ -181,7 +181,7 @@ public class ByteBufTest {
     @Test
     public void testCopy() throws UnsupportedEncodingException {
 
-        ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in Action rocks!", charset);
+        ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in action rocks!", charset);
         ByteBuf copy = byteBuf.copy(0, 14);
         System.out.println(copy.toString(charset));
 
@@ -191,7 +191,7 @@ public class ByteBufTest {
 
     @Test
     public void testByteBufHolder() throws UnsupportedEncodingException {
-        ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in Action rocks!", charset);
+        ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in action rocks!", charset);
         ByteBufHolder byteBufHolder = new DefaultByteBufHolder(byteBuf);
 
         ByteBuf content = byteBufHolder.content();
@@ -211,7 +211,7 @@ public class ByteBufTest {
 
     @Test
     public void testByteBufUtil() throws UnsupportedEncodingException {
-        ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in Action rocks!", charset);
+        ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in action rocks!", charset);
         String s = ByteBufUtil.hexDump(byteBuf);
         System.out.println(s);
     }

@@ -18,7 +18,7 @@ public class FileUtilsTest {
         File file = new File("D:\\temp");
 //        copyFile(file);
 
-        FileUtils.printFileName("D:\\apache-maven-3.5.0");
+        //FileUtils.printFileName("D:\\apache-maven-3.5.0");
     }
 
     private static void copyFile(File file) {

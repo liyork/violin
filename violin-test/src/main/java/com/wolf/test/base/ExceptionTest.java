@@ -24,6 +24,8 @@ import org.junit.Test;
  * 方法栈弹出，这时顶部是test1，捕获，构造runtime("x1")并放入cause然后fillInStackTrace(0)
  * 方法栈弹出，这时顶部是testCausedBy，捕获，构造runtime("qqq")并放入cause然后fillInStackTrace(0)
  * 方法栈弹出，这时顶部是com.intellij.rt.execution.application.AppMain.main，调用e.printStackTrace();
+ * <p>
+ * <p>
  * <p/>
  * Date: 2016/5/25
  * Time: 17:35
@@ -123,10 +125,10 @@ public class ExceptionTest {
         try {
             wrapperExceptionName2(a);
         } catch (Throwable t) {
-            if(a == 1) {
+            if (a == 1) {
                 t.printStackTrace();
             } else {
-                if(t instanceof CustomException) {
+                if (t instanceof CustomException) {
                     throw (CustomException) t;//不论转换成什么，最后打印时也是抛出来的那个真正异常名称
                 }
             }
@@ -169,7 +171,7 @@ public class ExceptionTest {
     }
 
     private void test3() {
-        int a =1;
+        int a = 1;
         if (a == 1) {
             throw new SubCustomException("x2");
         }

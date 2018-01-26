@@ -2,6 +2,11 @@ package com.wolf.test.base;
 
 /**
  * <p> Description:
+ *
+ * sublen = value.length - beginIndex
+ * subLen = endIndex - beginIndex
+ * 所以我们endIndex一般比要取的下表大1
+ * endIndex不被包含，但是一定要sublen>1才能出来数据
  * <p/>
  * Date: 2016/5/3
  * Time: 13:58
@@ -27,5 +32,7 @@ public class StringIndexTest {
 		//substring include fromIndex and exclude endIndex
 		System.out.println(keyValue.substring(0,equalMark));
 		System.out.println(keyValue.substring(equalMark+1,keyValue.length()));
+
+		System.out.println(test.substring(1,1));
 	}
 }

@@ -5,6 +5,9 @@ import java.io.InputStream;
 
 /**
  * Description:
+ * 方法区中的class结构来自于class文件，类被加载后生成Class对象，然后new时使用Class对象进行构造
+ *
+ * 重新构造的类在方法区是否一个？
  * <br/> Created on 11/2/17 10:03 AM
  *
  * @author 李超

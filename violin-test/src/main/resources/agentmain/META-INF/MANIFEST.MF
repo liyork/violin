@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: 1.8.0_60 (Oracle Corporation)
+Agent-Class: com.wolf.test.agent.AgentMain
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
+Boot-Class-Path: javassist.jar
+
+
+

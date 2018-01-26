@@ -30,12 +30,16 @@ public class TreeSetTest {
                 }
             }
         };
-        TreeSet<User> treeMap = new TreeSet<User>(comparator);
-        treeMap.add(new User("张三", 3));
-        treeMap.add(new User("李四", 2));
-        treeMap.add(new User("王五", 4));
+        TreeSet<User> treeSet = new TreeSet<User>(comparator);
+        treeSet.add(new User("张三", 5));
+        treeSet.add(new User("李四", 3));
+        treeSet.add(new User("王五4", 4));
+        treeSet.add(new User("王五2", 2));
+        treeSet.add(new User("王五8", 8));
+        treeSet.add(new User("王五7", 7));
+        treeSet.add(new User("王五9", 9));
 
-        for(User user : treeMap) {
+        for(User user : treeSet) {
             System.out.println(JSON.toJSONString(user));
         }
 

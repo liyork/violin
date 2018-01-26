@@ -202,7 +202,7 @@ public class NioServerTest implements Runnable {
                 System.out.println("selector begin... ");
                 //选择一组键，其相应的通道已为 I/O 操作准备就绪。
                 int select = this.selector.select();//卡住
-                if(select == 0) {
+                if(select == 0) {//返回socket的个数
                     continue;
                 }
                 System.out.println("selector end ... ");

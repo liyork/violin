@@ -2,6 +2,8 @@ package com.wolf.test.base;
 
 /**
  * Description:
+ * finaly。目的是给程序一个补救的机会
+ * <p>
  * <br/> Created on 2017/7/4 13:59
  *
  * @author 李超
