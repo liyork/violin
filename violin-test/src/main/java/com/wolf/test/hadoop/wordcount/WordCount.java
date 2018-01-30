@@ -1,4 +1,4 @@
-package com.wolf.test.hadoop;
+package com.wolf.test.hadoop.wordcount;
 
 
 import org.apache.hadoop.fs.Path;
@@ -21,10 +21,13 @@ import java.util.StringTokenizer;
 public class WordCount {
 
     public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable> {
+        //由于map调用次数多，统一使用一个静态变量。
         private final static IntWritable one = new IntWritable(1);
         private Text word = new Text();
 
+        //每行文本调用一次
         public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
+            System.out.println("map==>key:"+key+" value:"+value+" output:"+ output);
             String line = value.toString();
             StringTokenizer tokenizer = new StringTokenizer(line);
             while (tokenizer.hasMoreTokens()) {
@@ -35,12 +38,16 @@ public class WordCount {
     }
 
     public static class Reduce extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
+        //每个键调用一次
         public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
+            System.out.println("reduce==>key:"+key+" value:"+values+" output:"+ output);
             int sum = 0;
             while (values.hasNext()) {
                 sum += values.next().get();
+                System.out.println("sum:"+sum);
             }
             output.collect(key, new IntWritable(sum));
+            System.out.println("reduce finish");
         }
     }
 
@@ -55,11 +62,12 @@ public class WordCount {
         conf.setCombinerClass(Reduce.class);
         conf.setReducerClass(Reduce.class);
 
+        //TextInputFormat默认使用行号作键，行内容作值
         conf.setInputFormat(TextInputFormat.class);
         conf.setOutputFormat(TextOutputFormat.class);
 
-        FileInputFormat.setInputPaths(conf, "D:\\user\\cloudera\\file0,D:\\user\\cloudera\\file1");
-        FileOutputFormat.setOutputPath(conf, new Path("D:\\user\\output\\"));
+        FileInputFormat.setInputPaths(conf, new Path(args[0]));
+        FileOutputFormat.setOutputPath(conf, new Path(args[1]));
 
         JobClient.runJob(conf);
     }
