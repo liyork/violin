@@ -1,0 +1,25 @@
+2018-01-19 10:58:10:org.mortbay.log.Slf4jLog.info(Slf4jLog.java:67) - Logging to org.slf4j.impl.Log4jLoggerAdapter(org.mortbay.log) via org.mortbay.log.Slf4jLog
+2018-01-19 10:58:10:org.mortbay.log.Slf4jLog.info(Slf4jLog.java:67) - jetty-6.1.26
+2018-01-19 10:58:10:org.mortbay.log.Slf4jLog.info(Slf4jLog.java:67) - Started SelectChannelConnector@0.0.0.0:60090
+2018-01-19 10:59:41:org.apache.avro.ipc.NettyServer$NettyServerAvroHandler.handleUpstream(NettyServer.java:171) - [id: 0xaec777d9, /127.0.0.1:52201 => /127.0.0.1:60090] OPEN
+2018-01-19 10:59:41:org.apache.avro.ipc.NettyServer$NettyServerAvroHandler.handleUpstream(NettyServer.java:171) - [id: 0xaec777d9, /127.0.0.1:52201 => /127.0.0.1:60090] BOUND: /127.0.0.1:60090
+2018-01-19 10:59:41:org.apache.avro.ipc.NettyServer$NettyServerAvroHandler.handleUpstream(NettyServer.java:171) - [id: 0xaec777d9, /127.0.0.1:52201 => /127.0.0.1:60090] CONNECTED: /127.0.0.1:52201
+2018-01-19 10:59:41:org.apache.avro.ipc.NettyServer$NettyServerAvroHandler.exceptionCaught(NettyServer.java:201) - Unexpected exception from downstream.
+java.io.IOException: 远程主机强迫关闭了一个现有的连接。
+	at sun.nio.ch.SocketDispatcher.read0(Native Method)
+	at sun.nio.ch.SocketDispatcher.read(SocketDispatcher.java:43)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:223)
+	at sun.nio.ch.IOUtil.read(IOUtil.java:192)
+	at sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:380)
+	at org.jboss.netty.channel.socket.nio.NioWorker.read(NioWorker.java:64)
+	at org.jboss.netty.channel.socket.nio.AbstractNioWorker.process(AbstractNioWorker.java:109)
+	at org.jboss.netty.channel.socket.nio.AbstractNioSelector.run(AbstractNioSelector.java:312)
+	at org.jboss.netty.channel.socket.nio.AbstractNioWorker.run(AbstractNioWorker.java:90)
+	at org.jboss.netty.channel.socket.nio.NioWorker.run(NioWorker.java:178)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+2018-01-19 10:59:41:org.apache.avro.ipc.NettyServer$NettyServerAvroHandler.handleUpstream(NettyServer.java:171) - [id: 0xaec777d9, /127.0.0.1:52201 :> /127.0.0.1:60090] DISCONNECTED
+2018-01-19 10:59:41:org.apache.avro.ipc.NettyServer$NettyServerAvroHandler.handleUpstream(NettyServer.java:171) - [id: 0xaec777d9, /127.0.0.1:52201 :> /127.0.0.1:60090] UNBOUND
+2018-01-19 10:59:41:org.apache.avro.ipc.NettyServer$NettyServerAvroHandler.handleUpstream(NettyServer.java:171) - [id: 0xaec777d9, /127.0.0.1:52201 :> /127.0.0.1:60090] CLOSED
+2018-01-19 10:59:41:org.apache.avro.ipc.NettyServer$NettyServerAvroHandler.channelClosed(NettyServer.java:209) - Connection to /127.0.0.1:52201 disconnected.

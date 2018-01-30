@@ -1,4 +1,4 @@
-package com.wolf.test.base;
+package com.wolf.test.base.exception;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -6,47 +6,35 @@ import java.io.PrintStream;
 /**
  * 错误示范！！！
  */
-public class ErrorRuntimeException extends RuntimeException {
+public class ErrorExceptionExample extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 用来反应业务异常的错误码，一般会结合配置文件
-     */
     private String errorCode;
 
-    /**
-     * 用来反应业务异常信息的错误信息，一般会结合配置来说明<code>errorCode</code>
-     */
     private String errorMessage;
 
-    /**
-     * 异常信息描述，用来描述<code>cause</code>
-     */
     private String showMessage;
 
-    /**
-     * 触发该异常的原因
-     */
     private Throwable cause;
 
-    public ErrorRuntimeException() {
+    public ErrorExceptionExample() {
     }
 
-    public ErrorRuntimeException(String errorCode) {
+    public ErrorExceptionExample(String errorCode) {
         this.errorCode = errorCode;
     }
 
-    public ErrorRuntimeException(Throwable cause) {
+    public ErrorExceptionExample(Throwable cause) {
         super(cause);
     }
 
-    public ErrorRuntimeException(String errorCode, String errorMessage) {
+    public ErrorExceptionExample(String errorCode, String errorMessage) {
         super(errorMessage);
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
     }
 
-    public ErrorRuntimeException(String errorCode, String errorMessage, String showMessage) {
+    public ErrorExceptionExample(String errorCode, String errorMessage, String showMessage) {
         super(showMessage);
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
@@ -54,20 +42,20 @@ public class ErrorRuntimeException extends RuntimeException {
     }
 
 
-    public ErrorRuntimeException(String showMessage, Throwable cause) {
+    public ErrorExceptionExample(String showMessage, Throwable cause) {
         super(showMessage, cause);
         this.showMessage = showMessage;
         this.cause = cause;
     }
 
-    public ErrorRuntimeException(String errorCode, String errorMessage, Throwable cause) {
+    public ErrorExceptionExample(String errorCode, String errorMessage, Throwable cause) {
         super(cause);
         this.errorCode = errorCode;
         this.cause = cause;
         this.errorMessage = errorMessage;
     }
 
-    public ErrorRuntimeException(String errorCode, String errorMessage, String showMessage, Throwable cause) {
+    public ErrorExceptionExample(String errorCode, String errorMessage, String showMessage, Throwable cause) {
         super(showMessage, cause);
         this.cause = cause;
         this.errorCode = errorCode;
@@ -110,11 +98,6 @@ public class ErrorRuntimeException extends RuntimeException {
         this.errorMessage = errorMessage;
     }
 
-    /**
-     * Description:获取异常信息
-     *
-     * @return
-     */
     public String getMessage() {
         String msg = super.getMessage();
         String causeMsg = null;
@@ -130,11 +113,6 @@ public class ErrorRuntimeException extends RuntimeException {
         return causeMsg;
     }
 
-    /**
-     * Description:获取异常堆栈信息
-     *
-     * @return
-     */
     public String getErrorStack() {
         ByteArrayOutputStream bo = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(bo);
@@ -143,7 +121,7 @@ public class ErrorRuntimeException extends RuntimeException {
         return errorStack;
     }
 
-    //todo 原来这里是最大的坑!!!人家父类是 fillInStackTrace(0);，所以StackTraceDepth深度是0!!!
+    //原来这里是最大的坑!!!人家父类是 fillInStackTrace(0);，所以StackTraceDepth深度是0!!!
     public Throwable fillInStackTrace() {
         return this;
     }

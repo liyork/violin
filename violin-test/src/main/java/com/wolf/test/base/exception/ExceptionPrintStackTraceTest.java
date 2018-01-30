@@ -1,4 +1,4 @@
-package com.wolf.test.base;
+package com.wolf.test.base.exception;
 
 import org.junit.Test;
 
@@ -7,8 +7,10 @@ import org.junit.Test;
  * printStackTrace方法:
  * 打印当前throwable的toString，
  * 获取当前throwable对应的StackTraceElement并打印
- * 执行cause的toString，StackTraceElement(可能有...)，链式调用下个cause
- * 所以整体看日志是倒过来打印的，最先发生的就是最后一个cause
+ * 执行cause的toString、StackTraceElement(可能有...)
+ * 链式调用下个cause...
+ * 谁先fillInStackTrace(0)谁最后打印
+ * 所以整体看日志是倒过来打印的，根源就是最后一个cause
  * <p>
  * 对于testSimpleException
  * 方法栈:top ---> bottom
@@ -34,12 +36,12 @@ import org.junit.Test;
  * @version 1.0
  * @since 1.0
  */
-public class ExceptionTest {
+public class ExceptionPrintStackTraceTest {
 
     //一个源异常,无Caused by:
 //	java.lang.RuntimeException: xxx
-//	at com.wolf.test.base.ExceptionTest.test4(ExceptionTest.java:48)
-//	at com.wolf.test.base.ExceptionTest.testSimpleException(ExceptionTest.java:43)
+//	at com.wolf.test.base.exception.ExceptionTest.test4(ExceptionTest.java:48)
+//	at com.wolf.test.base.exception.ExceptionTest.testSimpleException(ExceptionTest.java:43)
     @Test
     public void testSimpleException() {
         System.out.println("1111");
@@ -62,7 +64,7 @@ public class ExceptionTest {
         }
         //三个源异常，有两个Caused by:
 //		java.lang.RuntimeException: qqq
-//		at com.wolf.test.base.ExceptionTest.testCausedBy(ExceptionTest.java:57)
+//		at com.wolf.test.base.exception.ExceptionTest.testCausedBy(ExceptionTest.java:57)
 //		at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 //		at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 //		at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -91,12 +93,12 @@ public class ExceptionTest {
 //		at java.lang.reflect.Method.invoke(Method.java:601)
 //		at com.intellij.rt.execution.application.AppMain.main(AppMain.java:147)
 //		Caused by: java.lang.RuntimeException: x1
-//		at com.wolf.test.base.ExceptionTest.test1(ExceptionTest.java:67)
-//		at com.wolf.test.base.ExceptionTest.testCausedBy(ExceptionTest.java:55)
+//		at com.wolf.test.base.exception.ExceptionTest.test1(ExceptionTest.java:67)
+//		at com.wolf.test.base.exception.ExceptionTest.testCausedBy(ExceptionTest.java:55)
 //	... 27 more
 //		Caused by: java.lang.RuntimeException: x2
-//		at com.wolf.test.base.ExceptionTest.test2(ExceptionTest.java:73)
-//		at com.wolf.test.base.ExceptionTest.test1(ExceptionTest.java:65)
+//		at com.wolf.test.base.exception.ExceptionTest.test2(ExceptionTest.java:73)
+//		at com.wolf.test.base.exception.ExceptionTest.test1(ExceptionTest.java:65)
 //	... 28 more
 
     }
@@ -164,7 +166,7 @@ public class ExceptionTest {
     @Test
     public void testExtendRelation() {
         try {
-            new ExceptionTest().test3();
+            new ExceptionPrintStackTraceTest().test3();
         } catch (CustomException e) {
             System.out.println("222222");
         }
