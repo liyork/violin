@@ -1,0 +1,15 @@
+<binding xmlns:ns1="http://wolf.com/test/jibx" name="bind" package="com.wolf.test.jibx">
+  <namespace uri="http://wolf.com/test/jibx" default="elements"/>
+  <mapping abstract="true" type-name="ns1:account" class="com.wolf.test.jibx.Account">
+    <value style="attribute" name="id" field="id"/>
+    <value style="element" name="name" field="name" usage="optional"/>
+    <value style="element" name="email" field="email" usage="optional"/>
+    <value style="element" name="address" field="address" usage="optional"/>
+    <structure field="birthday" usage="optional" name="birthday">
+      <value style="element" name="birthday" field="birthday" usage="optional"/>
+    </structure>
+  </mapping>
+  <mapping class="com.wolf.test.jibx.Account" name="account">
+    <structure map-as="ns1:account"/>
+  </mapping>
+</binding>

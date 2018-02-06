@@ -16,6 +16,8 @@ class Person{
 	private static ThreadLocal<Integer> threadLocal = new ThreadLocal<Integer>(){
 		@Override
 		protected Integer initialValue() {
+			//每个线程里面有个map，get时会判断thread里面有没有map，没有则调用initialValue进行初始化，放入map
+			System.out.println("initialValue ..."+Thread.currentThread().getName());
 			return 0;
 		}
 	};

@@ -26,8 +26,8 @@ import java.util.concurrent.Executors;
 public class ThreadLocalTest {
 
     public static void main(String[] args) throws InterruptedException {
-//        testThreadLocalIsRight();
-        testIfNeedResetWhenUpdateProperty();
+        testThreadLocalIsRight();
+//        testIfNeedResetWhenUpdateProperty();
     }
 
     //测试每个线程互不影响，另外测试混合threadlocal和count++导致的问题
