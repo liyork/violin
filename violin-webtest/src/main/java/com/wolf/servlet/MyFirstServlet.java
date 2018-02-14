@@ -34,6 +34,7 @@ public class MyFirstServlet extends HttpServlet {
 				output(request, response);
 				//http://localhost:8080/webtest/myFirstServlet?username=abc&type=1
 				//Status Code:200 OK
+				//forward会将outputbuf清空了，内部跳转不执行filter
 				getServletContext().getRequestDispatcher("/secondServlet").forward(request, response);
 			} else if (type.equals("2")) {
 				//内部站点servlet：http://localhost:8080/webtest/myFirstServlet?username=abc&type=2

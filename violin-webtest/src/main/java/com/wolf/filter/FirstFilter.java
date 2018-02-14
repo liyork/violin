@@ -26,8 +26,11 @@ public class FirstFilter implements Filter {
 			//调用下一个filter或者servlet
 			chain.doFilter(request, response);
 		}else{
-			//如果什么也不做，浏览器返回200但是response什么也没有
-			System.out.println("filter error to errorPage...");
+			//HTTP/1.1 200 OK
+			//Server: Apache-Coyote/1.1
+			//Content-Length: 0
+			//Date: Tue, 13 Feb 2018 07:54:33 GMT
+			System.err.println("filter error to errorPage...");
 		}
 	}
 
