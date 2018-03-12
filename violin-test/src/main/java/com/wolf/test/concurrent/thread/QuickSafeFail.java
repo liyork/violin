@@ -1,4 +1,4 @@
-package com.wolf.test;
+package com.wolf.test.concurrent.thread;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class QuickSafeFail {
             }
         });
 
-        for(Integer integer : list) {
+        for (Integer integer : list) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -52,6 +52,10 @@ public class QuickSafeFail {
     }
 
     //基于拷贝原数组方式迭代
+    //CopyOnWriteArrayList表达的一些思想：
+    //1、读写分离，读和写分开
+    //2、最终一致性
+    //3、使用另外开辟空间的思路，来解决并发冲突
     private static void testSafeFail() {
         final List<Integer> list = new CopyOnWriteArrayList<>();
         list.add(1);
@@ -72,7 +76,7 @@ public class QuickSafeFail {
             }
         });
 
-        for(Integer integer : list) {
+        for (Integer integer : list) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
