@@ -21,6 +21,15 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * 不公平的语义就是获取锁时，不管以前有没有人排队，自己先试试获取锁，没有获取则排队
  * 公平的语义是获取锁时，看看前面如果有人排队，则自己直接进入队尾
+ *
+ * 队列中是否有数据
+ * h != t && ((s = h.next) == null || s.thread != Thread.currentThread());
+ * 队列不为空前提
+ * 1.head.next指向null也就是正在连接下一个
+ * 2.头结点不是当前线程
+ *
+ * lock就是try然后不行进入队列等待唤醒，唤醒时若是head则进行trylock。其他被意外唤醒的继续等待
+ * unlock就是把后继节点unpark
  * <br/> Created on 2017/2/4 13:44
  *
  * @author 李超
@@ -33,7 +42,7 @@ public class ReentrantLockTest {
     public static void main(String[] args) throws InterruptedException {
 //        testInterruptLock(true);
 //        testInterruptLock(false);
-        testTryLock(true);
+//        testTryLock(true);
 //        testTryLock(false);
 
 //        lock();
@@ -42,6 +51,8 @@ public class ReentrantLockTest {
 //        lockInterruptUnLock();
 //        testReentrant();
 //        testNormalLock();
+
+        lockShare();
     }
 
     public static void testInterruptLock(final boolean isCanInterrupt) throws InterruptedException {
@@ -162,6 +173,22 @@ public class ReentrantLockTest {
 
     public static void lock() throws InterruptedException {
         final Lock lock = new ReentrantLock();
+        //主线程上锁了
+        lock.lock();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //子线程lock是会一直等待，对interrupt不感冒
+                lock.lock();
+            }
+        });
+        thread.start();
+        Thread.sleep(2000);
+        thread.interrupt();
+    }
+
+    public static void lockShare() throws InterruptedException {
+        final Lock lock = new ReentrantLock(true);
         //主线程上锁了
         lock.lock();
         Thread thread = new Thread(new Runnable() {
