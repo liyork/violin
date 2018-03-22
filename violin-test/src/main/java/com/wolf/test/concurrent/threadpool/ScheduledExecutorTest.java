@@ -2,12 +2,17 @@ package com.wolf.test.concurrent.threadpool;
 
 import com.wolf.test.concurrent.thread.runnable.Cat;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * <p> Description: ScheduledExecutorService 优于timer，线程池比多个timer省资源
+ * 内部使用DelayedWorkQueue，组合了PriorityQueue功能
+ * 将runnable包装成ScheduledFutureTask，然后从DelayedWorkQueue中取执行完后则+period再放入队列
+ * <p>
+ * 由于DelayedWorkQueue是无长度队列则超时时间没用。
+ *
+ * 超时放弃机制：workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS)
+ * <p>
  * <p/>
  * Date: 2015/11/13
  * Time: 13:57
@@ -19,13 +24,21 @@ import java.util.concurrent.TimeUnit;
 public class ScheduledExecutorTest {
 
     public static void main(String[] args) {
-//		testBase();
-
-        testException();
+//        testBase();
+//		testDiff();
+//        testException();
+        testTimeout0();
     }
 
     private static void testBase() {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+        for (int i = 0; i < 10; i++) {
+            executorService.scheduleWithFixedDelay(new Cat(), 1, 20, TimeUnit.SECONDS);
+        }
+    }
+
+    private static void testDiff() {
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
         for (int i = 0; i < 1; i++) {
             //如果上一个任务晚了，就在上一个任务结束后再延迟2秒执行
             executorService.scheduleWithFixedDelay(new Cat(), 10, 20, TimeUnit.SECONDS);
@@ -54,5 +67,22 @@ public class ScheduledExecutorTest {
                 }
             }
         }, 2, 3, TimeUnit.SECONDS);
+    }
+
+    private static void testTimeout0() {
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 5, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<>(1));
+        for (int i = 0; i < 10; i++) {
+            threadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(Thread.currentThread().getName() + " is running");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 }

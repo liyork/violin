@@ -14,8 +14,13 @@ import java.util.concurrent.TimeUnit;
 public class DelayQueueTest {
 
     public static void main(String[] args) throws InterruptedException {
-        //testBase();
+        testBase();
 
+//        testTaskQueueDaemonThread();
+
+    }
+
+    private static void testTaskQueueDaemonThread() throws InterruptedException {
         TaskQueueDaemonThread taskQueueDaemonThread = TaskQueueDaemonThread.getInstance();
         taskQueueDaemonThread.init();
         taskQueueDaemonThread.put(4000, new Runnable() {
@@ -32,8 +37,6 @@ public class DelayQueueTest {
         });
 
         Thread.sleep(10000000);
-
-
     }
 
     private static void testBase() throws InterruptedException {
@@ -41,11 +44,12 @@ public class DelayQueueTest {
 
 
         for (int i = 0; i < 10; i++) {
-            delayQueue.add(new Message(i, System.currentTimeMillis()+i*2000));
+            long startTime = System.currentTimeMillis() + i * 2000;
+            delayQueue.add(new Message(i, startTime));
         }
 
         while (!delayQueue.isEmpty()) {
-            Delayed take = delayQueue.take();//阻塞
+            Delayed take = delayQueue.take();//队列为空则阻塞，否则取出并awaitNanos然后再取
             System.out.println(take);
         }
     }
@@ -62,7 +66,7 @@ public class DelayQueueTest {
 
         @Override
         public long getDelay(TimeUnit unit) {
-            return unit.convert(startTime - System.nanoTime(), TimeUnit.NANOSECONDS);
+            return unit.convert(startTime - System.currentTimeMillis(), TimeUnit.NANOSECONDS);
         }
 
         @Override
