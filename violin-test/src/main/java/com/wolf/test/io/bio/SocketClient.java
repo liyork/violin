@@ -30,9 +30,12 @@ public class SocketClient {
             int connectionTimeout = 2000;
             //向本机的4700端口发出客户请求
             Socket socket = new Socket();
+
             socket.connect(new InetSocketAddress("127.0.0.1", 4700), connectionTimeout);
+            System.out.println("socket connect ...");
             //读取数据超时soTimeout
-            socket.setSoTimeout(2000);
+            socket.setSoTimeout(4000);//4s若未从服务端读取内容则主动关闭连接
+
             //由Socket对象得到输出流，并构造PrintWriter对象
             PrintWriter pwToServer = new PrintWriter(socket.getOutputStream());
             //由Socket对象得到输入流，并构造相应的BufferedReader对象
@@ -40,7 +43,9 @@ public class SocketClient {
 
             //由系统标准输入设备构造BufferedReader对象
             BufferedReader brFromSystemIn = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("prepare readline  ...");
             String readLine = brFromSystemIn.readLine(); //从系统标准输入读入一字符串
+            System.out.println("after readline  ...");
 
             //若从标准输入读入的字符串为 "bye"则停止循环
             while(!readLine.equals("bye")) {
@@ -64,7 +69,8 @@ public class SocketClient {
             socket.close(); //关闭Socket
 
         } catch (Exception e) {
-            System.out.println("Error" + e); //出错，则打印出错信息
+            e.printStackTrace();
+//            System.out.println("Error" + e); //出错，则打印出错信息
 
         }
     }

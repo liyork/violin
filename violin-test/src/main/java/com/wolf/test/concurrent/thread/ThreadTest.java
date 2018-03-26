@@ -1,7 +1,8 @@
 package com.wolf.test.concurrent.thread;
 
-import com.wolf.test.concurrent.thread.runnable.ThreadInterruptJoinB;
 import com.wolf.test.concurrent.thread.runnable.ThreadJoinA;
+import com.wolf.test.concurrent.thread.runnable.ThreadJoinB;
+import com.wolf.utils.BaseUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,14 +10,18 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 线程简单测试
- *
+ * <p>
  * 在JAVA环境中，线程Thread有如下几个状态：
- *
+ * <p>
  * 1，新建状态
  * 2，就绪状态
  * 3，运行状态
  * 4，阻塞状态
  * 5，死亡状态
+ * <p>
+ * sychronized保证多线程访问共享数据的同步性，即先来后到
+ * <p>
+ * 线程执行是很随机的，若有释放锁的，竞争cpu不一定会给哪个线程执行片段，所以不要指望相互竞争的线程有哪些顺序
  * Date: 2015/9/23
  * Time: 17:02
  *
@@ -29,24 +34,39 @@ public class ThreadTest {
     private static Object monitor = new Object();
 
     public static void main(String[] args) throws InterruptedException {
+//        testStart();
+//        testThis();
+//        testIsAlive();
+
 //        testDaemon();
 //        testJoin1();
 //        testJoin2();
 //        testJoin3();
 //        testSynMethod();
 //        testWaitShouldInSynScope();
+//        testWaitTime();
 //        testWaitAndSleep();
 //        testLocalVariable();
-//        testYield();
-        testUncaughtExceptionHandler();
+        testYield();
+//        testUncaughtExceptionHandler();
+//        testDefaultUncaughtExceptionHandler();
+//        testAllHandleException();
+
+//        testDirtyRead();
+//        testExceptionReleaseLock();
+
+//        testMultiSynJudge();
+//        testStringPool();
+
+//        testGoodSuspendResume();
     }
+
 
     /**
      * 守护线程也叫精灵线程，当程序只剩下守护线程的时候程序就会退出。JVM会在所有的非守护线程（用户线程）执行完毕后退出；
      * main线程是用户线程；仅有main线程一个用户线程执行完毕，不能决定JVM是否退出，也即是说main线程并不一定是最后一个退出的线程。
      * 守护线程的作用：类似在后台静默执行，比如JVM的垃圾回收机制, 这个就是一个守护线程。 而非守护线程则不会。
      * main以及其他创建的线程都是非守护线程
-     * thread.setDaemon(true)必须在thread.start()之前设置
      */
     public static void testDaemon() {
         System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
@@ -54,28 +74,41 @@ public class ThreadTest {
             @Override
             public void run() {
                 System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
+
             }
         }, "first");
-        thread.setDaemon(true);
+        thread.setDaemon(true);//thread.setDaemon(true)必须在thread.start()之前设置
         thread.start();
 
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
+                try {
+                    for (int i = 0; i < 10; i++) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().isDaemon());
+                    }
+                } finally {
+                    System.out.println("finally not always run。。。");//Daemon线程不一定执行,不能依靠finally释放资源
+                }
             }
         }, "second");
+        thread1.setDaemon(true);//打开则程序直接退出，不会等到thread1执行完run方法
         thread1.start();
     }
 
-
+    //等待一个线程执行完再执行。底层就是用了wait+notify(线程结束自动)机制
     public static void testJoin1() throws InterruptedException {
         System.out.println("before testJoin...");
 
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0; i < 100; i++) {
+                for (int i = 0; i < 100; i++) {
                     System.out.println(i);
                 }
             }
@@ -83,7 +116,8 @@ public class ThreadTest {
 
         thread.start();
         //优先执行thread，后才执行main,可以注掉这行试试
-        thread.join();
+        thread.join();//主线程调用thread对象的wait进行等待,是个同步方法。当线程执行完后自动调用notifyall
+//        thread.join(10000);带超时时间
 
         System.out.println("main stop ");
 
@@ -91,11 +125,11 @@ public class ThreadTest {
 
     public static void testJoin2() {
         Thread t1 = new Thread(new ThreadJoinA(), "threadname1");
-        Thread t2 = new Thread(new ThreadInterruptJoinB(t1), "threadname2");
+        Thread t2 = new Thread(new ThreadJoinB(t1), "threadname2");
         t1.start();
         t2.start();
 
-        //t1.join在t2中，不会影响main
+        //在t2中线程中t1.join，不会影响main
         System.out.println("main ...");
     }
 
@@ -106,7 +140,7 @@ public class ThreadTest {
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0; i < 100; i++) {
+                for (int i = 0; i < 100; i++) {
                     System.out.println("xxxx==>" + i);
                 }
             }
@@ -115,7 +149,7 @@ public class ThreadTest {
         final Thread thread2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0; i < 100; i++) {
+                for (int i = 0; i < 100; i++) {
                     System.out.println("yyyy==>" + i);
                 }
             }
@@ -134,7 +168,8 @@ public class ThreadTest {
     }
 
     /**
-     * 测试两个线程访问一个对象的两个同步方法，成员方法锁定的是当前对象，静态方法锁定的是类class，不能同时进行,也不区分方法修饰符
+     * 测试两个线程访问一个对象的两个同步方法，成员方法锁定的是当前对象，静态方法锁定的是类class，
+     * 只要方法有synchronized则要先获取这个对象的锁才能访问，不能并行。不区分方法修饰符
      */
     private static void testSynMethod() {
 
@@ -163,10 +198,30 @@ public class ThreadTest {
     }
 
     //wait方法需要在同步范围内被调用，否则IllegalMonitorStateException
+    //当前线程在某个对象上等待。
     private static void testWaitShouldInSynScope() throws InterruptedException {
         monitor.wait();
     }
 
+    //锁自动释放
+    public static void testWaitTime() {
+        Object lock = new Object();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (lock) {
+                    try {
+                        System.out.println(this);//com.wolf.test.concurrent.thread.ThreadTest$9@7c406c0
+                        lock.wait(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+        System.out.println("main...");
+    }
 
     public static void testWaitAndSleep() {
         final ExecutorService exec = Executors.newFixedThreadPool(4);
@@ -191,7 +246,7 @@ public class ThreadTest {
             }
         };
 
-        for(int index = 0; index < 4; index++) {
+        for (int index = 0; index < 4; index++) {
             exec.submit(add);
             try {
                 Thread.sleep(1);
@@ -214,7 +269,7 @@ public class ThreadTest {
             }
         };
 
-        for(int index = 0; index < 20; index++) {
+        for (int index = 0; index < 20; index++) {
             exec.submit(add);
             try {
                 Thread.sleep(1);
@@ -231,15 +286,15 @@ public class ThreadTest {
         System.out.println(a);
     }
 
-
+    //在适当时机让出当前cpu，给与其他线程执行机会
     private static void testYield() {
         final ExecutorService exec = Executors.newFixedThreadPool(2);
 
         final Runnable add = new Runnable() {
             public void run() {
-                for(int i = 0; i < 30; i++) {
-                    System.out.println(Thread.currentThread().getName() + "test yield " + i);
-                    if(i == 29) {
+                for (int i = 0; i < 30; i++) {
+                    if (i == 10) {
+                        System.out.println(Thread.currentThread().getName() + "test yield " + i);
                         //让出当前线程，与其他线程一起竞争
                         Thread.yield();
                     }
@@ -256,6 +311,7 @@ public class ThreadTest {
     }
 
 
+    //某个异常的默认异常处理器
     public static void testUncaughtExceptionHandler() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -290,5 +346,329 @@ public class ThreadTest {
         thread.start();
     }
 
+    //所有线程的默认异常处理器
+    //defaultUncaughtExceptionHandler是静态属性，所以设定后全局有效
+    public static void testDefaultUncaughtExceptionHandler() {
+
+        MyThread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+
+                System.out.println("xxxxxx,message:" + e.getMessage());
+            }
+        });
+
+        MyThread thread = new MyThread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("111");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                throw new RuntimeException("you wenti 1");
+
+            }
+        });
+
+        MyThread2 thread2 = new MyThread2(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("111");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                throw new RuntimeException("you wenti 2");
+
+            }
+        });
+
+        thread.start();
+
+        thread2.start();
+    }
+
+    //线程设定thread.setUncaughtExceptionHandler则只执行这个
+    //若未设定，则使用Thread.setDefaultUncaughtExceptionHandler以及线程组的uncaughtException
+    public static void testAllHandleException() {
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                System.out.println("xxxxxx,message:" + e.getMessage());
+            }
+        });
+
+        ThreadGroupTest.MyThreadGroup myThreadGroup = new ThreadGroupTest.MyThreadGroup("myThreadGroup");
+
+        Thread thread = new Thread(myThreadGroup, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("111");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                throw new RuntimeException("you wenti ");
+
+            }
+        });
+
+//        thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(Thread t, Throwable e) {
+//                System.out.println("xxxxxx");
+//                e.printStackTrace();
+//            }
+//        });
+
+        thread.start();
+    }
+
+    private static class MyThread extends Thread {
+
+        public MyThread(Runnable target) {
+            super(target);
+        }
+    }
+
+    private static class MyThread2 extends Thread {
+
+        public MyThread2(Runnable target) {
+            super(target);
+        }
+    }
+
+
+    private static void testStart() {
+        new Thread() {
+            @Override
+            public void run() {
+                System.out.println("1111");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();//会调用run方法,如果有target则执行target.run,否则执行重写了run这个
+    }
+
+    private static void testThis() {
+        CountOperate target = new CountOperate();
+        Thread thread = new Thread(target);
+        thread.setName("A");
+        thread.start();
+    }
+
+    public static class CountOperate extends Thread {
+
+        public CountOperate() {
+            System.out.println("constructor CountOperate");
+            System.out.println("Thread.currentThread().getName():" + Thread.currentThread().getName());
+            System.out.println("this.getName():" + this.getName());//自动分配名称，只不过是继承了thread当成runnable用！
+        }
+
+        @Override
+        public void run() {
+            System.out.println("run CountOperate");
+            System.out.println("Thread.currentThread().getName():" + Thread.currentThread().getName());
+            System.out.println("this.getName():" + this.getName());
+        }
+    }
+
+    //准备---未执行完，都是true
+    private static void testIsAlive() {
+        Thread thread = new Thread(() ->
+                System.out.println("run...")
+        );
+        System.out.println("thread.isAlive:" + thread.isAlive());
+        thread.start();
+        System.out.println("thread.isAlive:" + thread.isAlive());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("thread.isAlive:" + thread.isAlive());
+    }
+
+
+    //若读不加synchronized则可以与set并发执行，那么容易产生中间结果。synchronized可能被认为是原子的，里面的内容有相互依赖性
+    private static void testDirtyRead() throws InterruptedException {
+
+        SynMethodClass synMethodClass = new SynMethodClass();
+
+        Thread thread = new Thread(() -> {
+            System.out.println("run...");
+            synMethodClass.setValue(33, 44);
+        }
+        );
+
+        thread.start();
+        Thread.sleep(10);
+
+        synMethodClass.printValue();
+    }
+
+    private static void testExceptionReleaseLock() throws InterruptedException {
+
+        SynMethodClass synMethodClass = new SynMethodClass();
+
+        Thread thread = new Thread(() -> {
+            System.out.println("thread run...");
+            try {
+                synMethodClass.exceptionMethod();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        );
+
+        Thread thread2 = new Thread(() -> {
+            System.out.println("thread run...");
+            synMethodClass.noExceptionMethod();
+        }
+        );
+
+        thread.start();
+        thread2.start();
+    }
+
+    //即使Vector的add是同步的，但是由于多个线程执行顺序是未知的，这时掺杂了其他判断条件的情况下若未整体同步，则结果不正确。
+    //关键由于业务对整体有同步限制，单细粒度同步无用。
+    private static void testMultiSynJudge() throws InterruptedException {
+
+        SynMethodClass synMethodClass = new SynMethodClass();
+
+        Thread thread = new Thread(() -> {
+            System.out.println("thread1 run...");
+            try {
+                synMethodClass.multiJudge("xx");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        );
+
+
+        Thread thread2 = new Thread(() -> {
+            System.out.println("thread2 run...");
+            try {
+                synMethodClass.multiJudge("yy");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        );
+
+        thread.start();
+        thread2.start();
+
+        thread.join();
+        thread2.join();
+
+
+        System.out.println(synMethodClass.vector.size());
+    }
+
+    //string有些被池化，同步时要小心。
+    private static void testStringPool() throws InterruptedException {
+
+        SynMethodClass synMethodClass = new SynMethodClass();
+
+        Thread thread = new Thread(() -> {
+            System.out.println("thread1 run...");
+            try {
+                synMethodClass.stringPool("xx");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        );
+
+
+        Thread thread2 = new Thread(() -> {
+            System.out.println("thread2 run...");
+            try {
+                synMethodClass.stringPool("xx");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        );
+
+        thread.start();
+        thread2.start();
+
+        thread.join();
+        thread2.join();
+    }
+
+    //若同步使用对象属性变化，则不影响同步效果，底层应该使用的对象特有部分作为锁标识
+    //若同步块中改变了锁对象，则其他线程再进来时使用的是不同锁。这个是否有意义应用??？
+
+
+    //原生suspend和resume可能产生意外现象：先resume了然后suspend，但是suspend的线程会一直占用锁线程还不退出而是挂起而且state还是runnable
+    //改进后也会产生先resume后suspend，但是会释放锁，而且状态是watting
+    //应用场景可能是，某个线程觉得太累了，需要休息一下然后别人再唤醒他。或者负载太高，需要自己休息暂停，把任务给别人
+    private static void testGoodSuspendResume() throws InterruptedException {
+
+        GoodSuspend target = new GoodSuspend();
+        Thread thread = new Thread(target);
+        thread.start();
+
+        Thread.sleep(3000);
+        target.suspend();
+        Thread.sleep(5000);
+        target.resume();
+    }
+
+    private static class GoodSuspend implements Runnable {
+
+        volatile boolean isNeedSuspend;
+
+        public void suspend() {
+            isNeedSuspend = true;
+        }
+
+        public void resume() {
+            synchronized (this) {
+                this.notify();
+            }
+            isNeedSuspend = false;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                System.out.println(Thread.currentThread().getName()+" is running...");
+
+                BaseUtils.simulateLongTimeOperation(800000);
+                System.out.println(Thread.currentThread().getName()+" after simulateLongTimeOperation...");
+
+                while (isNeedSuspend) {
+                    System.out.println(Thread.currentThread().getName()+" run isNeedSuspend..."+System.currentTimeMillis());
+                    synchronized (this) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                System.out.println(Thread.currentThread().getName()+" after while isNeedSuspend..."+System.currentTimeMillis());
+
+            }
+        }
+    }
 
 }

@@ -12,6 +12,9 @@ import java.util.concurrent.*;
  * 由于DelayedWorkQueue是无长度队列则超时时间没用。
  *
  * 超时放弃机制：workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS)
+ *
+ * * scheduleWithFixedDelay在上一个任务结束之后延迟执行
+ * scheduleAtFixedRate在上一个任务开始执行后延迟执行
  * <p>
  * <p/>
  * Date: 2015/11/13
@@ -31,7 +34,8 @@ public class ScheduledExecutorTest {
     }
 
     private static void testBase() {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+        //corePoolSize也仅仅是提供多个线程执行给定任务
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
         for (int i = 0; i < 10; i++) {
             executorService.scheduleWithFixedDelay(new Cat(), 1, 20, TimeUnit.SECONDS);
         }
@@ -40,9 +44,9 @@ public class ScheduledExecutorTest {
     private static void testDiff() {
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
         for (int i = 0; i < 1; i++) {
-            //如果上一个任务晚了，就在上一个任务结束后再延迟2秒执行
+            //如果上一个任务晚了，就在上一个任务结束后再延迟2秒执行(即等待5s后再等2s，那么间隔就是7s)
             executorService.scheduleWithFixedDelay(new Cat(), 10, 20, TimeUnit.SECONDS);
-            //如果上一个任务晚了，就在上一个任务结束马上执行
+            //如果上一个任务晚了，就在上一个任务结束马上执行(即等待5秒后马上执行，那么间隔就是5s)
             //executorService.scheduleAtFixedRate(new Cat(), 1, 2, TimeUnit.SECONDS);
         }
     }

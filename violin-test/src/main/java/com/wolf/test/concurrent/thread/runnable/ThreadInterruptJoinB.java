@@ -22,11 +22,11 @@ public class ThreadInterruptJoinB implements Runnable {
     public void run() {
         System.out.println("tb ...");
         try {
-            //t1加入，则先执行t1,t1执行完后再执行后面
+            //t1只要isAlive就会等待在这里
             t1.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("ThreadTesterB...");
+        System.out.println("ThreadInterruptJoinB...");
     }
 }

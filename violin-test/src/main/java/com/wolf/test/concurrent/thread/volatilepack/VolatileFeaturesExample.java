@@ -10,8 +10,8 @@ import java.util.Map;
  *
  *
  * 理解volatile特性的一个好方法是：把对volatile变量的单个读/写，看成是使用同一个监视器锁对这些单个读/写操作做了同步。
- * 监视器锁的happens-before规则保证释放监视器和获取监视器的两个线程之间的内存可见性，这意味着对一个volatile变量的读，
- * 总是能看到（任意线程）对这个volatile变量最后的写入
+ * 监视器锁的happens-before规则保证释放监视器和获取监视器的两个线程之间的内存可见性，写后的读要等待写完成。
+ * 这意味着对一个volatile变量的读，总是能看到（任意线程）对这个volatile变量最后的写入,synchronized同样保证内存可见性语义。
  *
  * 从JSR-133开始，volatile变量的写-读可以实现线程之间的通信。
  * <br/> Created on 2017/2/23 8:33

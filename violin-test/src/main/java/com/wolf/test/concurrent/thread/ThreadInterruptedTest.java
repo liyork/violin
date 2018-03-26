@@ -33,8 +33,8 @@ public class ThreadInterruptedTest {
 //        testInterrupted();
 //        testInterruptState();
 //        testIOReadInterrupt();
-//        testInterruptJoin();
-        testInterruptDiff();
+        testInterruptJoin();
+//        testInterruptDiff();
     }
 
     private static void testBeforeStartInterrupt() {
@@ -90,21 +90,10 @@ public class ThreadInterruptedTest {
 
         final ThreadInterruptedTest threadInterruptedTest = new ThreadInterruptedTest();
 
-        final Thread thread1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                threadInterruptedTest.test1();
-            }
-        });
-
-        Thread thread2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                threadInterruptedTest.test2(thread1);
-            }
-        });
-
+        final Thread thread1 = new Thread(threadInterruptedTest::test1);
         thread1.start();
+
+        Thread thread2 = new Thread(() -> threadInterruptedTest.test2(thread1));
 
         try {
             Thread.sleep(1000);
@@ -115,23 +104,26 @@ public class ThreadInterruptedTest {
         thread2.start();
     }
 
+    // 小心锁定的问题.wait会释放锁
     private synchronized void test1() {
         System.out.println("test1...");
         try {
+            System.out.println("wait before...");
             this.wait();
+            System.out.println("wait after...");
         } catch (InterruptedException e) {
+            System.out.println("wait catch...");
             e.printStackTrace();
         }
     }
 
-    // 小心锁定的问题.wait会释放锁,
-    // 当对等待中的线程调用interrupt()时(注意是等待的线程调用其自己的interrupt()),
+    // 当对等待中的线程调用interrupt()时(注意是对等待的线程调用其interrupt()),
     private synchronized void test2(final Thread thread1) {
         System.out.println("test2...");
         thread1.interrupt();
         System.out.println(22222);
 
-        // 被打断线程会先重新获取锁定,再抛出异常
+        // 由于此方法有synchronized，所以被打断线程会先重新获取锁定,再抛出异常
         //test1中wait需要等到这里4秒过后释放锁，test1中wait才能抛出异常
         try {
             Thread.sleep(4000);
@@ -209,14 +201,14 @@ public class ThreadInterruptedTest {
         }
         System.out.println("2222");
         //这里终止t1没用，需要终止t2才可以，不让t2等t1了,直接走自己下面代码吧,t1一会自己走完就完了
-        //t1.interrupt();
-        t2.interrupt();
+//        t1.interrupt();
+        t2.interrupt();//终止是对join方法操作的。
         System.out.println("3333");
     }
 
     /**
-     * Thread.interrupted() 会清除标记并判断当前是否被打断
-     * new Thread().isInterrupted(); 不会清除标记并判断是否被打断
+     * Thread.interrupted() 判断当前是否被打断并清除标记
+     * new Thread().isInterrupted(); 判断是否被打断但不会清除标记
      */
     public static void testInterruptDiff() {
         Thread thread1 = new Thread(new Runnable() {
@@ -241,5 +233,8 @@ public class ThreadInterruptedTest {
         thread2.start();
         thread1.interrupt();
         thread2.interrupt();
+
+        //判断当前线程(main)是否被中断，使用Thread.interrupted()
+        thread1.interrupted();
     }
 }

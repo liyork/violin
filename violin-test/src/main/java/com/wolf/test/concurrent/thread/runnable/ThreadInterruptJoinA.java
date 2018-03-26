@@ -17,6 +17,6 @@ public class ThreadInterruptJoinA implements Runnable {
 	@Override
 	public void run() {
 		BaseUtils.simulateLongTimeOperation(7000000);
-		System.out.println("ThreadTesterC...");
+		System.out.println("ThreadInterruptJoinA...");
 	}
 }

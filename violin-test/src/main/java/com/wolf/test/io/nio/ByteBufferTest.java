@@ -45,7 +45,7 @@ public class ByteBufferTest {
 
         buffer.flip();//limit=pos,pos=0
         readBuffer(buffer);
-        //pos=0,mark = -1当pos不是最后一个元素时使用
+        //pos=0,mark = -1,由于flip已经设定limit，这里倒回pos进行重新读
         buffer.rewind();
         readBuffer(buffer);
         //  position = 0; limit = capacity;
@@ -354,4 +354,15 @@ public class ByteBufferTest {
         raf.close();
     }
 
+    @Test
+    public void testTwoFlip() throws Exception {
+        ByteBuffer wrap = ByteBuffer.wrap("abc".getBytes("utf-8"));
+
+        System.out.println("position: "+wrap.position()+",limit:"+wrap.limit()+",capacity:"+wrap.capacity()+",remaining:"+wrap.remaining());
+        wrap.flip();
+        System.out.println("position: "+wrap.position()+",limit:"+wrap.limit()+",capacity:"+wrap.capacity()+",remaining:"+wrap.remaining());
+        wrap.flip();
+        System.out.println("position: "+wrap.position()+",limit:"+wrap.limit()+",capacity:"+wrap.capacity()+",remaining:"+wrap.remaining());
+
+    }
 }

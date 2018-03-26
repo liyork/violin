@@ -38,14 +38,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 		return this.submittedTasksCount ;
 	}
 	
-	//重写execute方法
 	@Override
 	public void execute(Runnable command) {
 		submittedTasksCount.incrementAndGet();
 		super.execute(command);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Override
 	protected void afterExecute(Runnable r, Throwable t) {
 		//执行完毕减1
@@ -61,7 +59,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 			
 		}
 	}
-	@SuppressWarnings("rawtypes")
+
+	@Override
+	protected void terminated() {
+		System.out.println("ThreadPoolExecutorExtend terminated");
+	}
+
 	@Override
 	protected void beforeExecute(Thread t, Runnable r) {
 		
@@ -79,7 +82,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 	@Override
 	protected <T> RunnableFuture<T> newTaskFor(
 			Callable<T> callable) {
-		// TODO Auto-generated method stub
 		return new CommonFutureTask<T>(callable);
 	}
 	@Override

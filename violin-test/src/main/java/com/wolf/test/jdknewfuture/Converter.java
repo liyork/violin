@@ -1,4 +1,4 @@
-package com.wolf.test.jdkfuture;
+package com.wolf.test.jdknewfuture;
 
 /**
  * Description:单方法接口，可以使用lambda表达式

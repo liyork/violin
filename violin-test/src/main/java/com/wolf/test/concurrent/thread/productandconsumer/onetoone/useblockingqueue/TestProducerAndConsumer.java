@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * 5 共享空间空时消费者不能继续消费
  * 6 共享空间满时生产者不能继续生产
  *
- * LinkedBlockingQueue内部有reentrantlock保证
+ * LinkedBlockingQueue内部有reentrantlock保证，即同一时间只能有一个生产者或消费者操作
  * <p/>
  * Date: 2016/6/12
  * Time: 12:58

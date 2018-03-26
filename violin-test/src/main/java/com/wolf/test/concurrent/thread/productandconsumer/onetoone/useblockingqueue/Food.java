@@ -12,14 +12,35 @@ package com.wolf.test.concurrent.thread.productandconsumer.onetoone.useblockingq
  */
 public class Food {
 
+	private int id;
 	private String name;
 
-	String getName() {
+	public String getName() {
 		return name;
 	}
 
-	Food(String name){
+	public Food() {
+	}
+
+	public Food(int id){
+		this.id = id;
+		System.out.println("生产"+id);
+	}
+
+	public Food(String name){
 		this.name = name;
-		System.out.println("生产"+name);
+		System.out.println("生产"+id);
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

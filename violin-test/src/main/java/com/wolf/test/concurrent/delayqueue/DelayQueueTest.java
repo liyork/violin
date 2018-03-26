@@ -5,7 +5,7 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Description:
+ * Description:内部有PriorityQueue保证大小顺序
  * <br/> Created on 2018/3/13 10:22
  *
  * @author 李超
@@ -23,16 +23,16 @@ public class DelayQueueTest {
     private static void testTaskQueueDaemonThread() throws InterruptedException {
         TaskQueueDaemonThread taskQueueDaemonThread = TaskQueueDaemonThread.getInstance();
         taskQueueDaemonThread.init();
-        taskQueueDaemonThread.put(4000, new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("444444");
-            }
-        });
         taskQueueDaemonThread.put( 6000, new Runnable() {
             @Override
             public void run() {
                 System.out.println("66666");
+            }
+        });
+        taskQueueDaemonThread.put(4000, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("444444");
             }
         });
 

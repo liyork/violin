@@ -89,7 +89,13 @@ public class ObjectForTest {
 	}
 
 	private enum EnumForTest{
-		A;
+		A(1);
+
+		private int a ;
+		EnumForTest(int i) {
+			System.out.println("invoke constructor");//第一次使用时自动调用构造方法
+			this.a = i;
+		}
 
 		@Override
 		public String toString() {
@@ -100,6 +106,8 @@ public class ObjectForTest {
 	public static void main(String[] args) {
 		EnumForTest a = EnumForTest.A;
 		System.out.println(a.toString());
+		EnumForTest a2 = EnumForTest.A;
+		System.out.println(a2.toString());
 	}
 
 }

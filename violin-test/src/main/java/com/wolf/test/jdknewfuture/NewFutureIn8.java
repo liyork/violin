@@ -1,4 +1,4 @@
-package com.wolf.test.jdkfuture;
+package com.wolf.test.jdknewfuture;
 
 import java.time.Clock;
 

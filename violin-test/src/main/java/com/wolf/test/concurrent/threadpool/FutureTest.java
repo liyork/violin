@@ -20,7 +20,8 @@ public class FutureTest {
 
 //        testCommon();
 //        testInterrupted();
-        testRunnableResult();
+//        testRunnableResult();
+        testGetTimeout();
     }
 
     private static void testCommon() {
@@ -53,6 +54,28 @@ public class FutureTest {
         System.out.println("failReason : " + failReason);
     }
 
+    //无返回结果，一定要是Callable
+    public static void testRunnableResult() {
+        ExecutorService exec = Executors.newCachedThreadPool();
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("in running ...");
+            }
+        };
+        Future<?> future = exec.submit(runnable);
+        Object o = null;
+        try {
+            o = future.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        System.out.println(o);//null
+        System.out.println(future.isDone());//true
+    }
 
     private static void testInterrupted() {
         ExecutorService exec = Executors.newCachedThreadPool();
@@ -91,23 +114,30 @@ public class FutureTest {
         exec.shutdownNow();
     }
 
-    //无返回结果，一定要是Callable
-    public static void testRunnableResult() {
+    //等待一定时间超时则抛出异常或者被interrupt，或正常返回。
+    public static void testGetTimeout() {
         ExecutorService exec = Executors.newCachedThreadPool();
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(600000000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("in running ...");
             }
         };
         Future<?> future = exec.submit(runnable);
         Object o = null;
         try {
-            o = future.get();
+            o = future.get(3000,TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
             e.printStackTrace();
         }
         System.out.println(o);//null

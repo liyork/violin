@@ -15,8 +15,8 @@ public class SemaphoreTest {
 
     public static void main(String[] args) {
 
-//        baseTest();
-        baseTest1();
+        baseTest();
+//        baseTest1();
     }
 
     private static void baseTest() {
@@ -34,11 +34,16 @@ public class SemaphoreTest {
                         System.out.println();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }finally {
+                        semaphore.release();
                     }
-                    semaphore.release();
                 }
             });
         }
+
+        System.out.println("semaphore.availablePermits():"+semaphore.availablePermits());
+        System.out.println("semaphore.getQueueLength():"+semaphore.getQueueLength());
+        System.out.println("semaphore.hasQueuedThreads():"+semaphore.hasQueuedThreads());
 
         executorService.shutdown();
     }

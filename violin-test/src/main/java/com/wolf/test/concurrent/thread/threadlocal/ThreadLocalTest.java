@@ -7,13 +7,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * <p> Description:threadLocal专属每个独立线程，不会相互干涉
+ * <p> Description:threadLocal解决变量在不同线程间的隔离性
  * 内部使用原理：
- * threadLocal只是用来操作每个线程的工具，每个线程内部都有个map(这个是threadLocal内部定义的数据)用来存放每个threadlocal对象的
+ * threadLocal只是用来操作每个线程的工具，内部有map结构(仅仅是结构)，但是map对象在每个线程内(key是当前threadlocal，value是值)。
+ * 关联关系在thread中，可以有多个threadlocal--值。每个threadlocal只关联一个值。
+ *
  * threadLocal的get方法，先从当前thread获取其内部的map，然后操作这个map引用。
  * 查找map中的threadLocal使用开方查找而非链表查找
  *
  * 注：每个线程用完threadlocal需要清除掉，不然下个线程有可能是通过线程池获取的，还保留着上次的信息
+ *
+ * 为什么关系要放在thread内呢？若放在threadlocal中，势必要进行同步操作，因为写读有并发问题。
+ * 那么放thread中就没有这种情况。可能就有些浪费资源，多个map
  *
  * <p/>
  * Date: 2015/9/28

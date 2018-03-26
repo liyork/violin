@@ -60,7 +60,7 @@ public class Producer implements Runnable {
                 }
             }
         } else {
-            //容器中还有容量,把面包放到容器内,这里可能会有丢失
+            //容器中还有容量,把面包放到容器内,这里可能会有丢失？有锁保护为什么有丢失？
             boolean result = container.add(bread);
             System.out.println("Producer:" + result);
         }

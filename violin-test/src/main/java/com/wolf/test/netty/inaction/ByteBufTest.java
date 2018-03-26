@@ -5,7 +5,11 @@ import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.junit.Test;
 
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +17,13 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Description:
+ * Description:相比较nio使用position，通过两个位置指针操作，互不影响
+ * 在写入时检查容量，需要时动态扩容
+ * 堆内存的bytebuffer进行socket的io操作时需要将内存复制到内核的channel中。对外内存bytebuffer就不需要拷贝
+ * 最佳实践：io通信线程的读写缓冲区用directbytebuf，后端业务消息编解码使用heapbytebuf
+ * 基于对象池的bytebuf可以循环利用，提升内存的使用效率，降低由于高负载、大并发导致的频繁gc。
+ * <p>
+ * <p>
  * <br/> Created on 9/21/17 8:31 AM
  *
  * @author 李超
@@ -37,10 +47,10 @@ public class ByteBufTest {
             byte[] array = byteBuf.array();
             int offset = byteBuf.arrayOffset();
             int length = byteBuf.readableBytes();
-            System.out.println(offset + " " + length+" "+array.length);
+            System.out.println(offset + " " + length + " " + array.length);
 
             for (int i = 0; i < byteBuf.capacity(); i++) {
-                System.out.println((char)byteBuf.getByte(i));//does not modify readerIndex or writerIndex of this buffer.
+                System.out.println((char) byteBuf.getByte(i));//does not modify readerIndex or writerIndex of this buffer.
             }
         }
         return byteBuf;
@@ -80,6 +90,9 @@ public class ByteBufTest {
     }
 
     //if you need to free up memory as soon as possible.Such an operation isn t free and may affect performance
+    //discardReadBytes由于有数组拷贝，是牺牲性能时间换取空间。如果面临需要扩容时也会拷贝+空间，所以那时使用这个合适一些，减少了空间
+    //writerIndex - readerIndex = length,writeindex位于准备写入的位置
+    // The components at positions srcPos through srcPos+length-1 in the source array
     @Test
     public void testDiscardReadBytes() throws UnsupportedEncodingException {
         ByteBuf byteBuf = Unpooled.buffer();
@@ -92,11 +105,11 @@ public class ByteBufTest {
         System.out.println(byteBuf.readInt());
         System.out.println(byteBuf.readInt());
 
-        System.out.println(byteBuf.arrayOffset()+" "+byteBuf.readerIndex()+" "+byteBuf.writerIndex());
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
 
-        byteBuf.discardReadBytes();//移除已经读的部分
+        byteBuf.discardReadBytes();//将剩余的字节拷贝前移
 
-        System.out.println(byteBuf.arrayOffset()+" "+byteBuf.readerIndex()+" "+byteBuf.writerIndex());
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
     }
 
     @Test
@@ -111,11 +124,30 @@ public class ByteBufTest {
         System.out.println(byteBuf.readInt());
         System.out.println(byteBuf.readInt());
 
-        System.out.println(byteBuf.arrayOffset()+" "+byteBuf.readerIndex()+" "+byteBuf.writerIndex());
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
 
         byteBuf.clear();
 
-        System.out.println(byteBuf.arrayOffset()+" "+byteBuf.readerIndex()+" "+byteBuf.writerIndex());
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
+    }
+
+    @Test
+    public void testMarkAndReset() throws UnsupportedEncodingException {
+        ByteBuf byteBuf = Unpooled.buffer();
+        byteBuf.writeInt(1);
+        byteBuf.writeInt(2);
+        byteBuf.writeInt(3);
+        byteBuf.writeInt(4);
+
+
+        System.out.println(byteBuf.readInt());
+        System.out.println(byteBuf.readInt());
+        byteBuf.markReaderIndex();
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
+        System.out.println(byteBuf.readInt());
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
+        byteBuf.resetReaderIndex();
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
     }
 
     //get、set不移动index
@@ -129,7 +161,7 @@ public class ByteBufTest {
         System.out.println(byteBuf.getInt(0));
         byteBuf.setInt(0, 3);
 
-        System.out.println(byteBuf.readerIndex()+" "+byteBuf.writerIndex());
+        System.out.println(byteBuf.readerIndex() + " " + byteBuf.writerIndex());
 
     }
 
@@ -137,8 +169,8 @@ public class ByteBufTest {
     @Test
     public void testReadWrite() throws UnsupportedEncodingException {
         ByteBuf byteBuf = Unpooled.buffer(16);
-        Random random= new Random();
-        while (byteBuf.writableBytes()>=4) {
+        Random random = new Random();
+        while (byteBuf.writableBytes() >= 4) {
             byteBuf.writeInt(random.nextInt(10));
         }
 
@@ -156,14 +188,16 @@ public class ByteBufTest {
         byteBuf.writeInt(3);
         byteBuf.writeInt(4);
 
-        int i1 = byteBuf.indexOf(0, byteBuf.capacity(), (byte) 2);
+        byteBuf.readInt();
+
+        int i1 = byteBuf.indexOf(0, byteBuf.capacity(), (byte) 3);
         System.out.println(i1);
-        System.out.println(byteBuf.arrayOffset()+" "+byteBuf.readerIndex()+" "+byteBuf.writerIndex());
-        int i = byteBuf.bytesBefore((byte) 3);
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
+        int i = byteBuf.bytesBefore((byte) 3);//相对于readerindex的位置
         System.out.println(i);
 
 
-        System.out.println(byteBuf.arrayOffset()+" "+byteBuf.readerIndex()+" "+byteBuf.writerIndex());
+        System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
     }
 
     //引用一个，create a view of an existing buffer
@@ -174,7 +208,8 @@ public class ByteBufTest {
         System.out.println(slice.toString(charset));
 
         slice.setByte(0, 'J');
-        System.out.println(slice.getByte(0)==byteBuf.getByte(0));
+        System.out.println(slice.getByte(0));
+        System.out.println(slice.getByte(0) == byteBuf.getByte(0));
     }
 
     //两个对象
@@ -186,7 +221,7 @@ public class ByteBufTest {
         System.out.println(copy.toString(charset));
 
         copy.setByte(0, 'J');
-        System.out.println(copy.getByte(0)==byteBuf.getByte(0));
+        System.out.println(copy.getByte(0) == byteBuf.getByte(0));
     }
 
     @Test
@@ -259,4 +294,84 @@ public class ByteBufTest {
     }
 
     //ChannelHandlerAdapter is Skelton implementation of a {@link ChannelHandler}
+
+    //自动扩容
+    @Test
+    public void testExpandBuffer() throws Exception {
+        ByteBuf byteBuf = Unpooled.buffer(2);
+
+        for (int i = 0; i < 10000000; i++) {
+            byteBuf.writeInt(2);
+        }
+    }
+
+    //先翻倍再步进
+    @Test
+    public void testNewCapacity() throws Exception {
+
+        Random random = new Random();
+        int threshold = 4;
+//        for (int i = 0; i < 100; i++) {
+//            float v = random.nextFloat()*10;
+//            System.out.println("current v :"+v);
+//            //抹去除以threshold后的小数部分，即几倍于threshold再乘以threshold
+//            int newCapacity = (int) (v / threshold) * threshold;//求threshold倍数
+//            System.out.println("new capacity : "+newCapacity);
+//        }
+
+        for (int i = 0; i < 100; i++) {
+            float v = random.nextFloat() * 10;
+            System.out.println("current v :" + v);
+            //float除乘不会抹小数，最后int抹去
+            int newCapacity = (int) (v / threshold * threshold);
+            System.out.println("new capacity : " + newCapacity);
+        }
+
+
+        //int除法，不满足整数的被忽略，也就是小于threshold的部分被舍去。
+        //抹除小于threshold的部分，其实也是求threshold的倍数
+//        for (int i = 0; i < 100; i++) {
+//            int v = random.nextInt(1000);
+//            System.out.println("current v :"+v);
+//            int newCapacity = v / threshold * threshold;//求threshold倍数
+//            System.out.println("new capacity : "+newCapacity);
+//        }
+
+        //求：最接近minNewCapacity的threshold倍数值
+//        int newCapacity = minNewCapacity / threshold * threshold;
+    }
+
+    @Test
+    public void testRefCount() throws Exception {
+        ByteBuf byteBuf = Unpooled.buffer(2);
+
+        byteBuf.retain();
+
+        byteBuf.writeInt(2);
+        byteBuf.writeInt(3);
+
+        byteBuf.release();
+        boolean release = byteBuf.release();
+        System.out.println(release);
+
+        System.out.println(byteBuf.readerIndex() + " " + byteBuf.writerIndex());
+        int i = byteBuf.readInt();//异常IllegalReferenceCountException: refCnt: 0s
+    }
+
+    @Test
+    public void testConver2NioBuffer() throws Exception {
+        ByteBuf byteBuf = Unpooled.buffer(2);
+
+        byteBuf.writeInt(2);
+        byteBuf.writeInt(3);
+
+        int i1 = byteBuf.readInt();
+        System.out.println(i1);
+
+        System.out.println(byteBuf.readerIndex() + " " + byteBuf.writerIndex());
+
+        ByteBuffer byteBuffer = byteBuf.nioBuffer();
+        System.out.println(byteBuffer.position() + " " + byteBuffer.limit());
+    }
+
 }

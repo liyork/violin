@@ -15,12 +15,10 @@ public class Cat implements Runnable{
 	@Override
 	public void run() {
 		try {
-			System.out.println("begin run ...");
+			System.out.println(Thread.currentThread().getName()+" begin run ... time:"+System.currentTimeMillis());
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
-			System.out.println("catch run ...");
+			System.out.println(Thread.currentThread().getName()+" catch run ..."+System.currentTimeMillis());
 		}
-		System.out.println(Thread.currentThread().getName()+"我起来了");
-		System.out.println(Thread.currentThread().getName()+"我回去了");
 	}
 }

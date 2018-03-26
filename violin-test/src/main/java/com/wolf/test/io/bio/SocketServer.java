@@ -92,8 +92,9 @@ public class SocketServer {
 			server.close(); //关闭ServerSocket
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			//出错，打印出错信息
-			System.out.println("Error:" + e);
+			//System.out.println("Error:" + e);
 		}
 
 	}

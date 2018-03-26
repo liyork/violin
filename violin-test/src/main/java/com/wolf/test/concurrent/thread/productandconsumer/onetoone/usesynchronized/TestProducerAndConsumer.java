@@ -5,6 +5,13 @@ package com.wolf.test.concurrent.thread.productandconsumer.onetoone.usesynchroni
  * 对象，一唤醒都醒了。
  * java.lang.Object类提供了wait()、notify()、notifyAll()方法，
  * 这些方法只有在synchronized或synchronized代码块中才能使用，是否就会报java.lang.IllegalMonitorStateException异常。
+ *
+ * 产生问题：生产者可能生产完通知消费者后又再次获取了锁然后再放入满了，等待。
+ * 消费者可能消费完了通知生产者后又再次获取锁然后缺货了，等待。
+ * 这倒也好，本身也是查看-满足/不满足-放入/等待。
+ * 由于都有synchronized所以，同一时间不论生产还是消费都只能一人进行。
+ *
+ * 若使用多个生产、消费，那么有可能一直保持生产-满了再唤醒生产者，消费不了，或者消费-缺货在唤醒消费者，生产不了。
  * <p/>
  * Date: 2016/6/12
  * Time: 14:33

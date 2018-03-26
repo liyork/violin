@@ -3,9 +3,9 @@ package com.wolf.test.concurrent.threadpool;
 import java.util.concurrent.*;
 
 /**
- * MyThreadFactory
  * <p/>
  * Custom thread factory
+ * 可以监控、可以设定线程名称、属性、分组
  *
  * @author Brian Goetz and Tim Peierls
  */

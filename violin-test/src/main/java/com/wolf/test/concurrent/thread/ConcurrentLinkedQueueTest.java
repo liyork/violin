@@ -177,10 +177,12 @@ public class ConcurrentLinkedQueueTest {
 
     @Test
     public void test() {
-        int t = 1;
+
         int tail = 2;
+        int t = tail;
         int head = 3;
-        boolean b = t != (t = tail);//从左到右执行
+        boolean b = t != (t = tail);//从左到右执行，先取得t值，然后t=tail，
+        System.out.println(b);
         int i = b ? t : head;
         System.out.println(i);
     }

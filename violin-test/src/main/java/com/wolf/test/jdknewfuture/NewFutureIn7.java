@@ -1,4 +1,4 @@
-package com.wolf.test.jdkfuture;
+package com.wolf.test.jdknewfuture;
 
 import java.util.ArrayList;
 import java.util.List;

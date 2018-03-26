@@ -1,6 +1,7 @@
 package com.wolf.test.concurrent.thread.productandconsumer.onetoone.useblockingqueue;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p> Description:
@@ -29,6 +30,7 @@ public class Producer implements Runnable {
                 //当生产的食品数量装满了容器，那么在while里面该食品容器(阻塞队列)会自动阻塞  wait状态 等待消费
                 Food food = new Food("食品" + i);
                 foods.put(food);
+//                foods.offer(food,2l, TimeUnit.SECONDS);
                 i++;
             } catch (InterruptedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

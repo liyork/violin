@@ -1,9 +1,16 @@
-package com.wolf.test.jdkfuture;
+package com.wolf.test.jdknewfuture;
+
+import org.junit.Test;
+import scala.tools.nsc.Global;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Description:Lambda
@@ -24,11 +31,11 @@ public class LambdaTest {
 
     public static void main(String[] args) {
 
+        testEvolution();
+
 //        simpleTest();
 
-
 //        simple2Test();
-
 
         //向API方法添加逻辑，用更少的代码支持更多的动态行为
         List<String> languages = Arrays.asList("Java", "Scala", "C++", "Haskell", "Lisp", "Jsdf");
@@ -41,7 +48,7 @@ public class LambdaTest {
 
         //map();
 
-        mapReduce();
+//        mapReduce();
 
         //filter();
 
@@ -50,6 +57,32 @@ public class LambdaTest {
         //statistics();
 
 
+    }
+
+    private static void testEvolution() {
+        int[] array = {4, 5, 6};
+        Arrays.stream(array)//流对象
+                .forEach(new IntConsumer() {
+                    @Override
+                    public void accept(int value) {
+                        System.out.println(value);
+                    }
+                });
+
+        Arrays.stream(array).forEach((int x) -> {
+            System.out.println(x);
+        });//foreach参数可以从上下文推导出
+        Arrays.stream(array).forEach((x) -> {
+            System.out.println(x);
+        });//推导参数类型
+        Arrays.stream(array).forEach((x) -> System.out.println(x));//去掉括号
+        //lambda表达式由->分割，左边是参数，右边是实现。lambda表达式只是匿名对象实现的一种新方式。
+        Arrays.stream(array).forEach(System.out::println);//方法引用推导,省去参数申明和传递
+
+
+        IntConsumer outConsumer = System.out::println;
+        IntConsumer errConsumer = System.err::println;
+        Arrays.stream(array).forEach(outConsumer.andThen(errConsumer));
     }
 
     private static void statistics() {
@@ -180,7 +213,6 @@ public class LambdaTest {
 
         Arrays.asList("a", "b", "d").sort(String::compareTo);
 
-
         //构造实例,可见lambda表达式仅仅类似于匿名对象
         Converter<String, Integer> converter = (String from) -> {
             System.out.println(from);
@@ -262,4 +294,124 @@ public class LambdaTest {
                 .forEach(System.out::println);
 
     }
+
+    @Test
+    public void testConcurrent() {
+        //并行流
+        long count = IntStream.range(1, 100000).filter(PrimeUtil::isPrime).count();//串行
+        System.out.println(count);
+        long count2 = IntStream.range(1, 100000).parallel()//并行流
+                .filter(PrimeUtil::isPrime)//被多线程并发调用
+                .count();
+        System.out.println(count2);
+
+        //集合转并行流
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        double asDouble = list.stream().mapToInt(s -> s).average().getAsDouble();
+        System.out.println(asDouble);
+        double asDouble2 = list.parallelStream().mapToInt(s -> s).average().getAsDouble();
+        System.out.println(asDouble2);
+
+        //并行排序
+        int[] arr = {8, 4, 3, 7, 1, 2, 9, 5};
+        Arrays.parallelSort(arr);
+        System.out.println(Arrays.toString(arr));
+
+        //串行随机赋值
+        Random random = new Random();
+        Arrays.setAll(arr,(i)-> random.nextInt());
+        System.out.println(Arrays.toString(arr));
+        //并行随机赋值
+        Arrays.parallelSetAll(arr,(i)-> random.nextInt());
+        System.out.println(Arrays.toString(arr));
+
+    }
+
+    @Test
+    public void testCompletableFuture() throws InterruptedException, ExecutionException {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        new Thread(new AskThread(future)).start();
+        Thread.sleep(4000);
+        future.complete(60);//手动设定值，完成状态
+
+
+        //异步调用，回调通知
+        CompletableFuture<Integer> completableFuture = CompletableFuture.supplyAsync(() -> call(50));
+        System.out.println(completableFuture.get());
+        //异步调用无返回值
+        CompletableFuture.runAsync(() -> call(50));
+
+        //流式调用
+        CompletableFuture<Void> fu = CompletableFuture.supplyAsync(() -> call(50))
+                .thenApply((i) -> Integer.toString(i))
+                .thenApply((str) -> "\"" + str + "\"")
+                .thenAccept(System.out::println);
+        fu.get();//等待call完成
+
+        //异常处理
+        CompletableFuture<Void> fu2 = CompletableFuture.supplyAsync(() -> callException(50))
+                .exceptionally(ex->{
+                    System.out.println(ex.toString());
+                    return 0;
+                })
+                .thenApply((i) -> Integer.toString(i))
+                .thenApply((str) -> "\"" + str + "\"")
+                .thenAccept(System.out::println);
+        fu2.get();
+
+        //组合
+        CompletableFuture<Void> fu3 = CompletableFuture.supplyAsync(() -> call(50))
+                .thenCompose((i)->CompletableFuture.supplyAsync(()->call(i)))
+                .thenApply((str) -> "\"" + str + "\"")
+                .thenAccept(System.out::println);
+        fu3.get();//等待call完成
+
+        //组合2
+        CompletableFuture<Integer> intFuture = CompletableFuture.supplyAsync(() -> call(5));
+        CompletableFuture<Integer> intFuture2 = CompletableFuture.supplyAsync(() -> call(7));
+        CompletableFuture<Void> fu4 = intFuture.thenCombine(intFuture2, (i, j) -> (i + j))
+                .thenApply((str) -> "\"" + str + "\"")
+                .thenAccept(System.out::println);
+        fu4.get();
+
+    }
+
+    static class AskThread implements Runnable {
+        CompletableFuture<Integer> re = null;
+
+        public AskThread(CompletableFuture<Integer> re) {
+            this.re = re;
+        }
+
+        @Override
+        public void run() {
+            int myRe = 0;
+            try {
+                myRe = re.get() * re.get();//若未完成阻塞
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            System.out.println(myRe);
+        }
+    }
+
+    private static Integer call(Integer para) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return para * para;
+    }
+
+    private static Integer callException(Integer para) {
+
+        return para /0;
+    }
+
 }

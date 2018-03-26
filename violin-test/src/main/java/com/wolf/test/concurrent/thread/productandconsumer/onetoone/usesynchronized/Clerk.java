@@ -13,7 +13,7 @@ package com.wolf.test.concurrent.thread.productandconsumer.onetoone.usesynchroni
 public class Clerk {
 
     //最大产品数
-    private static final int MAX_PRODUCT = 20;
+    private static final int MAX_PRODUCT = 1;
 
     //最小产品数
     private static final int MIN_PRODUCT = 0;

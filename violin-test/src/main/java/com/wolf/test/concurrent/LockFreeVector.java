@@ -6,6 +6,9 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * Description:无锁vector
+ * 使用二维数组是便于扩展，若一维的话，扩展势必要进行复制，二维的话先留出空间，扩展时直接设定即可。
+ *
+ * 若不用前导0和异或操作，那么可能需要定义两个atomicinteger变量，用于buketindex和elementindex。可能移位性能好。
  * <br/> Created on 2018/3/22 9:35
  *
  * @author 李超
@@ -109,6 +112,7 @@ public class LockFreeVector<E> extends AbstractList<E> {
 
     /**
      * add e at the end of vector.
+     * 每次动态扩展，后续buketindex上的元素逻辑上接力前一个buketindex元素，不用内容拷贝。
      *
      * @param e element added
      */
@@ -117,7 +121,7 @@ public class LockFreeVector<E> extends AbstractList<E> {
         Descriptor<E> newd;
         do {
             desc = descriptor.get();
-            desc.completeWrite();
+            desc.completeWrite();//执行写入动作，替上一个线程补刀
             //desc.size   Vector 本身的大小
             //FIRST_BUCKET_SIZE  第一个一位数组的大小
             int pos = desc.size + FIRST_BUCKET_SIZE;
@@ -135,7 +139,7 @@ public class LockFreeVector<E> extends AbstractList<E> {
             }
             //1的位置移动前导0的位后，异或pos得到除最高位的剩余1
             //为什么要用0x80000000？？？
-            int idx = (0x80000000 >>> zeroNumPos) ^ pos;   //在这个一位数组中，我在哪个位置
+            int idx = (0x80000000 >>> zeroNumPos) ^ pos;   //在这个一位数组中，我在哪个位置  8前面有28个0，将最左边1移动28位正好落在pos的最高位上
             newd = new Descriptor<E>(desc.size + 1, new WriteDescriptor<E>(
                     buckets.get(bucketInd), idx, null, e));
         } while (!descriptor.compareAndSet(desc, newd));

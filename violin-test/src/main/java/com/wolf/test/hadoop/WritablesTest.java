@@ -3,7 +3,6 @@ package com.wolf.test.hadoop;
 import ch.qos.logback.core.net.SyslogOutputStream;
 import org.apache.hadoop.io.*;
 import scala.Int;
-import scala.xml.Null;
 
 import java.util.Set;
 

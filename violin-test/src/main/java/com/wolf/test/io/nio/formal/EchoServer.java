@@ -25,73 +25,47 @@ import java.util.Set;
 public class EchoServer {
 
 	public static SelectorLoop connectionBell;
-
 	public static SelectorLoop readBell;
-
 	public boolean isReadBellRunning = false;
 
-
 	public static void main(String[] args) throws IOException {
-
 		new EchoServer().startServer();
-
 	}
 
-
 	// 启动服务器
-
 	public void startServer() throws IOException {
-
 		// 准备好一个闹钟.当有链接进来的时候响.
-
 		connectionBell = new SelectorLoop();
-
-
 		// 准备好一个闹装,当有read事件进来的时候响.
-
 		readBell = new SelectorLoop();
-
-
 		// 开启一个server channel来监听
-
 		ServerSocketChannel ssc = ServerSocketChannel.open();
-
 		// 开启非阻塞模式
-
 		ssc.configureBlocking(false);
-
 
 		ServerSocket socket = ssc.socket();
 
 		socket.bind(new InetSocketAddress("localhost", 7878));
-
-
 		// 给闹钟规定好要监听报告的事件,这个闹钟只监听新连接事件.
-
 		ssc.register(connectionBell.getSelector(), SelectionKey.OP_ACCEPT);
 
 		new Thread(connectionBell).start();
 
 	}
 
-
 	// Selector轮询线程类
 	public class SelectorLoop implements Runnable {
 
 		private Selector selector;
-
 		private ByteBuffer temp = ByteBuffer.allocate(1024);
-
 
 		public SelectorLoop() throws IOException {
 			this.selector = Selector.open();
 		}
 
-
 		public Selector getSelector() {
 			return this.selector;
 		}
-
 
 		@Override
 		public void run() {

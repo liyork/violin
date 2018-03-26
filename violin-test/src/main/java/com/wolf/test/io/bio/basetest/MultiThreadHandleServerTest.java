@@ -8,6 +8,9 @@ import java.net.Socket;
  * Description:每个连接一个线程，线程创建也需要消耗很多资源
  * 每个请求都占用一个线程，线程也需要内存空间，多了也可能引起cpu切换，太多了影响机器性能
  * one connection one thread。无论连接是否有真正数据请求，都需要独占一个thread。
+ *
+ * 若客户端由于网络等原因发送数据很慢，那么服务端开启给这个客户端服务的线程将很长时间等待在客户端的io操作上。
+ * 连接一多，那么线程就忙不过来了，不能分配新线程了。
  * <br/> Created on 2017/5/9 14:12
  *
  * @author 李超
@@ -58,6 +61,7 @@ public class MultiThreadHandleServerTest {
             StringBuilder sb = new StringBuilder();
             String temp;
             int index;
+            long start = System.currentTimeMillis();
             while((len = reader.read(chars)) != -1) {
                 temp = new String(chars, 0, len);
                 if((index = temp.indexOf("eof")) != -1) {//遇到eof时就结束接收
@@ -70,6 +74,8 @@ public class MultiThreadHandleServerTest {
             //读完后写一句
             Writer writer = new OutputStreamWriter(socket.getOutputStream());
             writer.write("Hello Client.");
+
+            System.out.println("total cost :"+(System.currentTimeMillis() - start));
             writer.flush();
             writer.close();
             reader.close();

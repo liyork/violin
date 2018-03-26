@@ -5,23 +5,27 @@ import com.alibaba.fastjson.JSON;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * Description:
+ * nio不会由于客户端网络等条件的慢写入而受到影响。
+ *
+ * io操作准备好时，得到通知。io操作本身还是同步的。
  * <br/> Created on 2017/5/31 17:04
  *
  * @author 李超
  * @since 1.0.0
  */
 public class NioServerTest2 implements Runnable {
+
+    Map<SelectableChannel, Long> timeCollect = new HashMap<>();
 
     //第一个端口
     private Integer port1 = 8099;
@@ -160,10 +164,20 @@ public class NioServerTest2 implements Runnable {
                     readBuf.clear();
                     final SocketChannel channel = (SocketChannel) key.channel();
 
+                    Long aLong = timeCollect.get(channel);
+                    if (aLong == null) {
+                        timeCollect.put(channel, System.currentTimeMillis());
+                    }
+
                     int count = 0;
                     try {
+                        long start = System.currentTimeMillis();
                         while((count = channel.read(readBuf)) > 0) {
+                            //时间很短，似乎nio的selector把都准备好的数据给到channel中，然后这里读取时根本不会受到客户端的网络慢影响。
+                            //当前线程只有select的读事件触发时才会进来，也就是客户端不管多慢，我不用等他，等他发好了，我这边读事件就好了，我就读。
+                            System.out.println("read from client:"+count);
                         }
+                        System.out.println("read cost:"+(System.currentTimeMillis()-start));
                     } catch (IOException e) {
                         e.printStackTrace();
                         cancleChannel(key, count);
@@ -206,6 +220,9 @@ public class NioServerTest2 implements Runnable {
                     //可能之前主线程错过了这个channel的读事件，直接唤醒
                     key.selector().wakeup();
 
+                    Long aLong1 = timeCollect.get(channel);
+                    System.out.println(" current client:"+channel+" total cost:"+(System.currentTimeMillis()-aLong1));
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -215,7 +232,7 @@ public class NioServerTest2 implements Runnable {
 
     //关闭的是SocketChannel，serverSocketChannel还继续服务
     private void cancleChannel(SelectionKey key, int count) throws IOException {
-        System.out.println("count:" + count);
+        System.out.println("cancleChannel count:" + count);
         //取消这个通道的注册
         key.channel().close();
         key.cancel();

@@ -1,7 +1,14 @@
 package com.wolf.test.concurrent.thread;
 
+import backtype.storm.command.list;
 import com.wolf.test.concurrent.thread.runnable.TestStopRunnable;
+import com.wolf.test.concurrent.thread.runnable.TestStopRunnable2;
 import com.wolf.utils.BaseUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Description:
@@ -12,10 +19,16 @@ import com.wolf.utils.BaseUtils;
  */
 public class StopThreadTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(StopThreadTest.class);
+
     public static void main(String[] args) {
 //        testErrorWayToStopThread();
 //        testRightWayToStopThread1();
-        testRightWayToStopThread2();
+//        testRightWayToStopThread2();
+//        testRightWayToStopThread3();
+
+        testInterruptBeforeSleep();
+//        testRightWayToStopThread4();
     }
 
     private static void testErrorWayToStopThread() {
@@ -35,14 +48,13 @@ public class StopThreadTest {
             e.printStackTrace();
         }
         System.out.println("stop the thread..");
-        //不建议使用
+        //不建议使用,释放锁会引起不良后果，数据不一致
         thread.stop();
     }
 
     //可以让非运行时状况的线程(sleep、wait、I/O阻塞)停止
-    //注：调用interrupt()的情况是依赖与实际运行的平台的。
-    // 在Solaris和Linux平台上将会抛出InterruptedIOException的异常，但是Windows上面不会有这种异常
-    //socket中的inputstream和outputstream的read和write方法都不响应中断，可以通过关闭底层socket
+    //注：调用interrupt()的情况是依赖于实际运行的平台的。
+    // 在Solaris和Linux平台上将会抛出InterruptedIOException的异常，但是Windows上面不会有这种异常socket中的inputstream和outputstream的read和write方法都不响应中断，可以通过关闭底层socket
     private static void testRightWayToStopThread1() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -53,7 +65,7 @@ public class StopThreadTest {
                         x++;
                         int y = x + 1;
                         int z = y * 333;
-                        //这里如果还有wait,sleep,join还需要try
+                        //这里如果还有wait,sleep,join还需要try,抛出异常则catch中的isInterrupted=false
                         int c = z + 333 - 999 * 333 / 4444;
                         int i = c * 45559 * 2232 - 22;
                         System.out.println(i);
@@ -85,6 +97,76 @@ public class StopThreadTest {
             e.printStackTrace();
         }
         System.out.println("stop the thread..");
-        testStopRunnable.setNeedRun(false);
+//        testStopRunnable.setNeedRun(false);
+        testStopRunnable.setA(2);
     }
+
+    //测试list是否在多线程具有可见性。结果：不能，需要使用volatile
+    private static void testRightWayToStopThread3() {
+        TestStopRunnable2 testStopRunnable = new TestStopRunnable2();
+        Thread thread = new Thread(testStopRunnable);
+        thread.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("stop the thread..");
+//        testStopRunnable.setList(new ArrayList<>());
+        testStopRunnable.add(2);
+    }
+
+    //interrupt设定线程被中断了标志，然后线程遇到sleep时抛出异常。不论先sleep还是先interrupt
+    private static void testInterruptBeforeSleep() {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BaseUtils.simulateLongTimeOperation(8000000);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("run finish...");
+            }
+        });
+
+        thread.start();
+        thread.interrupt();
+    }
+
+    //推荐使用isInterrupted+catch后再interupt进行处理。
+    //既能用isInterrupted停止循环，又能处理wait、sleep等待时及时响应中断
+    private static void testRightWayToStopThread4() {
+        TestStopRunnable3 testStopRunnable = new TestStopRunnable3();
+        Thread thread = new Thread(testStopRunnable);
+        thread.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        thread.interrupt();
+    }
+
+    public static class TestStopRunnable3 implements Runnable {
+
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                System.out.println(Thread.currentThread().getName()+" is running...");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    logger.error("TestStopRunnable3 run error ",e);
+                    Thread.currentThread().interrupt();//没有立即终止，而是设定标志位，让后面方法继续后再通过while判断退出，保留整体一致性。todo 这里也要思考是该如何保证一致性？
+                }
+            }
+            System.out.println("after run method invoke..");
+        }
+    };
 }

@@ -2,6 +2,7 @@ package com.wolf.test.concurrent.thread.runnable;
 
 /**
  * <p> Description:
+ * 不论直接使用isNeedRun或者a==1都需要添加volatile或者同步快保证线程之间的可见性。
  * <p/>
  * Date: 2016/6/23
  * Time: 11:48
@@ -13,25 +14,28 @@ package com.wolf.test.concurrent.thread.runnable;
 public class TestStopRunnable implements Runnable {
 
     //使用volatile保持多线程间的可见性
-    private volatile boolean isNeedRun = true;
+//    private volatile boolean isNeedRun = true;
+    private boolean isNeedRun = true;
+    private volatile int a = 1;
+    private Object lock = new Object();
 
     public void setNeedRun(boolean isNeedRun) {
         this.isNeedRun = isNeedRun;
     }
 
+    public void setA(int a ) {
+        this.a = a;
+    }
+
+
+
     @Override
     public void run() {
         System.out.println("====>111");
-        for(int x = 0; x < 99999999; x++) {
-            if(isNeedRun) {
-                x++;
-                int y = x + 1;
-                int z = y * 333;
-                int c = z + 333 - 999 * 333 / 4444;
-                int i = c * 45559 * 2232 - 22;
-                System.out.println(i);
-            }else{
-                break;
+        while(isNeedRun) {
+//        while(a !=2) {
+            synchronized (lock) {//进入synchronized的线程可以看到由同一个锁保护之前的所有修改
+
             }
         }
         System.out.println("====>222");

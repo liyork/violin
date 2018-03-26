@@ -1,5 +1,6 @@
 package com.wolf.test.concurrent.threadpool;
 
+import com.wolf.utils.SysInfoAcquirerService;
 import org.eclipse.jetty.util.BlockingArrayQueue;
 import org.slf4j.*;
 
@@ -15,8 +16,8 @@ import java.util.concurrent.atomic.*;
  */
 public class TimingThreadPool extends ThreadPoolExecutor {
 
-    public TimingThreadPool() {
-        super(5, 10, 10L, TimeUnit.SECONDS, new BlockingArrayQueue<Runnable>());
+    public TimingThreadPool(int corePoolSize,int maxPoolSize) {
+        super(corePoolSize, maxPoolSize, 10L, TimeUnit.SECONDS, new BlockingArrayQueue<Runnable>());
     }
 
     private final ThreadLocal<Long> startTime = new ThreadLocal<Long>();
@@ -49,4 +50,5 @@ public class TimingThreadPool extends ThreadPoolExecutor {
             super.terminated();
         }
     }
+
 }

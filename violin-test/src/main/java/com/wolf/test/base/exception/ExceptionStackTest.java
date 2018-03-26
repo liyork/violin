@@ -36,11 +36,14 @@ public class ExceptionStackTest {
 //        }
 
 
-        try {
-            test4();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            test4();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+
+        test6();
 
     }
 
@@ -80,6 +83,10 @@ public class ExceptionStackTest {
         throw new ErrorExceptionExample("xxx5555");
     }
 
+    private static void test6() {
+        Exception exception = new Exception("xxxa bc ");//构造时，fillInStackTrace(0)
+        exception.printStackTrace();
+    }
 
 }
 
