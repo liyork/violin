@@ -15,9 +15,19 @@ package com.wolf.test.base;
  * @version 1.0
  * @since 1.0
  */
-public class StringIndexTest {
+public class StringTest {
 
 	public static void main(String[] args) {
+//		testIndex();
+		testHashcode();
+	}
+
+	private static void testHashcode() {
+		String str = "abc";
+		System.out.println(str.hashCode());//循环每个字符操作：hashcode(i)=hashcode(i-1)*33+char(i)
+	}
+
+	private static void testIndex() {
 		String test = "ht?tp://www.brainysoftware.com/index.html?name=Tarzan";
 		System.out.println(test.length());
 		int firstIndex = test.indexOf("://");//  ://中:冒号的位置,从0开始
