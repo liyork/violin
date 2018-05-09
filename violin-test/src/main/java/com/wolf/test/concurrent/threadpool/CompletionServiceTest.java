@@ -1,7 +1,5 @@
 package com.wolf.test.concurrent.threadpool;
 
-import com.wolf.test.concurrent.thread.runnable.MyTask1;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;

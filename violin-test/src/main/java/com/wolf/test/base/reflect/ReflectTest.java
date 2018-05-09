@@ -35,7 +35,13 @@ public class ReflectTest {
 		test4.setAccessible(true);
 		Object invoke = test4.invoke(new B(), null);
 		System.out.println(invoke);
+		System.out.println("test4.isAccessible():"+test4.isAccessible());
 		test4.setAccessible(false);
+
+		//似乎是不用恢复成false，因为每次get都不一样的method。
+		Method test5 = B.class.getDeclaredMethod("test1", null);
+		System.out.println("test4==test5:"+(test4==test5));
+		System.out.println("test5.isAccessible():"+test5.isAccessible());
 
 		B b = new B();
 		Field name = B.class.getDeclaredField("name");

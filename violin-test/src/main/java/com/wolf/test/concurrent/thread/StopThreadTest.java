@@ -1,8 +1,6 @@
 package com.wolf.test.concurrent.thread;
 
 import backtype.storm.command.list;
-import com.wolf.test.concurrent.thread.runnable.TestStopRunnable;
-import com.wolf.test.concurrent.thread.runnable.TestStopRunnable2;
 import com.wolf.utils.BaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,4 +167,64 @@ public class StopThreadTest {
             System.out.println("after run method invoke..");
         }
     };
+
+
+    //不论直接使用isNeedRun或者a==1都需要添加volatile或者同步快保证线程之间的可见性。
+    static class TestStopRunnable implements Runnable {
+
+        //使用volatile保持多线程间的可见性
+//    private volatile boolean isNeedRun = true;
+        private boolean isNeedRun = true;
+        private volatile int a = 1;
+        private Object lock = new Object();
+
+        public void setNeedRun(boolean isNeedRun) {
+            this.isNeedRun = isNeedRun;
+        }
+
+        public void setA(int a ) {
+            this.a = a;
+        }
+
+
+
+        @Override
+        public void run() {
+            System.out.println("====>111");
+            while(isNeedRun) {
+//        while(a !=2) {
+                synchronized (lock) {//进入synchronized的线程可以看到由同一个锁保护之前的所有修改
+
+                }
+            }
+            System.out.println("====>222");
+        }
+    };
+
+
+    //不论是list.size()或list == null判断，都是两个线程可见性问题，都需要加volatile
+    static class TestStopRunnable2 implements Runnable {
+
+        private volatile List<Integer> list = new ArrayList<>();
+//    private volatile List<Integer> list ;
+
+        public void add(Integer value) {
+            list.add(value);
+        }
+
+        public void setList(List<Integer> list) {
+            this.list = list;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("====>111");
+            while(list.size() != 1) {
+//        while(list == null) {
+            }
+            System.out.println("====>222");
+        }
+    };
+
+
 }

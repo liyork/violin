@@ -20,9 +20,13 @@ public class InjectionTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private DependenceInjection dependenceInjection ;
+    @Autowired
+    private CycleDependenceInjection cycleDependenceInjection ;
 
     @Test
     public void testInject(){
-        dependenceInjection.test();
+//        dependenceInjection.test();
+
+        cycleDependenceInjection.test();
     }
 }

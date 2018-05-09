@@ -1,6 +1,5 @@
 package com.wolf.test.concurrent.thread;
 
-import com.wolf.test.concurrent.thread.runnable.*;
 import com.wolf.utils.BaseUtils;
 
 /**
@@ -237,4 +236,92 @@ public class ThreadInterruptedTest {
         //判断当前线程(main)是否被中断，使用Thread.interrupted()
         thread1.interrupted();
     }
+
+
+    static class ATask implements Runnable {
+
+        private double d = 0.0;
+
+        public void run() {
+
+            //检查程序是否发生中断
+            while(!Thread.interrupted()) {
+                System.out.println("I am running!");
+
+                for(int i = 0; i < 900000; i++) {
+                    d = d + (Math.PI + Math.E) / d;
+                }
+            }
+
+            System.out.println("ATask.run() interrupted!");
+        }
+
+    }
+
+    static class InterruptedStateRunnable implements Runnable {
+
+        public void run() {
+
+            //这里也可以使用一个成员变量记录是否死循环下去。
+            while(!Thread.currentThread().isInterrupted()) {
+                System.out.println(Thread.currentThread().getName() + "1111:" + Thread.currentThread().isInterrupted());
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException e) {
+                    //The interrupted status of the current thread is cleared when this exception is thrown
+                    System.out.println(Thread.currentThread().getName() + "2222:" + Thread.currentThread().isInterrupted());
+                    //由于抛出异常会重置打断状态，所以需要再设定，不然就会退不出循环了。。。
+                    Thread.currentThread().interrupt();
+                }
+                System.out.println(Thread.currentThread().getName() + "3333:" + Thread.currentThread().isInterrupted());
+            }
+            System.out.println("ATask.run() interrupted!");
+        }
+    }
+
+   static class ThreadInterruptJoinA implements Runnable {
+
+        @Override
+        public void run() {
+            BaseUtils.simulateLongTimeOperation(7000000);
+            System.out.println("ThreadInterruptJoinA...");
+        }
+    }
+
+    static class ThreadInterruptJoinB implements Runnable {
+
+        public ThreadInterruptJoinB(Thread t1) {
+            this.t1 = t1;
+        }
+
+        private Thread t1;
+
+        @Override
+        public void run() {
+            System.out.println("tb ...");
+            try {
+                //t1只要isAlive就会等待在这里
+                t1.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("ThreadInterruptJoinB...");
+        }
+    }
+
+    static class ThreadJoinD implements Runnable {
+
+        @Override
+        public void run() {
+            BaseUtils.simulateLongTimeOperation(5000000);
+            System.out.println("finish simulateLongTimeOperation");
+            try {
+                //抛出异常，由于主线程中调用了t1.interrupt
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -21,7 +21,7 @@ public class CasCounter {
         int v;
         do {
             v = value.get();
-        } while(v != value.compareAndSwap(v, v + 1));//很激烈时最好等待一会，不然容易产生活锁
+        } while(v != value.compareAndSwap(v, v + 1));//很激烈时最好等待一会，最好等待时间不一样,不然容易产生活锁
         return v + 1;
     }
 }

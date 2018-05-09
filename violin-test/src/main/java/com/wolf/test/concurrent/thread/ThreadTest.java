@@ -1,7 +1,5 @@
 package com.wolf.test.concurrent.thread;
 
-import com.wolf.test.concurrent.thread.runnable.ThreadJoinA;
-import com.wolf.test.concurrent.thread.runnable.ThreadJoinB;
 import com.wolf.utils.BaseUtils;
 
 import java.util.concurrent.ExecutorService;
@@ -668,6 +666,47 @@ public class ThreadTest {
                 System.out.println(Thread.currentThread().getName()+" after while isNeedSuspend..."+System.currentTimeMillis());
 
             }
+        }
+    }
+
+
+    static class ThreadJoinA implements Runnable {
+
+        private int counter;
+
+        @Override
+        public void run() {
+            while (counter <= 10) {
+                System.out.print("Counter = " + counter + " ");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                counter++;
+            }
+            System.out.println();
+        }
+    }
+
+    static class ThreadJoinB implements Runnable {
+
+        public ThreadJoinB(Thread t1) {
+            this.t1 = t1;
+        }
+
+        private Thread t1;
+
+        @Override
+        public void run() {
+            System.out.println("tb ...");
+            try {
+                //t1只要isAlive就会等待在这里
+                t1.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("ThreadTesterB...");
         }
     }
 

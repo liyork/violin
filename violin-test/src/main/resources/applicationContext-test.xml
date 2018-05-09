@@ -47,4 +47,7 @@
     </bean>
     <!--用于spring源码测试 end-->
 
+    <bean name="initSequenceBean" class="com.wolf.test.spring.InitSequenceBean" init-method="initMethod">
+    </bean>
+
 </beans>

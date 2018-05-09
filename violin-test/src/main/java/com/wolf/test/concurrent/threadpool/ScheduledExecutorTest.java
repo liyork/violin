@@ -1,7 +1,5 @@
 package com.wolf.test.concurrent.threadpool;
 
-import com.wolf.test.concurrent.thread.runnable.Cat;
-
 import java.util.concurrent.*;
 
 /**
@@ -87,6 +85,19 @@ public class ScheduledExecutorTest {
                     }
                 }
             });
+        }
+    }
+
+    static class Cat implements Runnable{
+
+        @Override
+        public void run() {
+            try {
+                System.out.println(Thread.currentThread().getName()+" begin run ... time:"+System.currentTimeMillis());
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                System.out.println(Thread.currentThread().getName()+" catch run ..."+System.currentTimeMillis());
+            }
         }
     }
 }
