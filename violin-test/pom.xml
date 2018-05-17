@@ -276,13 +276,6 @@
             <version>1.0.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.ovoenergy/kafka-serialization-avro -->
-        <dependency>
-            <groupId>com.ovoenergy</groupId>
-            <artifactId>kafka-serialization-avro_2.11</artifactId>
-            <version>0.1.24</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
         <dependency>
             <groupId>org.apache.kafka</groupId>

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class MyInterceptor {
+    //execution(修饰符-可以省略  返回值  包.类.方法名(参数) throws异常)
+    //*任意返回值  包名  类名  方法名  (..)各种方法        .*意思是包下面的所有子包
     @Pointcut("execution(* com.wolf.test.spring.aopdemo.PersonServiceBean.*(..))")
     private void anyMethod(){}//定义一个切入点
 
