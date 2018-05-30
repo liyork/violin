@@ -48,10 +48,14 @@ public class DelayQueueTest {
             delayQueue.add(new Message(i, startTime));
         }
 
+        System.out.println(delayQueue);
+
         while (!delayQueue.isEmpty()) {
             Delayed take = delayQueue.take();//队列为空则阻塞，否则取出并awaitNanos然后再取
             System.out.println(take);
         }
+
+        System.out.println(delayQueue);
     }
 
     private static class Message implements Delayed {

@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Description:
+ * Description:CAS一定要volatile变量配合
  * <br/> Created on 2017/7/3 16:36
  *
  * @author 李超

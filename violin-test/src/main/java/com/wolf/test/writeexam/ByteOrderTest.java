@@ -32,7 +32,5 @@ public class ByteOrderTest {
 		//java内存中采用大端方式存储字节，高位放在低地址上
 		//内存地址   低地址----->高地址
 		System.out.println(Integer.toHexString(dataInputStream.readInt()));
-
-		System.out.println(Math.round(-1.6));
 	}
 }

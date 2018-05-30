@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * Description:
- * 一般equals相同的hashcode要相同，因为要放在hashmap的相同槽中。
+ * hashmap约定：equals相同的hashcode要相同，因为要放在hashmap的相同槽中。
  * <br/> Created on 2017/6/23 13:35
  *
  * @author 李超

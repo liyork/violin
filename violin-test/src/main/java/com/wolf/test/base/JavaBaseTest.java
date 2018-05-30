@@ -45,4 +45,22 @@ public class JavaBaseTest {
         System.out.println(blank);
     }
 
+    @Test
+    public void testFloat() {
+//        float a=1.3;//若不指定f，那么就认为double
+    }
+
+    //靠近整数，1.5向正进=2，-1.5也向正进=-1
+    //-1.6  -1.5  -1.4  0  1.4  1.5  1.6
+    @Test
+    public void testRountd() {
+        System.out.println(Math.round(-1.6));
+        System.out.println(Math.round(-1.5));
+        System.out.println(Math.round(-1.4));
+        System.out.println(Math.round(-11.5));
+
+        System.out.println(Math.round(1.4));
+        System.out.println(Math.round(1.5));
+        System.out.println(Math.round(1.6));
+    }
 }

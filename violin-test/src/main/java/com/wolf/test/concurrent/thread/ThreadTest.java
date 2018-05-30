@@ -45,13 +45,13 @@ public class ThreadTest {
 //        testWaitTime();
 //        testWaitAndSleep();
 //        testLocalVariable();
-        testYield();
+//        testYield();
 //        testUncaughtExceptionHandler();
 //        testDefaultUncaughtExceptionHandler();
 //        testAllHandleException();
 
 //        testDirtyRead();
-//        testExceptionReleaseLock();
+        testExceptionReleaseLock();
 
 //        testMultiSynJudge();
 //        testStringPool();
@@ -516,6 +516,7 @@ public class ThreadTest {
         synMethodClass.printValue();
     }
 
+    //线程中异常未补获则停止线程并释放锁
     private static void testExceptionReleaseLock() throws InterruptedException {
 
         SynMethodClass synMethodClass = new SynMethodClass();
