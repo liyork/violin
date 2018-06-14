@@ -50,4 +50,14 @@ public class ByteTest {
         b[1] = (byte) (c & 0xFF);
         return b;
     }
+
+    //计算机使用补码
+    @Test
+    public void testBinaryCode() {
+        String s1 = Integer.toBinaryString(5);
+        System.out.println(s1);
+
+        String s2 = Integer.toBinaryString(-5);
+        System.out.println(s2);
+    }
 }

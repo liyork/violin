@@ -1,5 +1,6 @@
 package com.wolf.test.base;
 
+import org.junit.Test;
 import sun.misc.ProxyGenerator;
 
 import java.io.*;
@@ -65,6 +66,17 @@ public class DynamicProxy {
 //			}
 //		}
 
+	}
+
+	@Test
+	public void doubleWrap() throws InvocationTargetException, IllegalAccessException {
+		final BB bb = new BB();
+
+		AA aa = (AA)getProxy(bb);
+		aa.test();
+
+		AA cc = (AA)getProxy(aa);
+		cc.test();
 	}
 
 

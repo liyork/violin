@@ -26,7 +26,7 @@
     <!-- if you use annotation you must configure following setting -->
     <mvc:annotation-driven />
 
-    <!-- configure the InternalResourceViewResolver -->
+    <!-- configure the InternalRtesourceViewResolver -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
           id="internalResourceViewResolver">
         <!-- 前缀，目录名已/结尾-->
@@ -35,8 +35,11 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
+    <!--测试placeholder-->
+    <context:property-placeholder location="classpath*:a.properties"/>
+
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="defaultEncoding" value="utf-8" />
+        <property name="defaultEncoding" value="${defaultEncoding}" />
         <property name="maxUploadSize" value="10485760000" />
         <property name="maxInMemorySize" value="40960" />
     </bean>

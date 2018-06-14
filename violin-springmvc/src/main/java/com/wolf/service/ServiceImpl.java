@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ServiceImpl extends AbstractRemoteService {
 
+    public ServiceImpl() {
+        System.out.println("xxxxxx");
+    }
+
     public String test(String xxx) {
         return "1111test...." + xxx;
     }

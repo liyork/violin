@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/forwardController")
 public class ForwardController {
 
+	public ForwardController() {
+		System.out.println("test springmvc cotext load stack");
+	}
+
 	private Logger logger = LoggerFactory.getLogger(ForwardController.class);
 
 	@RequestMapping(value = "/testForwardRequest")

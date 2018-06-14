@@ -21,10 +21,10 @@ public class CyclicBarrierTest {
 
     public static void main(String[] args) throws BrokenBarrierException, InterruptedException {
 //        testBase();
-//        testSimulateCountDownLatch();
+        testSimulateCountDownLatch();
 //        testReset();
 //        testOtherMethod();
-        testTwoAwaitAndInterrupt();
+//        testTwoAwaitAndInterrupt();
     }
 
     private static void testBase() {
@@ -71,12 +71,12 @@ public class CyclicBarrierTest {
     }
 
     /**
-     * 每个线程执行完操作后调用await，等待都操作完后，执行汇总操作的runnable
+     * 每个线程执行完操作后调用await，等调用wait数量够了后，执行汇总操作的runnable,然后执行wait后的剩余方法
      */
-    private static void testSimulateCountDownLatch() {
+    private static void testSimulateCountDownLatch() throws BrokenBarrierException, InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(4);
 
-        final CyclicBarrier cyclicBarrier = new CyclicBarrier(4, new Runnable() {
+        final CyclicBarrier cyclicBarrier = new CyclicBarrier(5, new Runnable() {
             @Override
             public void run() {
                 System.out.println("compute all task result");
@@ -98,7 +98,7 @@ public class CyclicBarrierTest {
                     }
 
                     System.out.println(Thread.currentThread().getName() + " is operation...");
-                    BaseUtils.simulateLongTimeOperation(500000);
+                    BaseUtils.simulateLongTimeOperation(250000);
                     System.out.println(Thread.currentThread().getName() + " is end running...");
 
                     try {
@@ -112,6 +112,9 @@ public class CyclicBarrierTest {
                 }
             });
         }
+
+        cyclicBarrier.await();
+        System.out.println("main..");
 
         executorService.shutdown();
     }
