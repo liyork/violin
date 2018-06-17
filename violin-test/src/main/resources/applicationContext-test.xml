@@ -50,4 +50,7 @@
     <bean name="initSequenceBean" class="com.wolf.test.spring.InitSequenceBean" init-method="initMethod">
     </bean>
 
+    <!--测试重复定义，会被后面的解析器构造出的bean进行覆盖。-->
+    <bean name="personServiceBean" class="com.wolf.test.spring.aopdemo.PersonServiceBean">
+    </bean>
 </beans>

@@ -23,6 +23,8 @@ import java.util.concurrent.Executors;
  * 另一个线程移动并执行p.casNext失败，再次循环p != t但是tail未改变，再次移动，执行casNext成功，更新了tail，然后第一个再更新tail向前了！这倒没事
  * 若上面第一个线程改了tail，那么这里就使用tail进行p.casNext，不更新tail
  * <p>
+ *     通过隔节点更新tail，达到减少每次cas更新消耗，但多了读取，用2次读volatile换取1次cas写。
+ *     弱一致性
  * <p>
  * <p>
  * <p>
@@ -36,9 +38,9 @@ import java.util.concurrent.Executors;
 public class ConcurrentLinkedQueueTest {
 
     public static void main(String[] args) {
-//        testSingleThread();
+        testSingleThread();
 //        testMultiThread();
-        testIterator();
+//        testIterator();
     }
 
     private static void testSingleThread() {
@@ -47,7 +49,7 @@ public class ConcurrentLinkedQueueTest {
 
         //进入for (Node<E> t = tail, p = t;;) { 时t就被私有化局部变量定格了，后续p和q的变化也是局部。只有p.casNext和casTail会涉及并发修改共享内存
         concurrentLinkedQueue.add(1);//第一次p.casNext(null, newNode)后head指向新节点，tail以及tail的next都指向tail所在node(可能这个是unsafe的内部实现。)。这里若有并发则一个成功另一个执行下面的(p == q)
-        concurrentLinkedQueue.add(2);//进入(p == q)，执行(t != (t = tail)) ? t : head; 表示tail改变了则选择新tail，未改变则使用head(这个只发生在第二次插入)，再循环则进入(q == null)添加为节点后casTail修改tail指向
+        concurrentLinkedQueue.add(2);//进入(p == q)，执行(t != (t = tail)) ? t : head; 表示tail改变了则选择新tail，未改变则使用head(这个只发生在第二次插入)，再循环则进入(q == null)添加为节点后casTail修改tail指向。tail自关联时从head找，否则再next
         concurrentLinkedQueue.add(3);//仅执行p.casNext
         concurrentLinkedQueue.add(4);//(p != t && t != (t = tail)) ? t : q， 表示移动且tail被修改则用新tail否则使用q(p.next)，再循环执行p.casNext和casTail
 

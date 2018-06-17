@@ -36,6 +36,17 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * lock就是try然后不行进入队列等待唤醒，唤醒时若是head则进行trylock。其他被意外唤醒的继续等待
  * unlock就是把后继节点unpark
+ *
+ * fast path of enq
+ * 获取到锁的节点是head
+ * shouldParkAfterFailedAcquire对之前的cancel的node排除
+ * 进入队列设定prenode为Node.SIGNAL
+ * if cancelled or apparently null,traverse backwards from tail to find the actual non-cancelled successor
+ * 释放锁时，设定head的waitStatus=0，将head之后的等待节点unpark，被唤醒的node会竞争，取胜的将自己更新为head，失败则同lock逻辑
+ *
+ * 公平锁上锁时先看状态和队列，都可以则竞争否则直接进入队列
+ *
+ * 使用lockInterruptibly响应interrupt，内部抛出异常中断。
  * <br/> Created on 2017/2/4 13:44
  *
  * @author 李超

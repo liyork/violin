@@ -1,5 +1,6 @@
 package com.wolf.test.concurrent.tooltest;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -14,8 +15,9 @@ public class LockSupportTest {
     public static void main(String[] args) throws InterruptedException {
 
 //        testBase();
+        testParkTime();
 //        testUnparkBeforePark();
-        testInterrupt();
+//        testInterrupt();
     }
 
     /**
@@ -45,7 +47,13 @@ public class LockSupportTest {
         LockSupport.unpark(thread);
     }
 
-    //基于信号量控制，及时先执行unpark，那么当执行park时由于了信号量则不会阻塞
+    private static void testParkTime() {
+        System.out.println("in testParkTime,"+ System.currentTimeMillis());
+        LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(5));
+        System.out.println("aware testParkTime,"+ System.currentTimeMillis());
+    }
+
+    //基于信号量控制，即使先执行unpark，那么当执行park时由于了信号量则不会阻塞
     private static void testUnparkBeforePark() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -65,6 +73,8 @@ public class LockSupportTest {
         System.out.println(Thread.currentThread().getName() + " is running...");
     }
 
+    //park后被interrupt不报错，只是线程interrupted=true
+    //park后被unpark也可以唤醒
     private static void testInterrupt() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -90,7 +100,7 @@ public class LockSupportTest {
             e.printStackTrace();
         }
         thread.interrupt();
-        System.out.println(Thread.currentThread().getName() + " thread.interrupt...");
+        System.out.println(Thread.currentThread().getName() + " execute thread.interrupt...");
 
         try {
             Thread.sleep(2000);
@@ -98,7 +108,7 @@ public class LockSupportTest {
             e.printStackTrace();
         }
         LockSupport.unpark(thread);
-        System.out.println(Thread.currentThread().getName() + " LockSupport.unpark...");
+        System.out.println(Thread.currentThread().getName() + " execute LockSupport.unpark...");
 
         //测试重复unpark和park：可以。
         try {
@@ -107,7 +117,7 @@ public class LockSupportTest {
             e.printStackTrace();
         }
         LockSupport.unpark(thread);
-        System.out.println(Thread.currentThread().getName() + " LockSupport.unpark22...");
+        System.out.println(Thread.currentThread().getName() + " execute LockSupport.unpark22...");
     }
 
 }
