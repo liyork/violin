@@ -4,6 +4,7 @@ import java.util.concurrent.*;
 
 /**
  * <p> Description:future可实现超时，可被打断.
+ * Callable只是用来被调用的,submit时会被封装成FutureTask，(Runnable, Future)可运行可获取，
  * <p/>
  * Date: 2016/6/23
  * Time: 9:01

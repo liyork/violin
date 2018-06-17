@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 1.head.next指向null也就是正在连接下一个
  * 2.头结点不是当前线程
  *
- * lock就是try然后不行进入队列等待唤醒，唤醒时若是head则进行trylock。其他被意外唤醒的继续等待
+ * lock就是try然后不行进入队列等待唤醒，被唤醒时若前面是head则进行trylock，否则其他被意外唤醒的继续等待
  * unlock就是把后继节点unpark
  *
  * fast path of enq

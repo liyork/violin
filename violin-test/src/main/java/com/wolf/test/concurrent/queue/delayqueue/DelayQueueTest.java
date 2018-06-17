@@ -1,11 +1,21 @@
-package com.wolf.test.concurrent.tooltest.delayqueue;
+package com.wolf.test.concurrent.queue.delayqueue;
 
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Description:内部有PriorityQueue保证大小顺序
+ * Description:内部有PriorityQueue保证大小顺序，take时先peek若未到时间则等待，否则poll
+ * <p>
+ * 第一个没到时间available.awaitNanos(delay);
+ * 若第一个没到则第二个来了也没到直接等待available.await();
+ * <p>
+ * offer时
+ * 队列中若只有自己则leader = null; and available.signal();
+ * <p>
+ * 写查都是lock
+ * <p>
+ * 使用leader字段防止多个线程超时再产生竞争，这样每个人都按照队列分别被取出。minimize unnecessary timed waiting
  * <br/> Created on 2018/3/13 10:22
  *
  * @author 李超
@@ -23,7 +33,7 @@ public class DelayQueueTest {
     private static void testTaskQueueDaemonThread() throws InterruptedException {
         TaskQueueDaemonThread taskQueueDaemonThread = TaskQueueDaemonThread.getInstance();
         taskQueueDaemonThread.init();
-        taskQueueDaemonThread.put( 6000, new Runnable() {
+        taskQueueDaemonThread.put(6000, new Runnable() {
             @Override
             public void run() {
                 System.out.println("66666");

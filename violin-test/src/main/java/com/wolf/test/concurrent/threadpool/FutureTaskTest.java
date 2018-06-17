@@ -6,6 +6,7 @@ import java.util.concurrent.*;
 
 /**
  * Description:Runnable, Future
+ * FutureTask机制，内部有volatile的state，若未完成则使用LockSupport等待
  * <br/> Created on 2017/6/25 10:27
  *
  * @author 李超

@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.tooltest.delayqueue;
+package com.wolf.test.concurrent.queue.delayqueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

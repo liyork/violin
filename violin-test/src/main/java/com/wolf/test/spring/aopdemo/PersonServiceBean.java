@@ -16,7 +16,19 @@ public class PersonServiceBean implements PersonServer{
     public void save(String name) {
 
         System.out.println("我是save方法");
-        //  throw new RuntimeException();
+          //throw new RuntimeException("xxxx");
     }
 
+    @Override
+    public void save2(String name) {
+        save(name);
+    }
+
+    //测试hashcode是否被代理，一定是接口上有hashCode，jdkproxy才使用aspect，
+    // 不然直接用JdkDynamicAopProxy.class.hashCode() * 13 + this.advised.getTargetSource().hashCode()
+    @Override
+    public int hashCode() {
+        System.out.println("PersonServiceBean hashCode");
+        return super.hashCode();
+    }
 }

@@ -24,17 +24,7 @@ import java.lang.reflect.Proxy;
 public class DynamicProxy {
 
 	public static void main(String[] args) throws Exception {
-
-		//这个文件生成在/Users/chaoli/IdeaProjects/violin/com/wolf/test/base，看来这个工程套工程，最终的根路径在violin上。。
-		//输出生成的代理类
-		System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
-
-		final BB bb = new BB();
-
-		AA aa = (AA)getProxy(bb);
-
-		aa.test();
-
+		testBase();
 
 		//运行时类路径
 //		FileReader fileReader =new FileReader(DynamicProxy.class.getResource("").getPath()+"/$Poxy0.class");
@@ -68,17 +58,31 @@ public class DynamicProxy {
 
 	}
 
-	@Test
-	public void doubleWrap() throws InvocationTargetException, IllegalAccessException {
+	private static void testBase() throws IllegalAccessException, InvocationTargetException {
+		//这个文件生成在/Users/chaoli/IdeaProjects/violin/com/wolf/test/base，看来这个工程套工程，最终的根路径在violin上。。
+		//输出生成的代理类
+		System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
+
 		final BB bb = new BB();
 
 		AA aa = (AA)getProxy(bb);
+
 		aa.test();
 
-		AA cc = (AA)getProxy(aa);
-		cc.test();
+		aa.hashCode();//应该也会被拦截，但是不知道为什么这里打断点会提前执行
 	}
 
+
+    @Test
+    public void doubleWrap() throws InvocationTargetException, IllegalAccessException {
+        final BB bb = new BB();
+
+        AA aa = (AA)getProxy(bb);
+        aa.test();
+
+        AA cc = (AA)getProxy(aa);
+        cc.test();
+    }
 
 	//不需要知道任何信息，就能创建目标类的代理类
 	private static Object getProxy(final Object obj) throws IllegalAccessException, InvocationTargetException {
@@ -101,7 +105,6 @@ public class DynamicProxy {
 
 interface AA{
 	public void test();
-
 }
 
 //当时定义cc的目的可能是模拟展示生成代理类的操作
@@ -118,5 +121,16 @@ interface AA{
 class BB implements  AA{
 	public void test(){
 		System.out.println("test....");
+	}
+
+	@Override
+	public int hashCode() {
+		System.out.println("sub hashcode begin.............");
+		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+		for (StackTraceElement stackTraceElement : stackTrace) {
+			System.out.println(stackTraceElement);
+		}
+
+		return 1111;
 	}
 }

@@ -10,4 +10,8 @@ package com.wolf.test.spring.aopdemo;
 public interface PersonServer {
 
     public void save(String name);
+
+    public void save2(String name);
+
+    public int hashCode() ;
 }

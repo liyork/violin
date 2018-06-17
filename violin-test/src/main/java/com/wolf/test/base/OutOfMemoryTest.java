@@ -27,7 +27,8 @@ public class OutOfMemoryTest {
 
     public static void main(String[] args) throws InterruptedException, IllegalAccessException {
 //        test1();  有gc，无法溢出
-//        test2();  可以溢出
+//        test2();  //可以溢出
+        test2Catch();  //可以溢出
 //        test3();  //可以溢出，但是分析后不对
 //        test4();  //可以溢出
 //        testHeapOOM();
@@ -42,7 +43,7 @@ public class OutOfMemoryTest {
 
 //        testMethodAreaOOM();
 
-        testDirectMemoryOOM();
+//        testDirectMemoryOOM();
     }
 
     private static void read() {
@@ -94,6 +95,38 @@ public class OutOfMemoryTest {
         }
 
         System.out.println("1111111");
+    }
+
+
+//    Throwable
+//            Exception
+//                  RuntimeException
+//            Error
+//                  VirtualMachineError
+//                      OutOfMemoryError
+    public static void test2Catch() {
+        Vector v = new Vector();
+        try {
+            for(int i = 0; i < 250000; i++) {
+                v.add(new byte[1 * 1024 * 1024]);
+                System.out.println("i:" + i);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            System.out.println("1111111");
+//        } catch (Exception e) {
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < 20; i++) {
+            System.out.println(i+"_xxxx");
+        }
+        //这里再分配也是溢出，这里能干什么？释放已有的某些内存？怎么获取？
+        v.add(new byte[1 * 1024 * 1024]);
     }
 
     //由于编译器优化代码后将 long[] arr = new long[i];放入每次循环中。

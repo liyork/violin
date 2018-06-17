@@ -1,4 +1,4 @@
-package com.wolf.test.base;
+package com.wolf.test.base.map;
 
 import java.util.*;
 
@@ -34,7 +34,7 @@ public class HashMapTest {
 
         Set<String> keys = map.keySet();//简单构造KeySet
         Iterator<String> iterator = keys.iterator();//构造KeyIterator HashIterator，初始化一些变量next、index，用于后期遍历
-        //过程：从数组第一个不为null的槽开始，遍历数组，遇到entity则next，如果为空则下个槽
+        //过程：从数组第一个不为null的槽开始，一直到next为null，下个槽，直到最后一个槽
         while (iterator.hasNext()) {
             String next = iterator.next();
             System.out.println(next);

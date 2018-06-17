@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.tooltest.delayqueue;
+package com.wolf.test.concurrent.queue.delayqueue;
 
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;

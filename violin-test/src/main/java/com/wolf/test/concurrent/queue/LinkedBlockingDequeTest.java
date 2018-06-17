@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.tooltest;
+package com.wolf.test.concurrent.queue;
 
 import java.util.concurrent.LinkedBlockingDeque;
 

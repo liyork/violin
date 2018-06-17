@@ -20,25 +20,26 @@ public class AtomicTest {
 //        testAtomicIntegerArray();
 //        testAtomicReference();
 
-        testAtomicIntegerFieldUpdater();
+//        testAtomicIntegerFieldUpdater();
+        testBound();
     }
 
     private static void testAtomicIntegerFieldUpdater() {
         User user = new User("qq", 1);
         AtomicIntegerFieldUpdater atomicIntegerFieldUpdater = AtomicIntegerFieldUpdater.newUpdater(User.class, "field");
         atomicIntegerFieldUpdater.getAndAdd(user, 1);
-        System.out.println(" new field:"+user.field);
+        System.out.println(" new field:" + user.field);
     }
 
     //原子更新引用(多个值)
     private static void testAtomicReference() {
-        User user = new User("xx",1);
+        User user = new User("xx", 1);
         AtomicReference<User> atomicReference = new AtomicReference<>();
         atomicReference.set(user);
-        User user2 = new User("xx2",2);
+        User user2 = new User("xx2", 2);
         atomicReference.compareAndSet(user, user2);
         User newUser = atomicReference.get();
-        System.out.println("new name:"+newUser.name+" new age:"+newUser.age);
+        System.out.println("new name:" + newUser.name + " new age:" + newUser.age);
     }
 
     private static void testAtomicIntegerArray() {
@@ -56,7 +57,32 @@ public class AtomicTest {
         System.out.println("next:" + atomicInteger.get());
     }
 
-    private static class User{
+    private static void testBound() {
+        AtomicTest atomicInteger = new AtomicTest();
+        for (int i = 0; i < 100; i++) {
+            int count = atomicInteger.incrementLimitMax();
+            System.out.println("count==>" + count);
+        }
+    }
+
+    int maxCount = 10;
+    AtomicInteger curCount = new AtomicInteger(0);
+
+    private final int incrementLimitMax() {
+        for (; ; ) {
+            int current = curCount.get();
+            if (current >= maxCount) {
+                //如果当前值已经到了最大值，则直接返回
+                return current;
+            }
+            int next = current + 1;
+            if (curCount.compareAndSet(current, next)) {
+                return next;
+            }
+        }
+    }
+
+    private static class User {
         private String name;
         private int age;
         public volatile int field;//字段需要volatile+public

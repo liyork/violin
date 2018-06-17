@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.threadpool;
+package com.wolf.test.concurrent.queue;
 
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ import java.util.concurrent.SynchronousQueue;
  * @author 李超
  * @since 1.0.0
  */
-public class BlockingQueueTest {
+public class ArrayBlockingQueueTest {
 
     //满了返回false
     @Test

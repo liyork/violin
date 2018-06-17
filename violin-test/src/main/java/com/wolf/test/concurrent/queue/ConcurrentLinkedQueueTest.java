@@ -1,4 +1,4 @@
-package com.wolf.test.concurrent.tooltest;
+package com.wolf.test.concurrent.queue;
 
 import org.junit.Test;
 
@@ -26,6 +26,7 @@ import java.util.concurrent.Executors;
  *     通过隔节点更新tail，达到减少每次cas更新消耗，但多了读取，用2次读volatile换取1次cas写。
  *     弱一致性
  * <p>
+ * 防止频繁移动head或tail，每隔两个节点做移动，第一次添加时p=t不移动tail，第二次添加时p!=t，移动tail
  * <p>
  * <p>
  * <p>

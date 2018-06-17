@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
-@Aspect
+//@Aspect //注掉，先测试其他
 @Component
 public class TestInterceptor {
 

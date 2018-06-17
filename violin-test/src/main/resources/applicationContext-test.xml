@@ -1,29 +1,29 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿﻿<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context-2.5.xsd
 	http://www.springframework.org/schema/aop
-    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 
     <!-- 使Spring关注Annotation -->
-    <context:annotation-config />
+    <context:annotation-config/>
     <!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
-    <context:component-scan base-package="com.wolf.test" />
+    <context:component-scan base-package="com.wolf.test"/>
     <!--自动使用注解代理-->
     <aop:aspectj-autoproxy/>
 
     <bean id="personService" class="com.wolf.test.spring.factoryBean.PersonServiceImpl"/>
 
     <bean id="factoryBeanTest" class="com.wolf.test.spring.factoryBean.MyFactoryBean">
-        <property name="interfaceName" value="com.wolf.test.spring.factoryBean.PersonService" />
-        <property name="target"  ref="personService"/>
+        <property name="interfaceName" value="com.wolf.test.spring.factoryBean.PersonService"/>
+        <property name="target" ref="personService"/>
     </bean>
 
     <bean id="car" class="com.wolf.test.spring.factoryBean.CarFactoryBean">
@@ -47,8 +47,41 @@
     </bean>
     <!--用于spring源码测试 end-->
 
-    <bean name="initSequenceBean" class="com.wolf.test.spring.InitSequenceBean" init-method="initMethod">
+    <!--似乎注解优先于xml中的bean顺序-->
+    <bean name="springInitSequenceBean" class="com.wolf.test.spring.init.SpringInitSequenceBean"
+          init-method="initMethod">
+        <property name="springInitSequenceBeanXX" ref="springInitSequenceBeanXX"/>
     </bean>
+    <bean name="springInitSequenceBeanXX" class="com.wolf.test.spring.init.SpringInitSequenceBeanXX"/>
+
+
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:props/dbConfig.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${db.jdbc.driverClassName}"/>
+        <property name="url" value="${db.jdbc.url}"/>
+        <property name="username" value="${db.jdbc.username}"/>
+        <property name="password" value="${db.jdbc.password}"/>
+        <property name="maxActive" value="20"/>
+        <property name="maxIdle" value="3"/>
+        <property name="maxWait" value="15000"/>
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <property name="minEvictableIdleTimeMillis" value="180000"/>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!--测试重复定义，会被后面的解析器构造出的bean进行覆盖。-->
     <bean name="personServiceBean" class="com.wolf.test.spring.aopdemo.PersonServiceBean">

@@ -17,3 +17,6 @@ volatile会禁用处理器的快速的访问内存或寄存器，直接从主内
 
 volatile能代替countdownlatch，轻量级
 
+volatile写之前读之后，写读，不能重排序
+
+多线程问题，原子性，可见行，重排序

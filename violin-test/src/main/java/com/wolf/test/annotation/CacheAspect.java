@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  * @since 1.0
  */
-@Aspect
+//@Aspect  //注掉，用于测试其他
 @Component
 public class CacheAspect {
 
