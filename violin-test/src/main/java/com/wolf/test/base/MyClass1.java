@@ -9,6 +9,8 @@ package com.wolf.test.base;
  */
 public class MyClass1 {
 
+    static int a = 1;
+
     static {//静态块
         System.out.println("static block ");
     }

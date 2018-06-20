@@ -7,7 +7,10 @@ import java.net.URLClassLoader;
 
 /**
  * <p> Description:类加载器测试
- * 父类加载器加载类可被子类看到，父类不可看到子类加载器加载的类，自定义类加载器之间相互隔离。
+ * 父加载器加载类可被子加载器看到，父加载器不可看到子加载器加载的类，自定义类加载器之间相互隔离。
+ * 查找从下往上，加载从上往下。
+ * 加载器之间有父子关系，但是不是继承
+ * ExtClassLoader/AppClassLoader extends URLClassLoader extends SecureClassLoader extends ClassLoader
  * <p/>
  * Date: 2015/7/22
  * Time: 11:37
@@ -20,27 +23,28 @@ public class ClassLoadTest {
 
 	public static void main(String[] args) throws Exception {
 //		baseTest();
-		updateClassPath();
+//		updateClassPath();
 //		useUrlClassLoader();
-//		useCustomizeLoader();
+		useCustomizeLoader();
 //		testDifferentClassLoader();
-	}
+//        testClassLoaderHierarchy();
+    }
 
-	private static void baseTest() throws ClassNotFoundException {
-		Class<?> aClass = Class.forName("com.car.properties.TestProperties",true,ClassLoadTest.class.getClassLoader());
-//		Object o = aClass.newInstance();
-//		System.out.println(o);
+    private static void baseTest() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+		Class<?> aClass = Class.forName("com.wolf.test.base.properties.TestProperties",true,ClassLoadTest.class.getClassLoader());
+		Object o = aClass.newInstance();
+		System.out.println("TestProperties instance:"+o);
 
-		Class<?> aClass1 = ClassLoadTest.class.getClassLoader().loadClass("com.car.loadclass.ClassLoadTest");
-		System.out.println(aClass1);
+		Class<?> aClass1 = ClassLoadTest.class.getClassLoader().loadClass("com.wolf.test.loadclass.ClassLoadTest");
+		System.out.println("ClassLoadTest class:"+aClass1);
 
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-		System.out.println("contextClassLoader:"+contextClassLoader);
-		System.out.println("contextClassLoader parent:"+contextClassLoader.getParent());
 		ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-		System.out.println("systemClassLoader:"+systemClassLoader);
-		System.out.println("systemClassLoader parent:"+systemClassLoader.getParent());
+		System.out.println("contextClassLoader == systemClassLoader:"+(contextClassLoader == systemClassLoader));
+		System.out.println("parent compare:"+(contextClassLoader.getParent()==systemClassLoader.getParent()));
 	}
+
+
 
 	/**
 	 * 在将classpath添加到此model中才能使用这个类,将包D:\intellijWrkSpace\xxxx1.7\webapps\app1放到model下
@@ -80,7 +84,7 @@ public class ClassLoadTest {
 	private static void useCustomizeLoader() throws Exception {
 
 		CustomizeClassLoader customizeClassLoader = new CustomizeClassLoader();
-		Class<?> xx = customizeClassLoader.loadClass("com.car.loadclass.NonClassPathClass");
+		Class<?> xx = customizeClassLoader.loadClass("com.wolf.test.loadclass.NonClassPathClass");
 		System.out.println(xx.getClassLoader());
 		System.out.println(xx.getClassLoader().getParent());
 		reflectMethod(xx);
@@ -116,5 +120,30 @@ public class ClassLoadTest {
 		Object object = method.invoke(o);
 		String name = (String) object;
 		System.out.println(name);
+	}
+
+	//bootstrap加载java_home/jre/lib/*.jar(如:rt.jar、resources.jar、charsets.jar和class等)。或-Xbootclasspath/a:xxxx指定
+	//extension加载java_home/jre/lib/ext/*.jar。或-Djava.ext.dirs指定
+	//app加载classpath。或-Djava.class.path指定
+    private static void testClassLoaderHierarchy() {
+        ClassLoader classLoader = ClassLoadTest.class.getClassLoader();
+        while (null != classLoader) {
+            System.out.println(classLoader);
+            classLoader = classLoader.getParent();
+        }
+
+        System.out.println("bootstrap load classpath:"+System.getProperty("sun.boot.class.path"));
+        System.out.println("ext load classpath:"+System.getProperty("java.ext.dirs"));
+        System.out.println("app load classpath:"+System.getProperty("java.class.path"));
+
+        //int.class是由Bootstrap ClassLoader加载的
+		ClassLoader classLoader1 = int.class.getClassLoader();
+		System.out.println("int classloader:"+classLoader1);
+
+		//未指定父加载器的都用appclassloader作为父加载器。
+	}
+
+	private static void testLoadClassSeq() throws ClassNotFoundException {
+		Class<?> aClass1 = ClassLoadTest.class.getClassLoader().loadClass("com.wolf.test.loadclass.ClassLoadTest");
 	}
 }
