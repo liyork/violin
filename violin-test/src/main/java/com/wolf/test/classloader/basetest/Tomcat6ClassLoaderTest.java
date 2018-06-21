@@ -1,4 +1,4 @@
-package com.wolf.test.loadclass;
+package com.wolf.test.classloader.basetest;
 
 /**
  * Description:
@@ -7,7 +7,7 @@ package com.wolf.test.loadclass;
  * @author 李超
  * @since 1.0.0
  */
-public class TomcatClassLoader {
+public class Tomcat6ClassLoaderTest {
 
     //层次关系
     //bootstrap(tomcat自定义，加载java_home/jre/lib/*)

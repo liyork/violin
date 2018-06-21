@@ -1,4 +1,4 @@
-package com.wolf.test.jvm.hotswap;
+package com.wolf.test.classloader.hotswap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

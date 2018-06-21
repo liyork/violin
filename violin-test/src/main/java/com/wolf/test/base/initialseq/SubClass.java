@@ -1,4 +1,4 @@
-package com.wolf.test.jvm.loadclass;
+package com.wolf.test.base.initialseq;
 
 /**
  * Description:
@@ -8,6 +8,8 @@ package com.wolf.test.jvm.loadclass;
  * @since 1.0.0
  */
 public class SubClass extends SuperClass{
+
+    public static int b = 4;
 
     static {
         System.out.println("SubClass static ");

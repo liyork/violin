@@ -8,4 +8,23 @@ package com.wolf.test.base.reflect;
  * @since 1.0.0
  */
 public class C extends B {
+
+    public C() {
+    }
+
+    public C(Integer age) {
+        this.age = age;
+    }
+
+    private Integer age;
+
+    private String seq;
+
+    public void testaaa() {
+
+    }
+
+    public void testbbb(String a ,Integer b) {
+
+    }
 }

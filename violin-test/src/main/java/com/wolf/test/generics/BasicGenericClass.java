@@ -6,18 +6,18 @@ package com.wolf.test.generics;
  *
  * @author 李超()
  * @since 1.0.0
- */                        //泛型定义，【类型形参】
-class BasicGenericClass<T> {
+ */
+class BasicGenericClass<T> { //泛型定义，【类型形参】
 
-	private T t;
-	private static Object object;
+    private T t;
+    private static Object object;
 
-	//使用泛型,调用时是【类型实参】
-	public void setT(T t) {
-		this.t = t;
-	}
+    //使用泛型,调用时是【类型实参】
+    public void setT(T t) {
+        this.t = t;
+    }
 
-	public T getX() {
-		return t;
-	}
+    public T getX() {
+        return t;
+    }
 }

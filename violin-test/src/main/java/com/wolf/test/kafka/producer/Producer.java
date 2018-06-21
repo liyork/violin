@@ -44,11 +44,19 @@ public class Producer {
 
         KafkaProducer producer = new KafkaProducer<String,String>(properties);
 
-        ProducerRecord<String, String> record =
-                new ProducerRecord<>("test1", "Precision Products", "France2");
+        for (int i = 0; i < 100000; i++) {
+            ProducerRecord<String, String> record =
+                    new ProducerRecord<>("test1", "France_"+i);
 
-        invoke(producer, record);
+            invoke(producer, record);
 //        asyncInvoke(producer, record);
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static Properties getSimpleProperties() {

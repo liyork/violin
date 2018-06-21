@@ -6,6 +6,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Description:
+ * 非侵入式
+ * 使得业务逻辑和系统服务之间的分离
  * <br/> Created on 2018/5/3 10:41
  *
  * @author 李超

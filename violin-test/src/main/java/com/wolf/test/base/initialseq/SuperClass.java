@@ -1,4 +1,4 @@
-package com.wolf.test.jvm.loadclass;
+package com.wolf.test.base.initialseq;
 
 /**
  * Description:

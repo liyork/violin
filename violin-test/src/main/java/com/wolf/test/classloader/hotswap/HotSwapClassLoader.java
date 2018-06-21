@@ -1,6 +1,4 @@
-package com.wolf.test.jvm.hotswap;
-
-import javax.swing.text.html.HTML;
+package com.wolf.test.classloader.hotswap;
 
 /**
  * Description:

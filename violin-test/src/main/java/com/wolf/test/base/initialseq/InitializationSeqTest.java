@@ -1,4 +1,4 @@
-package com.wolf.test.jvm.loadclass;
+package com.wolf.test.base.initialseq;
 
 /**
  * Description:
@@ -7,13 +7,19 @@ package com.wolf.test.jvm.loadclass;
  * @author 李超
  * @since 1.0.0
  */
-public class InitializationTest {
+public class InitializationSeqTest {
 
     //-XX:+TraceClassLoading
     public static void main(String[] args) {
+//        testOnlyLoadClass();
 //        testRefParentValue();
+        testSubClass();
 //        testArray();
-        testStaticFinal();
+//        testStaticFinal();
+    }
+
+    private static void testOnlyLoadClass() {
+        System.out.println(SubClass.class);
     }
 
     //使用的字段是静态字段，只初始化拥有这个字段的父类，但是子、父类都加载
@@ -21,9 +27,14 @@ public class InitializationTest {
         System.out.println(SubClass.a);
     }
 
+    //主动使用子类静态字段则也会初始化父类
+    private static void testSubClass() {
+        System.out.println(SubClass.b);
+    }
+
     //仅仅定义，不会触发初始化,但是触发了加载
     private static void testArray() {
-        SuperClass [] superClasses = new SuperClass[10];
+        SuperClass[] superClasses = new SuperClass[10];
         SuperClass superClass = null;
     }
 

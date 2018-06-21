@@ -1,6 +1,7 @@
-package com.wolf.test.loadclass;
+package com.wolf.test.classloader.basetest;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -43,13 +44,17 @@ import java.io.IOException;
  */
 public class CustomizeClassLoader extends ClassLoader {
 
+    private String baseDir;
+
     //如果没有通过构造函数指定parent是null,那么系统(app)加载器为父类,加载类走委派模式,如果为null则父类是bootstrap
     //有无父类加载器影响loadClass查找顺序,有：子类可以找到父类加载的类。
-    public CustomizeClassLoader() {
+    public CustomizeClassLoader(String baseDir) {
         //设定ext类加载器为父类
         super(ClassLoader.getSystemClassLoader().getParent());
         //不指定父类
 //		super(null);
+
+        this.baseDir = baseDir;
     }
 
     //自定义classloader建议重写findClass方法
@@ -57,15 +62,16 @@ public class CustomizeClassLoader extends ClassLoader {
     protected Class<?> findClass(String name) throws ClassNotFoundException {
 
         //接口由系统类加载器加载
-        String substring = name.substring(name.lastIndexOf(".") + 1);
+        String substring = name.substring(name.lastIndexOf("") + 1);
         if (substring.equals("NonClassPathClassInterface") || name.startsWith("java") || substring.equals("Key")) {
             return ClassLoader.getSystemClassLoader().loadClass(name);
         }
 
         FileInputStream is = null;
         ByteArrayOutputStream bos = null;
+        File file = new File(baseDir,substring + ".class");
         try {
-            is = new FileInputStream("/Users/chaoli/tmp" + substring + ".class");
+            is = new FileInputStream(file);
 
             bos = new ByteArrayOutputStream();
             int len = 0;

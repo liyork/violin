@@ -38,7 +38,7 @@ public class Consumer {
 
     private static Properties getSimpleProperties() {
         Properties properties = new Properties();
-        properties.put("bootstrap.servers", "localhost:9092,borker2:9092");
+        properties.put("bootstrap.servers", "localhost:9092");
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("group.id", "CountryCounter");//所属消费者群组

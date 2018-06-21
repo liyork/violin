@@ -6,12 +6,18 @@ import com.wolf.utils.ReflectUtils;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
- * Description:
+ * Description:没有反射就没有框架
+ * Person person = new Person()
+ * Class clazz = person.getClass()
+ * person是类Person的实例对象。类Person是java.lang.Class的实例对象,Class是Class Type。多个person对应的Class是一个
+ * Class是Person类的类类型
  * <br/> Created on 2016/10/27 15:08
  *
  * @author 李超()
@@ -20,6 +26,59 @@ import java.util.Collection;
 public class ReflectTest {
 
     public static void main(String[] args) throws Exception {
+//        testBase();
+        testDynamicCreateBean();
+//        test();
+    }
+
+    private static void testBase() {
+        Class<C> cClass = C.class;
+        String name = cClass.getName();
+        System.out.println("cClass name:" + name);//com.wolf.test.base.reflect.C
+        String simpleName = cClass.getSimpleName();
+        System.out.println("cClass simpleName:" + simpleName);
+
+        Method[] methods = cClass.getDeclaredMethods();
+        for (Method method : methods) {
+            System.out.println("methods name:" + method.getName());
+            Class<?> returnType = method.getReturnType();
+            System.out.println("returnType:" + returnType.getName());
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            for (Class<?> parameterType : parameterTypes) {
+                System.out.print("parameter:" + parameterType.getName() + ",");
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+
+        Field[] fields = cClass.getDeclaredFields();
+        for (Field field : fields) {
+            System.out.println("field name:" + field.getName());
+            Class<?> type = field.getType();
+            System.out.println("field type:" + type);
+            System.out.println();
+        }
+
+        System.out.println();
+        Constructor<?>[] constructors = cClass.getDeclaredConstructors();
+        for (Constructor<?> constructor : constructors) {
+            System.out.println("constructor name:" + constructor.getName());
+            Class<?>[] parameterTypes = constructor.getParameterTypes();
+            for (Class<?> parameterType : parameterTypes) {
+                System.out.print("parameter:" + parameterType.getName() + ",");
+            }
+        }
+    }
+
+    //我们想要的就是我用那个类就加载那个类，也就是常说的运行时刻加载，动态加载类
+    private static void testDynamicCreateBean() throws Exception {
+        Class<?> aClass = Class.forName("com.wolf.test.base.reflect.C");
+        Object o = aClass.newInstance();
+        System.out.println(o);
+    }
+
+    private static void test() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, NoSuchFieldException {
         //仅能取到公共方法
         Method test1 = C.class.getMethod("test", null);
         System.out.println(test1);

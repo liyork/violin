@@ -1,6 +1,4 @@
-package com.wolf.test.jvm.hotswap;
-
-import com.sun.xml.internal.ws.api.model.MEP;
+package com.wolf.test.classloader.hotswap;
 
 import java.lang.reflect.Method;
 
@@ -17,7 +15,7 @@ public class JavaClassExecutor {
     public static String execute(byte[] classByte) {
         HackSystem.clearBuffer();
         ClassModifier cm = new ClassModifier(classByte);
-        byte[] modiBytes = cm.modifyUTF8Constant("java/lang/System", "com/wolf/test/jvm/hotswap/HackSystem");
+        byte[] modiBytes = cm.modifyUTF8Constant("java/lang/System", "com/wolf/test/classloader/hotswap/HackSystem");
         //每次都使用新的类加载器，保证每次方法调用时都加载一个新类
         HotSwapClassLoader hotSwapClassLoader = new HotSwapClassLoader();
         Class clazz = hotSwapClassLoader.loadByte(modiBytes);

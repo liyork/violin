@@ -11,7 +11,9 @@ package com.wolf.test.jvm;
  * join之前的写肯定被当前线程看到
  * g.对象终结规则：一个对象的初始化完成(构造函数执行结束)先行发生于finalize方法
  * h.传递性：如果操作A先行发生于操作B，操作B先行发生于操作C，得出结论A先行发生于操作C。(前提必须都是先行发生)
- *
+ * <p>
+ * 避免每次都用lock和violatile保证多线程问题的繁琐，java定义了happenbefore语义
+ * <p>
  * 结论：时间先后顺序与先行发生原则之间基本没有太大关系。
  * <br/> Created on 11/9/17 10:15 AM
  *
@@ -23,12 +25,12 @@ public class HappensBefore {
     private volatile int value = 0;
 
     public int getValue() {
-        System.out.println("getValue:"+Thread.currentThread().getName());
+        System.out.println("getValue:" + Thread.currentThread().getName());
         return value;
     }
 
     public void setValue(int value) {
-        System.out.println("setValue:"+Thread.currentThread().getName());
+        System.out.println("setValue:" + Thread.currentThread().getName());
         this.value = value;
     }
 
@@ -36,6 +38,7 @@ public class HappensBefore {
      * 使用先行发生规则进行分析，假设setThread时间上先调用，getThread后调用，那返回值是什么？
      * 由于两个线程，所以a不符合。由于没有同步操作，所以b不符合。由于没有volatile则c不符合。
      * d、e、f、g与本例无关。由于没有一个适用的先行发生规则，所以h也不符合。
+     *
      * @param args
      */
     public static void main(String[] args) throws InterruptedException {
@@ -45,7 +48,7 @@ public class HappensBefore {
             @Override
             public void run() {
                 int value = happensBefore.getValue();
-                System.out.println("get in thread ,value:"+value);
+                System.out.println("get in thread ,value:" + value);
             }
         }, "getThread").start();
 
@@ -56,7 +59,7 @@ public class HappensBefore {
             public void run() {
                 happensBefore.setValue(111);
             }
-        },"setThread").start();
+        }, "setThread").start();
 
     }
 }

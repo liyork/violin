@@ -1,4 +1,4 @@
-package com.wolf.test.jvm.hotswap;
+package com.wolf.test.classloader.hotswap;
 
 /**
  * Description:提供修改常量池中常量字符

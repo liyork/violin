@@ -80,7 +80,6 @@ public class HotSwapURLClassLoader extends URLClassLoader {
         //查看自己缓存
         clazz = findLoadedClass(className);
         if (clazz != null) {
-
             //如果class类被修改过，则重新加载
             if (isModify(className)) {
                 LOGGER.debug("new classloader is created..");

@@ -1,7 +1,11 @@
-package com.wolf.test.loadclass;
+package com.wolf.test.classloader.basetest;
 
+import com.wolf.test.jvm.loadclass.HotSwapURLClassLoader;
+
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -11,6 +15,7 @@ import java.net.URLClassLoader;
  * 查找从下往上，加载从上往下。
  * 加载器之间有父子关系，但是不是继承
  * ExtClassLoader/AppClassLoader extends URLClassLoader extends SecureClassLoader extends ClassLoader
+ *
  * <p/>
  * Date: 2015/7/22
  * Time: 11:37
@@ -19,24 +24,29 @@ import java.net.URLClassLoader;
  * @version 1.0
  * @since 1.0
  */
-public class ClassLoadTest {
+public class ClassLoaderTest {
+
+	public static final String COM_WOLF_TEST_LOADCLASS_NON_CLASS_PATH_CLASS = "com.wolf.test.loadclass.NonClassPathClass";
 
 	public static void main(String[] args) throws Exception {
 //		baseTest();
 //		updateClassPath();
 //		useUrlClassLoader();
-		useCustomizeLoader();
+//		useCustomizeLoader();
 //		testDifferentClassLoader();
 //        testClassLoaderHierarchy();
+//		testDecodeClassLoader();
+//        testContextClassLoader();
+		testLoadFromJar();
     }
 
     private static void baseTest() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-		Class<?> aClass = Class.forName("com.wolf.test.base.properties.TestProperties",true,ClassLoadTest.class.getClassLoader());
+		Class<?> aClass = Class.forName("com.wolf.test.base.properties.TestProperties",true,ClassLoaderTest.class.getClassLoader());
 		Object o = aClass.newInstance();
 		System.out.println("TestProperties instance:"+o);
 
-		Class<?> aClass1 = ClassLoadTest.class.getClassLoader().loadClass("com.wolf.test.loadclass.ClassLoadTest");
-		System.out.println("ClassLoadTest class:"+aClass1);
+		Class<?> aClass1 = ClassLoaderTest.class.getClassLoader().loadClass("com.wolf.test.classloader.basetest.ClassLoaderTest");
+		System.out.println("ClassLoaderTest class:"+aClass1);
 
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
@@ -52,14 +62,14 @@ public class ClassLoadTest {
 	 * @throws ClassNotFoundException
 	 */
 	private static void updateClassPath() throws ClassNotFoundException {
-		ClassLoader classLoader = ClassLoadTest.class.getClassLoader();
+		ClassLoader classLoader = ClassLoaderTest.class.getClassLoader();
 		Class<?> primitiveServlet = classLoader.loadClass("PrimitiveServlet");
 		System.out.println(primitiveServlet);
 	}
 
 	private static void useUrlClassLoader() throws Exception {
 
-		ClassLoader classLoader = ClassLoadTest.class.getClassLoader();
+		ClassLoader classLoader = ClassLoaderTest.class.getClassLoader();
 		System.out.println(ClassLoader.getSystemClassLoader());
 		System.out.println(classLoader);//sun.misc.Launcher$AppClassLoader@43be2d65
 		System.out.println(classLoader.getParent());//sun.misc.Launcher$ExtClassLoader@7a9664a1
@@ -83,8 +93,9 @@ public class ClassLoadTest {
 
 	private static void useCustomizeLoader() throws Exception {
 
-		CustomizeClassLoader customizeClassLoader = new CustomizeClassLoader();
-		Class<?> xx = customizeClassLoader.loadClass("com.wolf.test.loadclass.NonClassPathClass");
+		CustomizeClassLoader customizeClassLoader = new CustomizeClassLoader("D:\\tmp");
+//		CustomizeClassLoader customizeClassLoader = new CustomizeClassLoader("D:\\tmp\\com\\wolf\\test\\loadclass");//看来不一定要放在自己包目录下！
+		Class<?> xx = customizeClassLoader.loadClass(COM_WOLF_TEST_LOADCLASS_NON_CLASS_PATH_CLASS);
 		System.out.println(xx.getClassLoader());
 		System.out.println(xx.getClassLoader().getParent());
 		reflectMethod(xx);
@@ -93,40 +104,65 @@ public class ClassLoadTest {
 
 	private static void testDifferentClassLoader() throws Exception {
 
-		CustomizeClassLoader customizeClassLoader = new CustomizeClassLoader();
+		CustomizeClassLoader customizeClassLoader = new CustomizeClassLoader("D:\\tmp\\com\\wolf\\test\\loadclass");
 		//测试加载bootstrap加载的类
 		Class<?> stringClass = customizeClassLoader.loadClass("java.lang.String");
+		System.out.println("stringClass class loader:"+stringClass.getClassLoader());
 		//测试使用ext加载的类
 		Class<?> keyClass = customizeClassLoader.loadClass("java.security.Key");
+		System.out.println("keyClass class loader:"+keyClass.getClassLoader());
 
-
-		String className = "com.car.loadclass.NonClassPathClass";
-		Class<?> customizeClass = customizeClassLoader.loadClass(className);
-		Class<?> systemClass = ClassLoader.getSystemClassLoader().loadClass(className);
+		Class<?> customizeClass = customizeClassLoader.loadClass(COM_WOLF_TEST_LOADCLASS_NON_CLASS_PATH_CLASS);
+		Class<?> systemClass = ClassLoader.getSystemClassLoader().loadClass(COM_WOLF_TEST_LOADCLASS_NON_CLASS_PATH_CLASS);
 		System.out.println(customizeClass==systemClass);
 
-		Object o = customizeClass.newInstance();
-		//Exception in thread "main" java.lang.ClassCastException:
-		// com.car.loadclass.NonClassPathClass cannot be cast to com.car.loadclass.NonClassPathClass
-		//由于是o是自定义类加载器加载的类，而要强转成系统类加载器加载的NonClassPathClass，报错
-//		NonClassPathClass nonClassPathClass =(NonClassPathClass)o;
+		Object customizeObject = customizeClass.newInstance();
+		//ClassCastException: com.wolf.test.loadclass.NonClassPathClass cannot be cast to com.wolf.test.loadclass.NonClassPathClass
+		//由于是customizeObject是自定义类加载器加载的类，而要强转成系统类加载器加载的NonClassPathClass，报错
+//		NonClassPathClass nonClassPathClass =(NonClassPathClass)customizeObject;
+
 		//这个接口是由系统类加载器加载的，o是自定义类加载器加载的，可以使用
-		NonClassPathClassInterface nonClassPathClass =(NonClassPathClassInterface)o;
-		String name1 = nonClassPathClass.getName();
+		NonClassPathClassInterface nonClassPathClass1 =(NonClassPathClassInterface)customizeObject;
+		String name1 = nonClassPathClass1.getName();
 		System.out.println(name1);
 
-		//由于string是bootstrap加载的所以可被子类加载器看到
+		//由于string是bootstrap加载的所以可被子类加载器使用
 		Method method = customizeClass.getMethod("getName");
-		Object object = method.invoke(o);
+		Object object = method.invoke(customizeObject);
 		String name = (String) object;
 		System.out.println(name);
 	}
+
+    private static void testContextClassLoader() throws ClassNotFoundException {
+
+        CustomizeClassLoader customizeClassLoader = new CustomizeClassLoader("D:\\tmp\\com\\wolf\\test\\loadclass");
+        Class<?> customizeClass = customizeClassLoader.loadClass(COM_WOLF_TEST_LOADCLASS_NON_CLASS_PATH_CLASS);
+        System.out.println("customizeClass:"+customizeClass);
+
+        ClassLoader classLoader = ClassLoaderTest.class.getClassLoader();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+                //就是从main的ClassLoader即调用方的ClassLoader
+                System.out.println("classLoader == contextClassLoader:"+(classLoader == contextClassLoader));
+
+                //CustomizeClassLoader自己加载的类，不被父appClassLoader看到
+                try {
+                    Class<?> aClass = contextClassLoader.loadClass(COM_WOLF_TEST_LOADCLASS_NON_CLASS_PATH_CLASS);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+    }
 
 	//bootstrap加载java_home/jre/lib/*.jar(如:rt.jar、resources.jar、charsets.jar和class等)。或-Xbootclasspath/a:xxxx指定
 	//extension加载java_home/jre/lib/ext/*.jar。或-Djava.ext.dirs指定
 	//app加载classpath。或-Djava.class.path指定
     private static void testClassLoaderHierarchy() {
-        ClassLoader classLoader = ClassLoadTest.class.getClassLoader();
+        ClassLoader classLoader = ClassLoaderTest.class.getClassLoader();
         while (null != classLoader) {
             System.out.println(classLoader);
             classLoader = classLoader.getParent();
@@ -143,7 +179,30 @@ public class ClassLoadTest {
 		//未指定父加载器的都用appclassloader作为父加载器。
 	}
 
+	//查看源码
 	private static void testLoadClassSeq() throws ClassNotFoundException {
-		Class<?> aClass1 = ClassLoadTest.class.getClassLoader().loadClass("com.wolf.test.loadclass.ClassLoadTest");
+		Class<?> aClass1 = ClassLoaderTest.class.getClassLoader().loadClass("com.wolf.test.classloader.basetest.ClassLoaderTest");
 	}
+
+	private static void testDecodeClassLoader() throws ClassNotFoundException {
+		DeClassLoader diskLoader = new DeClassLoader("D:\\tmp");
+		try {
+			//加载class文件
+			Class c = diskLoader.loadClass("com.wolf.test.classloader.NonClassPathClass");
+			System.out.println("ClassLoaderTest:"+c);
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void testLoadFromJar() throws ClassNotFoundException, MalformedURLException {
+		URL[] urls = new URL[1];
+		urls[0] = new File("D:\\intellijWrkSpace\\violin\\violin-test\\target\\classes\\hot.jar").toURI().toURL();
+		URLClassLoader classLoader = new URLClassLoader(urls);
+		Class hotClazz = classLoader.loadClass("com.wolf.test.jvm.loadclass.Hot2");
+		System.out.println(hotClazz);
+	}
+
+
 }

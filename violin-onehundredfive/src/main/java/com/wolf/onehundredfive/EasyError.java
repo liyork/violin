@@ -693,13 +693,26 @@ public class EasyError {
 //		Foo.test2(new ArrayList<RedApple>());//报错
 	}
 
-	//泛型不支持协变与逆变
+//	“协变”是指能够使用与原始指定的派生类型相比，派生程度更大的类型。
+//	“逆变”则是指能够使用派生程度更小的类型。
+	//协变就是从小到大,逆变则是从大到小
 	public void test41() throws Exception {
+		//数组支持协变与逆变
 		Number[] nu = new Integer[10];
-		List<Number> test = new ArrayList<Number>();
-		//报错
-//		List<Number> test1 = new ArrayList<Integer>();
+		Object[] nu1 = nu;
+		Integer[] nu11 = (Integer[]) nu1;
 
+		//泛型不支持协变与逆变，
+		ArrayList<Integer> test = new ArrayList<Integer>();
+		//报错，ArrayList<Number>和ArrayList<Integer>两者没有关系
+//		ArrayList<Number> test1 = new ArrayList<Integer>();
+//		ArrayList<Number> test2 = test;
+	}
+
+	//数组支持协变
+	public void test41_2() throws Exception {
+		Number[] nu = new Integer[10];
+		Object[] nu1 = nu;
 	}
 
 	//List<T>,List<?>适用返回,List<Object>不适用

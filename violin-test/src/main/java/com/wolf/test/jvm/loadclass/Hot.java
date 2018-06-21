@@ -1,7 +1,8 @@
 package com.wolf.test.jvm.loadclass;
 
 /**
- * Description:
+ * Description:反射被调用
+ * 用于修改，测试热加载
  * <br/> Created on 2018/1/22 9:45
  *
  * @author 李超
@@ -10,6 +11,6 @@ package com.wolf.test.jvm.loadclass;
 public class Hot {
 
     public void hot(){
-        System.out.println(" hot1 version 2 : "+this.getClass().getClassLoader());
+        System.out.println(" hot1 version 4 "+this.getClass().getClassLoader());
     }
 }

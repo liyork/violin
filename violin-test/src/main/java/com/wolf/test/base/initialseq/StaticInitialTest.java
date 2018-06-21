@@ -1,4 +1,6 @@
-package com.wolf.test.base;
+package com.wolf.test.base.initialseq;
+
+import com.wolf.test.base.MyClass1;
 
 import java.lang.reflect.Field;
 import java.util.Vector;
@@ -8,8 +10,9 @@ import java.util.Vector;
  * <p>
  * 加载bean步骤：
  * 装载(通过类全名产生二进制流，解析二进制流成为方法区内部结构，在堆中构造一个该类型的java.lang.Class类的实例)
- * 连接(验证，准备-分配初始默认值，解析-符号引用替换成直接引用(可选))
+ * 连接(验证，准备-分配初始默认值(对于static final field，直接赋值)，解析-符号引用替换成直接引用(可选))
  * 初始化(主动使用时:创建新实例、调用静态方法、使用静态字段、调用某些反射方法、初始化子类、jvm启动包含main的启动类),收集所有静态初始化放入clinit
+ *
  * <br/> Created on 2018/5/7 9:49
  *
  * @author 李超

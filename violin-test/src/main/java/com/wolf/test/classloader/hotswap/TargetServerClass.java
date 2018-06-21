@@ -1,4 +1,4 @@
-package com.wolf.test.jvm.hotswap;
+package com.wolf.test.classloader.hotswap;
 
 /**
  * Description:目标服务器上的类,被手动动态加载的类调用的类

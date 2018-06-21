@@ -1,4 +1,4 @@
-package com.wolf.test.jvm.hotswap;
+package com.wolf.test.classloader.hotswap;
 
 import com.wolf.utils.PathGettingUtils;
 
@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.net.URL;
 
 /**
- * Description:替换
+ * Description:替换输出类
  * <br/> Created on 11/5/17 7:55 PM
  *
  * @author 李超
@@ -15,7 +15,7 @@ import java.net.URL;
 public class TestHotSwap {
 
     public static void main(String[] args) throws Exception {
-        URL resourceFromClassPath = PathGettingUtils.getResourceFromClassPath(TestHotSwap.class, "com/wolf/test/jvm/hotswap/TargetServerClass.class");
+        URL resourceFromClassPath = PathGettingUtils.getResourceFromClassPath(TestHotSwap.class, "com/wolf/test/classloader/hotswap/TargetServerClass.class");
         FileInputStream fileInputStream = new FileInputStream(resourceFromClassPath.getPath());
         byte[] b = new byte[fileInputStream.available()];
         fileInputStream.read(b);
@@ -24,6 +24,6 @@ public class TestHotSwap {
         JavaClassExecutor.execute(b);
 
         String bufferString = HackSystem.getBufferString();
-        System.out.println(bufferString);
+        System.out.println("bufferString:"+bufferString);
     }
 }

@@ -1,4 +1,4 @@
-package com.wolf.test.jvm.loadclass;
+package com.wolf.test.base;
 
 /**
  * Description:
@@ -7,11 +7,11 @@ package com.wolf.test.jvm.loadclass;
  * @author 李超
  * @since 1.0.0
  */
-public class TestClinit {
+public class ClinitTest {
 
     static {
         i = 0;
-//        System.out.println(i);//定义在后面的变量只能赋值，不能使用。要使用需要放在上面
+//        System.out.println(i);//定义在下面的变量只能赋值，不能使用。要使用需要放在上面
     }
 
     static int i = 1;
@@ -27,7 +27,7 @@ public class TestClinit {
     static class Sub extends Parent{
         public static int B = A;
     }
-    //如果使用父接口中字段，<clinit>优先执行父接口，否则不初始化父接口
+    //如果使用父接口中字段(主动使用)，<clinit>优先执行父接口，否则不初始化父接口
     public static void main(String[] args) {
 //        testSeq();
         testThreadSafe();
@@ -35,6 +35,20 @@ public class TestClinit {
 
     private static void testSeq() {
         System.out.println(Sub.B);
+    }
+
+    private static void testThreadSafe() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                ClinitThreadSafe clinitThreadSafe = new ClinitThreadSafe();
+            }
+        };
+
+        Thread thread1 = new Thread(runnable);
+        Thread thread2 = new Thread(runnable);
+        thread1.start();
+        thread2.start();
     }
 
     // ===========
@@ -52,19 +66,5 @@ public class TestClinit {
                 }
             }
         }
-    }
-
-    private static void testThreadSafe() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                ClinitThreadSafe clinitThreadSafe = new ClinitThreadSafe();
-            }
-        };
-
-        Thread thread1 = new Thread(runnable);
-        Thread thread2 = new Thread(runnable);
-        thread1.start();
-        thread2.start();
     }
 }
