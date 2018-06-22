@@ -13,7 +13,7 @@ import java.net.Socket;
 public class ClientTest {
 
     static String host = "127.0.0.1";  //要连接的服务端IP地址
-    static int port = 8099;   //要连接的服务端对应的监听端口
+    static int port = 8899;   //要连接的服务端对应的监听端口
 
     public static void main(String args[]) throws Exception {
 

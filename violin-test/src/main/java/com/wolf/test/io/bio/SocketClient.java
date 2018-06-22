@@ -34,7 +34,7 @@ public class SocketClient {
             socket.connect(new InetSocketAddress("127.0.0.1", 4700), connectionTimeout);
             System.out.println("socket connect ...");
             //读取数据超时soTimeout
-            socket.setSoTimeout(4000);//4s若未从服务端读取内容则主动关闭连接
+            //socket.setSoTimeout(4000);//4s若未从服务端读取内容则主动关闭连接
 
             //由Socket对象得到输出流，并构造PrintWriter对象
             PrintWriter pwToServer = new PrintWriter(socket.getOutputStream());

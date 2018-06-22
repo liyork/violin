@@ -1,6 +1,7 @@
 package com.wolf.test.io.bio;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -44,7 +45,9 @@ public class SocketServer {
 			}
 
 			//由Socket对象得到输入流，并构造相应的BufferedReader对象
-			BufferedReader clientBr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			InputStream inputStream = socket.getInputStream();
+//			inputStream.read()//return:the next byte of data, or -1 if the end of the stream is reached.
+			BufferedReader clientBr = new BufferedReader(new InputStreamReader(inputStream));
 			//在标准输出上打印从客户端读入的字符串
 			System.out.println("Client:" + clientBr.readLine());
 
