@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Description:限流总资源，不区分时间，
+ * Description:限流总资源，不区分时间
  * <br/> Created on 21/06/2018 8:47 PM
  *
  * @author 李超

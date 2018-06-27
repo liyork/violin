@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Description:基于滑动窗口，
  * 每隔x时长移动窗口，统计本次窗口内的数量，相比oneWindow力度更细。
+ * 滑动窗口的格子划分的越多，那么滑动窗口的滚动就越平滑，限流的统计就会越精确。
  * <br/> Created on 21/06/2018 8:52 PM
  *
  * @author 李超
@@ -19,23 +20,23 @@ public class CountPerSecondLimiter {
     static int slotNum = 30;
     //    static ConcurrentLinkedQueue<Count> window = new ConcurrentLinkedQueue<>();
 //    static Count[] counts = new Count[6];// 1分钟60s，拆分6个格子，每个10s
-    static CurrentLimiter.Count[] counts = new CurrentLimiter.Count[slotNum];// 1分钟60s，拆分30个格子，每个2s
+    static Count[] counts = new Count[slotNum];// 1分钟60s，拆分30个格子，每个2s
 
     static {
         for (int i = 0; i < slotNum; i++) {
-            counts[i] = new CurrentLimiter.Count();
+            counts[i] = new Count();
         }
     }
 
     static AtomicInteger totalCount = new AtomicInteger(0);//多存一分便于统计总数
-    static CurrentLimiter.Count preCount;
+    static Count preCount;
 
     public static boolean rollingWindow() {
         long now = System.currentTimeMillis();
         long twoSecondPer = now / 1000 / 2;
         int slot = (int) (twoSecondPer % slotNum);
         //System.out.println("now:" + now + "==>slot:" + slot);
-        CurrentLimiter.Count count = counts[slot];
+        Count count = counts[slot];
 
         if (null == preCount) {
             preCount = count;
@@ -84,7 +85,7 @@ public class CountPerSecondLimiter {
     }
 
     static int slotNum2 = 10;
-    static LinkedList<CurrentLimiter.Count> counts2 = new LinkedList<>();// 1秒钟，拆分10个格子，每个100ms
+    static LinkedList<Count> counts2 = new LinkedList<>();// 1秒钟，拆分10个格子，每个100ms
 //    static LinkedBlockingQueue<Count> counts2 = new LinkedBlockingQueue<>();// 1秒钟，拆分10个格子，每个100ms
 
     public static boolean rollingWindowLinkedList() {
@@ -94,11 +95,11 @@ public class CountPerSecondLimiter {
         //System.out.println("now:" + now + "==>slot:" + slot);
 
         boolean isExceed = false;
-        synchronized (counts2) {
+        synchronized (counts2) {//是否可优化？
 
             boolean contains = counts2.contains(slot);
             if (!contains) {
-                CurrentLimiter.Count count = new CurrentLimiter.Count(1);
+                Count count = new Count(1);
                 counts2.addLast(count);
             } else {
                 counts2.get(slot).incrementAndGet();
@@ -123,7 +124,7 @@ public class CountPerSecondLimiter {
     }
 
     public static void main(String[] args) {
-                testRollingWindow();
+        testRollingWindow();
 //        testRollingWindow2();
     }
 

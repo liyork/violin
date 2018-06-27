@@ -5,7 +5,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Description:
+ * Description:漏桶，桶就那么大放多了则溢出，流出这边频率固定
+ * 使用队列或者分布式redis
  * <br/> Created on 21/06/2018 8:55 PM
  *
  * @author 李超
@@ -25,6 +26,7 @@ public class LeakyBucketLimiter {
                     while (true) {
                         Integer take = list.take();
                         //System.out.println("get data:" + take);
+                        Thread.sleep(200);//固定频率取数据
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

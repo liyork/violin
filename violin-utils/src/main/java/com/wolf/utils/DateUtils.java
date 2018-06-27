@@ -351,4 +351,9 @@ public class DateUtils {
 		}
 		return applyTimeDesc;
 	}
+
+	static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	public static String format(Date date) {
+		return simpleDateFormat.format(date);
+	}
 }
