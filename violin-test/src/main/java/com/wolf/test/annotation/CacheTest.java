@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
  * @since 1.0
  */
 @ContextConfiguration(locations = "classpath:applicationContext-test.xml")
-public class AnnotationTest extends AbstractJUnit4SpringContextTests {
+public class CacheTest extends AbstractJUnit4SpringContextTests {
 
 	@Autowired
 	private BusinessService businessService;

@@ -24,7 +24,6 @@ import java.lang.reflect.Proxy;
 public class DynamicProxy {
 
 	public static void main(String[] args) throws Exception {
-		testBase();
 
 		//运行时类路径
 //		FileReader fileReader =new FileReader(DynamicProxy.class.getResource("").getPath()+"/$Poxy0.class");
@@ -58,18 +57,24 @@ public class DynamicProxy {
 
 	}
 
-	private static void testBase() throws IllegalAccessException, InvocationTargetException {
+	@Test
+	public void testBase() throws IllegalAccessException, InvocationTargetException {
 		//这个文件生成在/Users/chaoli/IdeaProjects/violin/com/wolf/test/base，看来这个工程套工程，最终的根路径在violin上。。
+
 		//输出生成的代理类
 		System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
 
 		final BB bb = new BB();
 
 		AA aa = (AA)getProxy(bb);
+		//final class $Proxy0 extends Proxy implements AA
+		//生成的proxy类中的test方法调动this.h.invoke(this, m3, null);
 
 		aa.test();
 
-		aa.hashCode();//应该也会被拦截，但是不知道为什么这里打断点会提前执行
+		System.out.println(aa.getClass().getName());
+
+		//aa.hashCode();//应该也会被拦截，但是不知道为什么这里打断点会提前执行
 	}
 
 
@@ -85,19 +90,19 @@ public class DynamicProxy {
     }
 
 	//不需要知道任何信息，就能创建目标类的代理类
-	private static Object getProxy(final Object obj) throws IllegalAccessException, InvocationTargetException {
+	private static Object getProxy(final Object source) throws IllegalAccessException, InvocationTargetException {
 		InvocationHandler invocationHandler = new InvocationHandler() {
-			@Override //this.h.invoke(this, m3, null);
+			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
 				System.out.println("before .......");
-				Object result = method.invoke(obj,args);
+				Object result = method.invoke(source,args);
 				System.out.println("after .......");
 				return result;
 			}
 		};
 
-		Class<?> bbClass = obj.getClass();
+		Class<?> bbClass = source.getClass();
 		return Proxy.newProxyInstance(bbClass.getClassLoader(), bbClass.getInterfaces(), invocationHandler);
 	}
 }

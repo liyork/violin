@@ -10,6 +10,7 @@ import java.lang.instrument.UnmodifiableClassException;
  * 由于java是解释性语言，可能调用对象方法时，会关联到class对象进而找到方法区中的方法然后执行，这时对于已经retransform的类就用新方法了。
  * <p>
  * jar cvfm agentmain.jar agentmain/META-INF/MANIFEST.MF com\wolf\test\agent\AgentMain.class com\wolf\test\agent\AgentMainTransformer.class
+ * 或：jar cvfm agentmain.jar agentmain/META-INF/MANIFEST.MF com/wolf/test/agent/AgentMain.class com/wolf/test/agent/AgentMainTransformer.class
  * <br/> Created on 2018/1/24 10:01
  *
  * @author 李超

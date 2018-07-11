@@ -23,7 +23,7 @@ public class InnerClassAndStaticTest {
 
     }
 
-    class InnerClass {
+    public class InnerClass {
 
         private int aa;
         //内部类不能有static变量
@@ -46,7 +46,7 @@ public class InnerClassAndStaticTest {
     }
 
     //内部类static和非static都能有
-    static class StaticInnerClass {
+    public static class StaticInnerClass {
         private int aa;
         private static int bb;
 

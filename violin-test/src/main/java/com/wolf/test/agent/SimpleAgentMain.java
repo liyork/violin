@@ -4,8 +4,11 @@ import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 
 /**
- * Description:
+ * Description:测试AgentMain
+ *
  * D:\intellijWrkSpace\violin\violin-test\target\classes>jar cvfm simpleagentmain.jar simpleagentmain/META-INF/MANIFEST.MF com\wolf\test\agent\SimpleAgentMain.class
+ * 或：jar cvfm simpleagentmain.jar simpleagentmain/META-INF/MANIFEST.MF com/wolf/test/agent/SimpleAgentMain.class
+ *
  * <br/> Created on 2018/1/24 10:01
  *
  * @author 李超
@@ -19,6 +22,7 @@ public class SimpleAgentMain {
         System.out.println("args:" + args);
         System.getProperties().setProperty("monitor.conf", args);
 
+        System.out.println("inst.getAllLoadedClasses()=======");
         for (Class clazz : inst.getAllLoadedClasses()) {
             System.out.println(clazz.getName());
         }

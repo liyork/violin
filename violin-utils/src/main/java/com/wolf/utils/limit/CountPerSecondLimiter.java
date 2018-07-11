@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Description:基于滑动窗口，
  * 每隔x时长移动窗口，统计本次窗口内的数量，相比oneWindow力度更细。
  * 滑动窗口的格子划分的越多，那么滑动窗口的滚动就越平滑，限流的统计就会越精确。
+ * 防止单纯统计大格子导致的边界问题。划分出小格子每个小格子各自计数，移动统计时可以更精确。
+ * 滑动窗口在实现上相对于单窗口需要更多的存储空间
  * <br/> Created on 21/06/2018 8:52 PM
  *
  * @author 李超
@@ -18,7 +20,7 @@ public class CountPerSecondLimiter {
 
     public static final int limit = 10000; // 时间窗口内最大请求数
     static int slotNum = 30;
-    //    static ConcurrentLinkedQueue<Count> window = new ConcurrentLinkedQueue<>();
+    //    static ConcurrentLinkedQueue<Count> window = new ConcurrentLinkedQueue<>();//无边界，似乎不能用作滑动窗口
 //    static Count[] counts = new Count[6];// 1分钟60s，拆分6个格子，每个10s
     static Count[] counts = new Count[slotNum];// 1分钟60s，拆分30个格子，每个2s
 
@@ -28,12 +30,12 @@ public class CountPerSecondLimiter {
         }
     }
 
-    static AtomicInteger totalCount = new AtomicInteger(0);//多存一分便于统计总数
-    static Count preCount;
+    static AtomicInteger totalCount = new AtomicInteger(0);//多存一份便于统计总数
+    static Count preCount;//标记已使用
 
     public static boolean rollingWindow() {
         long now = System.currentTimeMillis();
-        long twoSecondPer = now / 1000 / 2;
+        long twoSecondPer = now / 1000 / 2;//两秒打到一个slot上
         int slot = (int) (twoSecondPer % slotNum);
         //System.out.println("now:" + now + "==>slot:" + slot);
         Count count = counts[slot];
@@ -48,25 +50,26 @@ public class CountPerSecondLimiter {
         }
 
         if (!count.isUsed) {
-            count.incrementAndGet();//记录
+            count.incrementAndGet();
 //            count.isInit = true;
         } else {//循环到开始，清除以前记录
-            if (!count.isUsed) {
-                count.incrementAndGet();//记录
+            if (!count.isUsed) {//并发时可能看到下面已被修正的isUsed
+                count.incrementAndGet();
             } else {
                 synchronized (count) {//只有一个能初始化
-                    if (count.isUsed) {
+                    if (count.isUsed) {//二次检查
                         int subCount = count.getAndSet(0);
-                        count.isUsed = false;
+                        //count.isUsed = false;
                         count.incrementAndGet();
 
-                        int oldTotalCount = totalCount.get();
+                        int oldTotalCount = totalCount.get();//这里可能
                         int newTotalCount = oldTotalCount - subCount;
                         totalCount.set(newTotalCount);
                         System.out.println("subCount:" + subCount + ",oldTotalCount:" + oldTotalCount +
                                 ",newTotalCount:" + newTotalCount);
+                        count.isUsed = false;//要放这里！不然一开这个口子，那么很多流量进来，但是totalCount又重新设定了一个过期值，就超了。
                     } else {
-                        count.incrementAndGet();//记录
+                        count.incrementAndGet();
                     }
                 }
             }

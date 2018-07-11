@@ -49,11 +49,11 @@ public class AgentMainTransformer implements ClassFileTransformer {
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
-        Throwable ex = new Throwable();
-        StackTraceElement[] stackElements = ex.getStackTrace();
-        for (StackTraceElement stackElement : stackElements) {
-            System.out.println(JSON.toJSONString(stackElement));
-        }
+//        Throwable ex = new Throwable();
+//        StackTraceElement[] stackElements = ex.getStackTrace();
+//        for (StackTraceElement stackElement : stackElements) {
+//            System.out.println(JSON.toJSONString(stackElement));
+//        }
 
         System.out.println("run transform:...loader:" + loader + ",className:" + className);
         className = className.replace("/", ".");
