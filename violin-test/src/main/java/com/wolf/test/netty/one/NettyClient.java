@@ -20,6 +20,7 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
  * @version 1.0
  * @since 1.0
  */
+@Deprecated //基于netty-3.7.0.Final.jar 废弃了，都用4了， 用inaction包的
 public class NettyClient {
 
 	public static void main(String args[]) {

@@ -170,6 +170,10 @@
                     <artifactId>commons-logging</artifactId>
                     <groupId>commons-logging</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>netty</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 

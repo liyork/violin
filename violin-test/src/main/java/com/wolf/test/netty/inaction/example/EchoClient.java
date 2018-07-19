@@ -20,12 +20,17 @@ import java.net.InetSocketAddress;
 public class EchoClient {
 
     public void start() throws Exception {
+//        testBaseUsage();
+        testMultiConnection();
+    }
+
+    private void testBaseUsage() throws InterruptedException {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioSocketChannel.class)
-                    .remoteAddress(new InetSocketAddress("127.0.0.1",65535))
+                    .remoteAddress(new InetSocketAddress("127.0.0.1", 65535))
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch)
@@ -40,6 +45,73 @@ public class EchoClient {
             System.out.println("222");
             f.channel().closeFuture().sync();
             System.out.println("333");
+        } finally {
+            group.shutdownGracefully().sync();
+        }
+    }
+
+    //多连接，复用已有的bootstrap、EventLoopGroup
+    private void testMultiConnection() throws InterruptedException {
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            Bootstrap b = new Bootstrap();
+            b.group(group)
+                    .channel(NioSocketChannel.class)
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        public void initChannel(SocketChannel ch)
+                                throws Exception {
+                            System.out.println("EchoClient initChannel... ");
+                            ch.pipeline().addLast(
+                                    new EchoClientHandler());
+                        }
+                    });
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("111");
+                    ChannelFuture f = null;
+                    try {
+                        f = b.connect(new InetSocketAddress("127.0.0.1", 65534)).sync();
+                        System.out.println("222");
+                        f.channel().closeFuture().sync();
+                        System.out.println("333");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }).start();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("111");
+                    ChannelFuture f = null;
+                    try {
+                        f = b.connect(new InetSocketAddress("127.0.0.1", 65535)).sync();
+                        System.out.println("222");
+                        f.channel().closeFuture().sync();
+                        System.out.println("333");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }).start();
+
+
+            Thread.sleep(5000);
+            //上面若不加,是由于finally中关闭了线程池。。
+            //Exception in thread "Thread-0" java.lang.IllegalStateException: executor not accepting a task
+            //	at io.netty.resolver.AddressResolverGroup.getResolver(AddressResolverGroup.java:60)
+            //	at io.netty.bootstrap.Bootstrap.doResolveAndConnect0(Bootstrap.java:200)
+            //	at io.netty.bootstrap.Bootstrap.doResolveAndConnect(Bootstrap.java:170)
+            //	at io.netty.bootstrap.Bootstrap.connect(Bootstrap.java:145)
+            //	at com.wolf.test.netty.inaction.example.EchoClient$3.run(EchoClient.java:75)
+            //	at java.lang.Thread.run(Thread.java:748)
+
         } finally {
             group.shutdownGracefully().sync();
         }
