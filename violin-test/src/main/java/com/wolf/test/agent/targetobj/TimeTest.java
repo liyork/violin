@@ -1,7 +1,7 @@
 package com.wolf.test.agent.targetobj;
 
 /**
- * Description:
+ * Description:被调用执行的类
  * <br/> Created on 2018/1/22 19:40
  *
  * @author 李超

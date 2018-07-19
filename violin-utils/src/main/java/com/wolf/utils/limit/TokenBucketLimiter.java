@@ -1,19 +1,15 @@
 package com.wolf.utils.limit;
 
-import com.google.common.util.concurrent.RateLimiter;
-import com.wolf.utils.DateUtils;
-
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Description:
  * 令牌桶算法是一个存放固定容量令牌（token）的桶，按照指定速率往桶里添加令牌。
  * 取出方按照需求拿n个令牌，若不足,要么丢弃，要么缓冲区等待
  * 令牌算法是根据放令牌的速率去控制输出的速率
+ * 令牌桶算法允许流量一定程度的突发，若有问题则可以加缓冲。可以通过调整放入速度提高响应速度。
  * <br/> Created on 21/06/2018 8:57 PM
  *
  * @author 李超
@@ -81,5 +77,23 @@ public class TokenBucketLimiter {
     }
 
 
-
+    public static long timeStamp = System.currentTimeMillis();
+    public static int capacity; // 桶的容量
+    public static int rate; // 令牌放入速度
+    public static int tokenCount; // 当前令牌数量
+    //todo-my 待研究
+    public static boolean tokenBucketDemo() {
+        long now = System.currentTimeMillis();
+        // 先添加令牌
+        tokenCount = (int) Math.min(capacity, tokenCount + (now - timeStamp) * rate);
+        timeStamp = now;
+        if (tokenCount < 1) {
+            // 若不到1个令牌,则拒绝
+            return false;
+        } else {
+            // 还有令牌，领取令牌
+            tokenCount -= 1;
+            return true;
+        }
+    }
 }

@@ -9,6 +9,8 @@ package com.wolf.test.base.reflect;
  */
 public class B implements A {
 
+    public String name1;
+
     private String name;
 
     @Override

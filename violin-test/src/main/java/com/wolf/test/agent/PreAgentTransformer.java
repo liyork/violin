@@ -5,7 +5,9 @@ import java.lang.instrument.Instrumentation;
 /**
  * Description:
  * D:\intellijWrkSpace\violin\violin-test\target\classes>jar cvfm preAgentTransformer.jar preAgentTransformer/META-INF/MANIFEST.MF com\wolf\test\agent\PreAgentTransformer.class com\wolf\test\agent\PreTransformer.class
+ * 或：jar cvfm preAgentTransformer.jar preAgentTransformer/META-INF/MANIFEST.MF com/wolf/test/agent/PreAgentTransformer.class com/wolf/test/agent/PreTransformer.class
  * D:\intellijWrkSpace\violin\violin-test\target\classes>jar cvfm time.jar  timetest/META-INF/MANIFEST.MF com\wolf\test\agent\targetobj\TimeTest.class
+ * 或：jar cvfm time.jar  timetest/META-INF/MANIFEST.MF com/wolf/test/agent/targetobj/TimeTest.class
  * <p>
  * java -javaagent:preAgentTransformer.jar=Hello1 -jar time.jar
  * <p>
@@ -18,7 +20,7 @@ public class PreAgentTransformer {
 
     public static void premain(String agentOps, Instrumentation inst) {
         System.out.println("=========premain方法执行========");
-        System.out.println(agentOps);
+        System.out.println("agentOps:"+agentOps);
         // 添加Transformer
         inst.addTransformer(new PreTransformer());
     }

@@ -58,6 +58,7 @@ public class FutureTaskTest {
     //removeWaiter逻辑：先设定当前node的thread=null，从waiters开始，当前node的thread不为null则向后移动，
     // 当前node的thread为null时若前面node不为null，则更改连接跳过当前节点，若为null则更新waiters
     //finishCompletion逻辑：设定waiters=null，依次向后唤醒
+    //整体逻辑：单线程run执行，其他线程加入队列等待，超时调用removeWaiter)，否则等待超时或者被run线程唤醒。
     private static void testHowWait() throws InterruptedException {
         FutureTask<String> futureTask = new FutureTask<String>(new Callable<String>() {
             @Override
