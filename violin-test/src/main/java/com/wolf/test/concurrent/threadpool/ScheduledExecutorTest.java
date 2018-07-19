@@ -11,9 +11,6 @@ import java.util.concurrent.*;
  *
  * 超时放弃机制：workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS)
  *
- * * scheduleWithFixedDelay在上一个任务结束之后延迟执行
- * scheduleAtFixedRate在上一个任务开始执行后延迟执行
- * <p>
  * <p/>
  * Date: 2015/11/13
  * Time: 13:57

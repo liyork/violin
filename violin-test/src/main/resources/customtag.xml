@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:bf="http://www.testtag.com/schema/bf" xmlns:myns="http://www.mycompany.com/schema/myns"
+       xmlns:corecommons="http://www.example.com/schema/corecommons"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.testtag.com/schema/bf http://www.testtag.com/schema/bf.xsd http://www.mycompany.com/schema/myns http://www.mycompany.com/schema/myns/myns.xsd
+    http://www.example.com/schema/corecommons http://www.example.com/schema/corecommons.xsd
+">
+
+    <bf:head-routing key="keyxx" value="1" to="test2"/>
+
+    <bean id="testNode" class="com.wolf.test.spring.customtag.Station"/>
+
+    <bf:stop id="test1" ref="testNode">
+        <!--<bf:head-routing key="1" value="1" to="test2"/>-->
+    </bf:stop>
+
+    <myns:dateformat id="defaultDateFormat" pattern="yyyy-MM-dd HH:mm" lenient="true" />
+
+    <corecommons:fileList id="xmlList" directory="D:\intellijWrkSpace\violin\violin-test\src\main\java\com\wolf\test\agent\targetobj">
+        <corecommons:fileFilter>
+            <bean class="org.apache.commons.io.filefilter.RegexFileFilter">
+                <constructor-arg value=".*.java" />
+            </bean>
+        </corecommons:fileFilter>
+    </corecommons:fileList>
+</beans>

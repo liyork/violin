@@ -1,0 +1,3 @@
+http\://www.testtag.com/schema/bf.xsd=xsd/bf.xsd
+http\://www.mycompany.com/schema/myns/myns.xsd=xsd/helloworld.xsd
+http\://www.example.com/schema/corecommons.xsd=xsd/corecommons.xsd

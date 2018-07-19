@@ -53,6 +53,12 @@ public class MyFirstServlet extends HttpServlet {
 				output(request, response);
 				//http://localhost:8080/webtest/myFirstServlet?username=abc&type=5
 				getServletContext().getRequestDispatcher("/secondServlet").include(request, response);
+			}else if (type.equals("7")) {
+				try {
+					Thread.sleep(100000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 			//整体doget方法执行完tomcat才执行跳转
 			System.out.println("111111111");

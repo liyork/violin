@@ -86,8 +86,14 @@ public class HttpClientUtil {
 		public String handleResponse(HttpResponse response) throws IOException {
 //			int statusCode = response.getStatusLine().getStatusCode();//200
 			HttpEntity entity = response.getEntity();
-			if (entity != null) {
-				String charset = ContentType.get(entity).getCharset() == null ? CHARSET_UTF8 : ContentType.get(entity).getCharset().displayName();
+
+			if (entity != null && entity.getContentLength() > 0) {
+				ContentType contentType = ContentType.get(entity);
+
+				String charset = CHARSET_UTF8;
+				if (null != contentType) {
+					charset = contentType.getCharset() == null ? CHARSET_UTF8 : contentType.getCharset().displayName();
+				}
 				return new String(EntityUtils.toByteArray(entity), charset);
 			} else {
 				return null;

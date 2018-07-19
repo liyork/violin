@@ -18,8 +18,8 @@ package com.wolf.test.base;
 public class StringTest {
 
 	public static void main(String[] args) {
-//		testIndex();
-		testHashcode();
+		testIndex();
+//		testHashcode();
 	}
 
 	private static void testHashcode() {
@@ -30,7 +30,7 @@ public class StringTest {
 	private static void testIndex() {
 		String test = "ht?tp://www.brainysoftware.com/index.html?name=Tarzan";
 		System.out.println(test.length());
-		int firstIndex = test.indexOf("://");//  ://中:冒号的位置,从0开始
+		int firstIndex = test.indexOf("://");//  ://中:冒号的位置,结果从0开始
 		System.out.println(firstIndex);
 		System.out.println(test.indexOf("?"));//第一个?
 		System.out.println(test.indexOf("?",firstIndex+3));//从://之后开始查找

@@ -1,0 +1,4 @@
+#等号的左边是XSD定义中的targetNamespace属性，右边是NamespaceHandler的全称限定名。
+http\://www.testtag.com/schema/bf=com.wolf.test.spring.customtag.MyNamespaceHandlerSupport
+http\://www.mycompany.com/schema/myns=com.wolf.test.spring.customtag.helloworld.MyNamespaceHandler
+http\://www.example.com/schema/corecommons=com.wolf.test.spring.customtag.filelist.CoreNamespaceHandler

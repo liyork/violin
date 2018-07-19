@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.example.com/schema/corecommons"
+            targetNamespace="http://www.example.com/schema/corecommons"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified"
+            version="1.0">
+
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+
+    <xsd:element name="fileList" type="fileListType">
+    </xsd:element>
+
+    <xsd:complexType name="fileListType">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:sequence>
+                    <xsd:element ref="fileFilter" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element ref="fileList" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+                <xsd:attribute name="directory" type="xsd:string"/>
+                <xsd:attribute name="scope" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="fileFilter">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:group ref="limitedType"/>
+                    <xsd:attribute name="scope" type="xsd:string"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:group name="limitedType">
+        <xsd:sequence>
+            <xsd:choice minOccurs="1" maxOccurs="unbounded">
+                <xsd:element ref="beans:bean"/>
+                <xsd:element ref="beans:ref"/>
+                <xsd:element ref="beans:idref"/>
+                <xsd:element ref="beans:value"/>
+                <xsd:any minOccurs="0"/>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:group>
+
+</xsd:schema>

@@ -1,0 +1,74 @@
+<xsd:schema xmlns="http://www.testtag.com/schema/bf" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tool="http://www.springframework.org/schema/tool"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="http://www.testtag.com/schema/bf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.testtag.com/schema/bf http://www.testtag.com/schema/bf.xsd
+http://www.testtag.com/schema/bf http://www.springframework.org/schema/tool http://www.springframework.org/schema/tool/spring-tool.xsd">
+
+
+        <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+
+    <!--xsd:restriction  对标签改属性进一步的限制，进行一些值的约束-->
+
+    <!-- 声明一个标签，名字为head-routing，他的类型为headRouting-->
+    <xsd:element name="head-routing" type="headRouting"/><!--表示定义标签-->
+
+    <!--  定义head-routing的类型，这里定义它有key,value,to,patten四个属性 -->
+    <xsd:complexType name="headRouting">
+        <xsd:attribute name="key" type="xsd:string" use="required"></xsd:attribute><!--标签带有的属性-->
+        <xsd:attribute name="value" type="xsd:string" use="required"></xsd:attribute>
+        <xsd:attribute name="to" type="xsd:string" use="required"></xsd:attribute>
+        <xsd:attribute name="patten" type="xsd:string" default="string"></xsd:attribute>
+    </xsd:complexType>
+
+    <!--type是用来定义该属性的格式-->
+    <!--xsd:string 表示是一个字符串，对格式没什么要求-->
+    <!--xsd:id 表示该属性的值是一个id，有格式要求（例如不能以数字开头）。-->
+    <!--xsd:IDREF 表示该属性的值与某xsd:id属性的值对应-->
+    <!--其他还有很多，例如number，double，datetime等等。-->
+
+
+    <xsd:element name="stop">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:group ref="stopElements"/>
+                    <xsd:attributeGroup ref="stopAttributes"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    <!--定义了该标签的id属性，注意这里引用的是spring-beans中的type,如java中的继承，把现有的定义继承进来-->
+    <!--定义了<bf:stop>标签允许的属性-->
+    <!--定义了<bf:stop>标签允许的子标签-->
+
+
+    <xsd:element name="description" type="xsd:string"/><!--表示定义标签-->
+
+    <xsd:group name="stopElements">
+        <xsd:sequence>
+            <xsd:element ref="description" minOccurs="0"/>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element ref="head-routing"></xsd:element>
+                <!-- 有更多的子标签继续在这里添加，例如<xsd:element ref="properties"/> -->
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:group>
+
+
+    <xsd:attributeGroup name="stopAttributes">
+        <xsd:attribute name="ref" type="xsd:IDREF" use="required">
+            <xsd:annotation>
+                <xsd:appinfo>
+                    <!-- 这里是使用了Spring tool xsd中的标签,格式校验-->
+                    <tool:annotation kind="ref">
+                        <tool:expected-type type="com.wolf.test.spring.customtag.Station"/>
+                    </tool:annotation>
+                </xsd:appinfo>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+
+    <!-- 有更多的子标签继续在这里添加，例如<xsd:attribute name="value" type="xsd:string"/> -->
+
+</xsd:schema>

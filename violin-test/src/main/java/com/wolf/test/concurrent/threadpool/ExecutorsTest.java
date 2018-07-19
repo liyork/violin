@@ -431,7 +431,7 @@ public class ExecutorsTest {
 //        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
 //        at java.lang.Thread.run(Thread.java:748)
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             int finalI = i;
             Runnable command = new Runnable() {//打印异常
                 @Override
@@ -530,6 +530,4 @@ public class ExecutorsTest {
             return super.submit(wrap(task, clientTrace()));
         }
     }
-
-
 }

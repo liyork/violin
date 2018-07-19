@@ -48,18 +48,29 @@ public class HttpClientUtilTest {
 
 	@Test
 	public void testGet() throws IOException {
-		String result = HttpClientUtil.get("http://localhost:8088/xxapp/resource/d/xx/base/config");
-		System.out.println(result);
+		//null test
+//		String result = HttpClientUtil.get("http://localhost:8080/webtest/myFirstServlet");
+//		System.out.println("result:"+result);
 
-		Map<String, String> params1 = new HashMap<>();
-		params1.put("appVersion", "800330");
-		String result1 = HttpClientUtil.get("http://localhost:8088/xxapp/resource/d/xx/base/config", params1);
-		System.out.println(result1);
+		//test entity.content
+//		Map<String, String> params1 = new HashMap<>();
+//		params1.put("username", "abc");
+//		params1.put("type", "6");
+//		String resultRight = HttpClientUtil.get("http://localhost:8080/webtest/myFirstServlet", params1);
+//		System.out.println("resultRight:"+resultRight);
 
-		Map<String, String> params2 = new HashMap<>();
-		params2.put("appVersion", "800330");
-		String result2 = HttpClientUtil.get("http://localhost:8088/xxapp/resource/d/xx/base/config", params2, "utf-8");
-		System.out.println(result2);
+		//test normal
+//		Map<String, String> params2 = new HashMap<>();
+//		params2.put("username", "abc");
+//		String resultRight2 = HttpClientUtil.get("http://localhost:8080/webtest/myFirstServlet", params2);
+//		System.out.println("resultRight:"+resultRight2);
+
+		//test timeout
+		Map<String, String> params3 = new HashMap<>();
+		params3.put("username", "abc");
+		params3.put("type", "7");
+		String resultRight3 = HttpClientUtil.get("http://localhost:8080/webtest/myFirstServlet", params3);
+		System.out.println("resultRight3:"+resultRight3);
 	}
 
 	@Test
