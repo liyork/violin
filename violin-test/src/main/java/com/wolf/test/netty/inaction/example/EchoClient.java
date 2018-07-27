@@ -3,6 +3,7 @@ package com.wolf.test.netty.inaction.example;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -30,14 +31,13 @@ public class EchoClient {
             Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioSocketChannel.class)
+                    .option(ChannelOption.TCP_NODELAY, true)
                     .remoteAddress(new InetSocketAddress("127.0.0.1", 65535))
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        public void initChannel(SocketChannel ch)
-                                throws Exception {
+                        public void initChannel(SocketChannel ch) throws Exception {
                             System.out.println("EchoClient initChannel... ");
-                            ch.pipeline().addLast(
-                                    new EchoClientHandler());
+                            ch.pipeline().addLast(new EchoClientHandler());
                         }
                     });
             System.out.println("111");
@@ -45,6 +45,8 @@ public class EchoClient {
             System.out.println("222");
             f.channel().closeFuture().sync();
             System.out.println("333");
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             group.shutdownGracefully().sync();
         }

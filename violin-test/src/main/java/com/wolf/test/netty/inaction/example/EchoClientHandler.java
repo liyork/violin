@@ -26,11 +26,11 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx,
-                             ByteBuf in) {
-        System.out.println("̀Client received:" + ByteBufUtil
-                .hexDump(in.readBytes(in.readableBytes())));
+    public void channelRead0(ChannelHandlerContext ctx,ByteBuf in) {
+        ByteBuf buffer = in.readBytes(in.readableBytes());
+        System.out.println("̀Client received:" + ByteBufUtil.hexDump(buffer));
     }
+
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx,

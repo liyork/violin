@@ -56,15 +56,17 @@ public class NioServerTest2 implements Runnable {
 
     public void init() {
         try {
+            //连接队列大小
+            int backLog = 1024;
             this.selector = SelectorProvider.provider().openSelector();
             this.serversocket1 = ServerSocketChannel.open();
             this.serversocket1.configureBlocking(false);
-            this.serversocket1.socket().bind(new InetSocketAddress("localhost", this.port1));
+            this.serversocket1.socket().bind(new InetSocketAddress("localhost", this.port1),backLog);
             this.serversocket1.register(this.selector, SelectionKey.OP_ACCEPT);
 
             this.serversocket2 = ServerSocketChannel.open();
             this.serversocket2.configureBlocking(false);
-            this.serversocket2.socket().bind(new InetSocketAddress("localhost", this.port2));
+            this.serversocket2.socket().bind(new InetSocketAddress("localhost", this.port2),backLog);
             this.serversocket2.register(this.selector, SelectionKey.OP_ACCEPT);
 
             executorService = Executors.newFixedThreadPool(10);
@@ -176,6 +178,13 @@ public class NioServerTest2 implements Runnable {
                             //时间很短，似乎nio的selector把都准备好的数据给到channel中，然后这里读取时根本不会受到客户端的网络慢影响。
                             //当前线程只有select的读事件触发时才会进来，也就是客户端不管多慢，我不用等他，等他发好了，我这边读事件就好了，我就读。
                             System.out.println("read from client:"+count);
+
+                            //一开始看while还觉得挺厉害，但是仔细想就不对了，若真是读了多次，但是count总是被覆盖的。其实基本就是读一次
+//                            readBuf.flip();
+//                            byte[] bytes = new byte[readBuf.remaining()];
+//                            readBuf.get(bytes);
+//                            String body = new String(bytes, "utf-8");
+//                            System.out.println("echo content:"+body);
                         }
                         System.out.println("read cost:"+(System.currentTimeMillis()-start));
                     } catch (IOException e) {
@@ -259,7 +268,7 @@ public class NioServerTest2 implements Runnable {
         while(true) {
             try {
                 System.out.println("selector begin... ");
-                int select = this.selector.select();
+                int select = this.selector.select(1000);
                 if(select == 0) {
                     System.out.println("select == 0");
                     continue;
@@ -276,19 +285,38 @@ public class NioServerTest2 implements Runnable {
                     if(!key.isValid()) {
                         continue;
                     }
-                    if(key.isAcceptable()) {
-                        this.accept(key);
-                    } else if(key.isReadable()) {
-                        this.read2(key);
-                    }
-                    //一开始试验使用write，后来觉得在read里做了就完了
+                    try {
+                        if (key.isAcceptable()) {//新接入
+                            this.accept(key);
+                        } else if (key.isReadable()) {
+                            this.read2(key);
+                        }
+                        //一开始试验使用write，后来觉得在read里做了就完了
 //                    else if(key.isWritable()) {
 //                        this.write(key);
 //                    }
-                    //Thread.sleep(2000);调试使用
+                        //Thread.sleep(2000);调试使用
+                    } catch (Exception e) {
+                        if (null != key) {
+                            key.cancel();
+                            if (null != key.channel()) {
+                                key.channel().close();
+                            }
+                        }
+
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }finally {
+                if (null != selector) {
+                    try {
+                        //selector关闭后，所有注册在上面的channel和pipe资源都被自动关闭。
+                        selector.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }

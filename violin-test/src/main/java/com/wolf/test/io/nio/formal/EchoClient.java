@@ -46,25 +46,31 @@ public class EchoClient implements Runnable {
 
         // 同样的,注册闹钟.
         this.selector = Selector.open();
+        socketChannel.configureBlocking(false);
         // 连接远程server
         socketChannel = SocketChannel.open();
         // 如果快速的建立了连接,返回true.如果没有建立,则返回false,并在连接后出发Connect事件.
         Boolean isConnected = socketChannel.connect(new InetSocketAddress("localhost", 7878));
-        socketChannel.configureBlocking(false);
-        SelectionKey key = socketChannel.register(selector, SelectionKey.OP_READ);
 
+        SelectionKey key = null;
         if (isConnected) {
+             key = socketChannel.register(selector, SelectionKey.OP_READ);
             this.sendFirstMsg();
         } else {
-            // 如果连接还在尝试中,则注册connect事件的监听. connect成功以后会出发connect事件.
+            // 如果连接还在尝试中,则注册connect事件的监听. connect成功以后会触发connect事件.
             key.interestOps(SelectionKey.OP_CONNECT);
+//            socketChannel.register(selector,SelectionKey.OP_CONNECT)//和上面一样？
         }
     }
 
 
     public void sendFirstMsg() throws IOException {
         String msg = "Hello NIO.";
-        socketChannel.write(ByteBuffer.wrap(msg.getBytes(Charset.forName("UTF-8"))));
+        ByteBuffer wrap = ByteBuffer.wrap(msg.getBytes(Charset.forName("UTF-8")));
+        socketChannel.write(wrap);
+        if (!wrap.hasRemaining()) {
+            System.out.println("send echo content to server succeed!");
+        }
     }
 
     @Override
@@ -102,14 +108,20 @@ public class EchoClient implements Runnable {
                 while (it.hasNext()) {
                     SelectionKey key = it.next();
                     it.remove();
+
+                    if (!key.isValid()) {
+                        continue;
+                    }
+
                     if (key.isConnectable()) {
                         // socket connected
                         SocketChannel sc = (SocketChannel) key.channel();
                         if (sc.isConnectionPending()) {
                             sc.finishConnect();
+                        } else if (sc.finishConnect()) {
+                            sc.register(selector, SelectionKey.OP_READ);
+                            this.sendFirstMsg();
                         }
-                        // send first message;
-                        this.sendFirstMsg();
                     }
 
                     if (key.isReadable()) {
@@ -119,6 +131,9 @@ public class EchoClient implements Runnable {
                         int count = sc.read(temp);
                         if (count < 0) {
                             sc.close();
+                            key.cancel();
+                            continue;
+                        } else if (count == 0) {
                             continue;
                         }
 
@@ -143,6 +158,14 @@ public class EchoClient implements Runnable {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }finally {
+                if (null != selector) {
+                    try {
+                        selector.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
