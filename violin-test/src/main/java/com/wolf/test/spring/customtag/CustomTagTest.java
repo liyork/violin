@@ -8,7 +8,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Description:
+ * Description:测试spring下自定义标签并注册解析器
+ * <p>
+ * spring启东时加载xml，使用相应的namespacehandler进行加载相关标签并初始化beandefinition，如果对于他不认识的标签会delegate.parseCustomElement
+ * ，加载命名空间处理器，这个处理器是从META-INF/spring.handlers中加载来的，调用其init方法，这时我们就进行注册parser，当需要parse时就会使用我们
+ * 刚才注册的解析指定bean，然后我们就会注册beandefinition然后应用中就可以getbean获取到了。算是spring给我们开的口子，还算是使用者对代码的研究深入啊。
+ *
  * <br/> Created on 2018/6/28 12:16
  *
  * @author 李超

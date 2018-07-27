@@ -15,7 +15,10 @@ import java.io.FileFilter;
 public class FileUtilsTest {
 
     public static void main(String[] args) {
-        File file = new File("D:\\temp");
+        File file = new File("D:\\pmsoftwares");
+        for (File file1 : file.listFiles()) {
+            System.out.println(file1.getName());
+        }
 //        copyFile(file);
 
         //FileUtils.printFileName("D:\\apache-maven-3.5.0");

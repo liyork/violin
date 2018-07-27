@@ -79,4 +79,16 @@ public class PathGettingUtilsTest {
         System.out.println( System.getProperty("java.class.path"));//classpath
     }
 
+    @Test
+    public void testGetPathDiff() {
+        String basePath = PathGettingUtilsTest.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        System.out.println(basePath);
+        System.out.println(PathGettingUtilsTest.class.getClassLoader().getResource("").getPath());
+        System.out.println(PathGettingUtilsTest.class.getResource("/").getPath());
+
+        System.out.println(PathGettingUtilsTest.class.getResource("").getPath());
+    }
+
+
+
 }

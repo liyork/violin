@@ -51,14 +51,15 @@ public class ThreadTest {
 //        testAllHandleException();
 
 //        testDirtyRead();
-        testExceptionReleaseLock();
+//        testExceptionReleaseLock();
 
 //        testMultiSynJudge();
 //        testStringPool();
 
 //        testGoodSuspendResume();
-    }
+        testExceptionNotAffectMainThread();
 
+    }
 
     /**
      * 守护线程也叫精灵线程，当程序只剩下守护线程的时候程序就会退出。JVM会在所有的非守护线程（用户线程）执行完毕后退出；
@@ -710,5 +711,27 @@ public class ThreadTest {
             System.out.println("ThreadTesterB...");
         }
     }
+
+    private static void testExceptionNotAffectMainThread() {
+        int i = 1;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (i == 1) {
+                    throw new RuntimeException("222222");
+                }
+            }
+        }).start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(Thread.currentThread().getName()+"_11111");
+    }
+
 
 }

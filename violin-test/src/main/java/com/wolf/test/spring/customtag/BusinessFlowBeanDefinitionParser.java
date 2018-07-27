@@ -14,15 +14,17 @@ import org.w3c.dom.Element;
  * @since 1.0.0
  */
 public class BusinessFlowBeanDefinitionParser implements BeanDefinitionParser {
+
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
 
         RootBeanDefinition nodeWrapDefinition = new RootBeanDefinition();
         //该BeanDefinition对应的是什么类
         nodeWrapDefinition.setBeanClass(StationRoutingWrap.class);
+        nodeWrapDefinition.setLazyInit(false);
 
         String key = element.getAttribute("key");
-        //设定属性
+        //设定属性,todo 可以通过反射自动设定所有属性
         nodeWrapDefinition.getPropertyValues().addPropertyValue("name", key);
 
         parserContext.getRegistry().registerBeanDefinition("flow", nodeWrapDefinition);

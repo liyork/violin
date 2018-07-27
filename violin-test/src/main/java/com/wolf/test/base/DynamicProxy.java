@@ -60,6 +60,7 @@ public class DynamicProxy {
 	@Test
 	public void testBase() throws IllegalAccessException, InvocationTargetException {
 		//这个文件生成在/Users/chaoli/IdeaProjects/violin/com/wolf/test/base，看来这个工程套工程，最终的根路径在violin上。。
+		//win路径：D:\intellijWrkSpace\violin\com\wolf\test\base
 
 		//输出生成的代理类
 		System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
@@ -68,7 +69,10 @@ public class DynamicProxy {
 
 		AA aa = (AA)getProxy(bb);
 		//final class $Proxy0 extends Proxy implements AA
-		//生成的proxy类中的test方法调动this.h.invoke(this, m3, null);
+		//生成的proxy类就是BB的代理，
+		// 其中的test方法调动this.h.invoke(this, m3, null);
+		//m3 = Class.forName("com.wolf.test.base.AA").getMethod("test", new Class[0]);
+		//h是构造时传入的return cons.newInstance(new Object[]{h});
 
 		aa.test();
 

@@ -7,7 +7,7 @@ package com.wolf.test.spring.customtag;
  * @author 李超
  * @since 1.0.0
  */
-public class StationRoutingWrap {
+public class StationRoutingWrap {//可以实现动态factoryBean，实现功能的动态代理
 
     private String id;
 

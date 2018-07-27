@@ -32,12 +32,12 @@ public class GCTest {
     //先进行gc再进行fullgc，eden:survivor=8:1
     public static void testReferenceCountingGC() throws InterruptedException {
         ReferenceCountingGC objA = new ReferenceCountingGC();
-        ReferenceCountingGC objD = new ReferenceCountingGC();
-        objA.instance = objD;
-        objD.instance = objA;
+        ReferenceCountingGC objB = new ReferenceCountingGC();
+        objA.instance = objB;
+        objB.instance = objA;
 
         objA = null;
-        objD = null;
+        objB = null;
 
         System.gc();
 

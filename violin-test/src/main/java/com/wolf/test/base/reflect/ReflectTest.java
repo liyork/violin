@@ -1,8 +1,5 @@
 package com.wolf.test.base.reflect;
 
-import clojure.lang.Obj;
-import com.wolf.test.annotation.BusinessService;
-import com.wolf.test.annotation.CacheResult;
 import com.wolf.test.base.InnerClassAndStaticTest;
 import com.wolf.utils.ReflectUtils;
 import org.junit.Test;
@@ -128,7 +125,8 @@ public class ReflectTest {
         Type genericType = listField.getGenericType();
         if (genericType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
-            System.out.println(parameterizedType.getRawType());
+            Type rawType = parameterizedType.getRawType();
+            System.out.println(rawType);
             System.out.println(parameterizedType.getOwnerType());
             Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
             for (Type o : actualTypeArguments) {
@@ -138,6 +136,8 @@ public class ReflectTest {
                 }
             }
         }
+        Class<?> type = listField.getType();
+        System.out.println(type);
     }
 
     @Test
@@ -444,11 +444,11 @@ public class ReflectTest {
 
     @Test
     public void testAnnotationInstance() throws NoSuchMethodException {
-        Method getCityName = BusinessService.class.getMethod("getCityName", null);
+        Method getCityName = ClassHasAnnotation4Test.class.getMethod("test", null);
         Annotation[] annotations = getCityName.getAnnotations();
         for (Annotation annotation : annotations) {
-            System.out.println(CacheResult.class.isInstance(annotation));
-            System.out.println(annotation instanceof CacheResult);
+            System.out.println(Annotation4Test.class.isInstance(annotation));
+            System.out.println(annotation instanceof Annotation4Test);
         }
     }
 
