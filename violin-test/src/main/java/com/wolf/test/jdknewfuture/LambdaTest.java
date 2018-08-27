@@ -1,26 +1,37 @@
 package com.wolf.test.jdknewfuture;
 
 import org.junit.Test;
-import scala.tools.nsc.Global;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
-import java.util.function.IntConsumer;
-import java.util.function.Predicate;
+import java.util.concurrent.TimeUnit;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Description:Lambda
+ * The high-level goal of Project Lambda is to enable programming patterns that require modeling code as data to
+ * be convenient and idiomatic in Java.
+ * 随着回调模式和函数式编程风格的日益流行，我们需要在Java中提供一种尽可能轻量级的将代码封装为数据（Model code as data）的方法
+ *
  * <p>
- * 匿名类与lambda区别
+ * Lambda表达式在Java中又称为闭包或匿名函数。用匿名类时，定义行为最重要的那行代码，却混在中间不够突出
  * <p>
- * 1.匿名类的 this 关键字指向匿名类，而lambda表达式的 this 关键字指向包围lambda表达式的类。测试不通过，应该指的使用局部变量
- * 2.编译方式。Java编译器将lambda表达式编译成类的私有方法。使用了Java 7的 invokedynamic 字节码指令来动态绑定这个方法。
+ * (parameters) -> expression or (parameters) -> {statements;}
+ * (parameters)表示signature     ->表示lambda operator     expression表示method implementation
  * <p>
- * Lambda表达式在Java中又称为闭包或匿名函数
+ * lambda表达式是一段可以传递的代码，它的核心思想是将面向对象中的传递数据变成传递行为。代码即数据
+ * 使用->将参数和实现逻辑分离，当运行这个线程的时候执行的是->之后的代码片段，且编译器帮助我们做了类型推导
+ * <p>
+ * lambda不仅仅是功能，而是创建了一个函数(对象)。不过真正用时还要执行调用。
+ * <p>
+ * 作为开发人员，我发现学习和掌握lambda表达式的最佳方法就是勇于尝试，尽可能多练习lambda表达式例子
+ *
+ * javap -c -v XXXX(class位置)
+ *
  * <br/> Created on 2017/12/20 18:10
  *
  * @author 李超
@@ -29,37 +40,94 @@ import java.util.stream.IntStream;
 public class LambdaTest {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
-        testEvolution();
+//        show();
 
-//        simpleTest();
+//        testEvolutionConverter();
+//        testEvolutionRunnable();
+//        testEvolutionForeach();
+//        testEvolutionCompareSort();
+//        testDefault();
 
-//        simple2Test();
+//        testMethodRef();
 
-        //向API方法添加逻辑，用更少的代码支持更多的动态行为
-        List<String> languages = Arrays.asList("Java", "Scala", "C++", "Haskell", "Lisp", "Jsdf");
+//          testScope();
 
-        //testFilter(languages);
+//        testPreinstallFuncUse();
 
-        //合并
-//        combine(languages);
+//        testStreamRelativeFunc();
+//        testMapApp();
+//        testMapReduceApp();
+//        testCombineApp();
+//        testDistinctApp();
+//        testParallelStream();
+//        testLazy();
 
-
-        //map();
-
-//        mapReduce();
-
-        //filter();
-
-        //distinct();
-
-        //statistics();
-
+//        statistics();
+        new LambdaTest().testDiffAnonymousClass();
 
     }
 
-    private static void testEvolution() {
+    private static void show() {
+//        () -> 10;
+//
+//        (int x, int y) -> x + y;
+//
+//        (x, y) -> x + y;
+//
+//        name -> System.out.println(name);
+//
+//        (String name,String sex) -> {System.out.println(name);System.out.println(sex);}
+//
+//        x -> 2 * x;
+    }
+
+
+    private static void testEvolutionConverter() {
+
+        String convertValue = "123123";
+        //以前使用方式
+        Converter<String, Integer> oldConverter = new Converter<String, Integer>() {
+            @Override
+            public Integer convert(String from) {
+                return Integer.parseInt(from);
+            }
+        };
+        Integer oldConvert = oldConverter.convert(convertValue);
+        System.out.println(oldConvert);
+
+
+        //lambda表达式类似于匿名对象
+        Converter<String, Integer> newConverter = (String from) -> {
+            System.out.println(from);
+            return Integer.valueOf(from);
+        };
+        Integer newConvert = newConverter.convert(convertValue);
+        System.out.println(newConvert);
+
+        //再进一步，自动判断方法参数类型。单方法去掉{}
+        Converter<String, Integer> converter2 = (from) -> Integer.valueOf(from);
+
+        //再进一步，参数自动判断。静态方法调用::
+        Converter<String, Integer> converter3 = Integer::valueOf;
+        Integer converted2 = converter3.convert(convertValue);
+        System.out.println(converted2);
+
+    }
+
+    private static void testEvolutionRunnable() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("11111");
+            }
+        }).start();
+
+        new Thread(() -> System.out.println("2222")).start();
+    }
+
+    private static void testEvolutionForeach() {
         int[] array = {4, 5, 6};
         Arrays.stream(array)//流对象
                 .forEach(new IntConsumer() {
@@ -69,66 +137,284 @@ public class LambdaTest {
                     }
                 });
 
+        //基本lambda
         Arrays.stream(array).forEach((int x) -> {
             System.out.println(x);
-        });//foreach参数可以从上下文推导出
+        });
+
+        //参数类型可以从上下文推导出
         Arrays.stream(array).forEach((x) -> {
             System.out.println(x);
-        });//推导参数类型
-        Arrays.stream(array).forEach((x) -> System.out.println(x));//去掉括号
-        //lambda表达式由->分割，左边是参数，右边是实现。lambda表达式只是匿名对象实现的一种新方式。
-        Arrays.stream(array).forEach(System.out::println);//方法引用推导,省去参数申明和传递
+        });
 
+        //当方法去掉括号
+        Arrays.stream(array).forEach((x) -> System.out.println(x));
+
+        //实例方法引用
+        Arrays.stream(array).forEach(System.out::println);
+
+        //有返回值
+        Arrays.asList("a", "b", "d").sort((e1, e2) -> {
+            return e1.compareTo(e2);
+        });
+
+        Arrays.asList("a", "b", "d").sort((e1, e2) -> e1.compareTo(e2));
+
+        Arrays.asList("a", "b", "d").sort(String::compareTo);
+    }
+
+    private static void testEvolutionCompareSort() {
+        //老式调用
+        List<String> names = Arrays.asList("peter", "anna", "mike", "xenia");
+        names.sort(new Comparator<String>() {
+            @Override
+            public int compare(String a, String b) {
+                return b.compareTo(a);
+            }
+        });
+        System.out.println(names);
+
+        //简化1
+        names.sort((String a, String b) -> {
+            return b.compareTo(a);
+        });
+
+        //简化2，一行省略大括号
+        names.sort((String a, String b) -> b.compareTo(a));
+
+        //简化3，自动推断类型
+        names.sort((a, b) -> b.compareTo(a));
+
+        //实例方法调用
+        names.sort(Comparator.reverseOrder());
+    }
+
+    private static void testDefault() {
+        Converter<Integer, String> converter = (a) -> {
+            System.out.println("22222");
+            return "111";
+        };
+
+        String convert = converter.convert(111);
+        System.out.println(convert);
+
+        converter.defaultMethod();
+
+        //Iterable中的default的forEach
+        List<Integer> integers = Arrays.asList(1, 4, 5, 8, 10);
+        integers.forEach(System.out::println);
+    }
+
+    private static void testPreinstallFuncUse() {
+
+        //Predicate用来逻辑判断
+        Predicate<String> predicate = (s) -> s.length() > 0;//根据test方法的入参和出参定位到Predicate函数
+        //对每个参数使用s.length() > 0 表达式验证
+        predicate.test("foo");
+        predicate.negate().test("foo");
+
+        //对参数使用Objects::nonNull测试
+        Predicate<String> nonNull = Objects::nonNull;
+        System.out.println("nonNull==>" + nonNull.test(null));
+
+        Predicate<String> isNull = Objects::isNull;
+        System.out.println("isNull==>" + isNull.test(null));
+
+        Predicate<String> isEmpty = String::isEmpty;
+        Predicate<String> isNotEmpty = isEmpty.negate();
+        System.out.println("isNotEmpty==>" + isNotEmpty.test(""));
+
+
+        //有输入有输出
+        Function<String, Integer> toInteger = Integer::valueOf;
+        Function<String, String> backToString = toInteger.andThen(String::valueOf);
+        String apply = backToString.apply("123");
+        System.out.println("apply==>" + apply);
+
+
+        //无输入，有输出
+        Supplier<String> supplier = () -> "test Supplier";
+        System.out.println(supplier.get());
+
+        //有输入，无输出
+        Consumer<Integer> consumer = (a) -> {
+            int b = a * 2;
+            System.out.println("consumer:" + b);
+        };
+        consumer.accept(44);
+
+    }
+
+
+    //方法引用是Lambda表达式的一个简化写法。lambda表达式内的方法可以使用方法引用。所引用的方法，其实是那个Lambda表达式内方法体的实现
+    //仅当该方法不修改lambda表达式提供的参数
+    private static void testMethodRef() {
+
+        //静态方法引用
+        Converter<Integer, String> stringConverter = (from) -> Converter.create(from);
+        String convert = stringConverter.convert(1111);
+        System.out.println(convert);
+
+        Converter<Integer, String> stringConverter1 = Converter::create;
+
+
+        //实例方法引用,省去参数申明和传递
+        Converter<String, Integer> stringConverter2 = (from) -> new Helper().string2Int(from);
+
+        Helper helper = new Helper();
+        Converter<String, Integer> stringConverter3 = helper::string2Int;
+
+        int[] array = {4, 5, 6};
+        Arrays.stream(array).forEach(System.out::println);
 
         IntConsumer outConsumer = System.out::println;
         IntConsumer errConsumer = System.err::println;
         Arrays.stream(array).forEach(outConsumer.andThen(errConsumer));
+
+
+        //构造函数引用
+        PersonFactory<Person> personFactory = new PersonFactory() {
+            @Override
+            public Person create(String firstName, String lastName) {
+                return new Person(firstName, lastName);
+            }
+        };
+        personFactory.create("a", "b");
+
+        PersonFactory<Person> pF = Person::new;
+        pF.create("a1", "b1");//Java编译器会自动根据PersonFactory.create方法的签名来选择合适的构造函数。
+
+    }
+
+    private static void testScope() {
+
+        //lambda内部可以使用静态、非静态和局部变量
+        //局部变量,final也可以不声明，但是不能修改
+        final int num = 1;
+        Converter<Integer, String> stringConverter = (from) -> String.valueOf(from + num);
+        String convert = stringConverter.convert(1212);
+        System.out.println("stringConverter==>" + convert);
     }
 
     private static void statistics() {
         //获取数字的个数、最小值、最大值、总和以及平均值
-        List<Integer> primes = Arrays.asList(2, 3, 5, 7, 11, 13, 17, 19, 23, 29);
-        IntSummaryStatistics stats = primes.stream().mapToInt((x) -> x).summaryStatistics();
+        List<String> primes = Arrays.asList("2", "3", "5", "7");
+        IntSummaryStatistics stats = primes.stream().mapToInt(Integer::parseInt).summaryStatistics();
         System.out.println("Highest prime number in List : " + stats.getMax());
         System.out.println("Lowest prime number in List : " + stats.getMin());
         System.out.println("Sum of all prime numbers : " + stats.getSum());
         System.out.println("Average of all prime numbers : " + stats.getAverage());
     }
 
-    private static void distinct() {
-        List<Integer> numbers = Arrays.asList(9, 10, 3, 4, 7, 3, 4);
-        //collect输出
-        List<Integer> distinct = numbers.stream().map(i -> i * i).distinct().collect(Collectors.toList());
-        System.out.printf("Original List : %s,  Square Without duplicates : %s %n", numbers, distinct);
+    //匿名类与lambda区别
+    //1.匿名类的 this 关键字指向匿名类，而lambda表达式的 this 关键字指向包围lambda表达式的类
+    //2.编译方式。Lambda表达式本质上是匿名方法，Java编译器将lambda表达式编译成类的私有方法。使用了Java 7的 invokedynamic 字节码指令来动态绑定这个方法。
+    private void testDiffAnonymousClass() {
+
+        Converter<String, Integer> converter = new Converter<String, Integer>() {
+            @Override
+            public Integer convert(String from) {
+                System.out.println("this:" + this);
+                return null;
+            }
+        };
+        converter.convert("1111");
+
+        Converter<String, Integer> converter2 = (a) -> {
+            System.out.println("lambada this:" + this);
+            return null;
+        };
+        converter2.convert("22222");
     }
 
-    private static void filter() {
-        List<String> strList = Arrays.asList("abc", "bcd", "defg", "jk");
-        // x -> x.length() > 2  结果为true则要
-        List<String> filtered = strList.stream().filter(x -> x.length() > 2).collect(Collectors.toList());
-        System.out.printf("Original List : %s, filtered list : %s %n", strList, filtered);
+
+    //java8中支持对集合对象的stream对象进行函数式操作
+    //Stream表示数据流，它没有数据结构，本身也不存储元素，其操作也不会改变源Stream，而是生成新Stream
+    //中间操作(形成管道)/完结操作,尽可能以“延迟”的方式运行
+    //Stream既支持串行也支持并行
+    //stream操作步骤：创建——>变化——>完结
+    private static void testStreamRelativeFunc() {
+        List<String> languages = Arrays.asList("Java", "Scala", "C++", "Haskell", "Lisp", "Jsdf");
+
+        System.out.println("Languages which starts with J :");
+        filter(languages, (str) -> str.startsWith("J"));//根据filter方法的参数是Predicate推断test
+
+        System.out.println("Print all languages :");
+        filter(languages, (str) -> true);
+
+        List<String> stringCollection = new ArrayList<>();
+        stringCollection.add("ddd2");
+        stringCollection.add("aaa2");
+        stringCollection.add("bbb1");
+        stringCollection.add("aaa1");
+        stringCollection.add("bbb3");
+        stringCollection.add("ccc");
+        stringCollection.add("bbb2");
+        stringCollection.add("ddd1");
+
+        stringCollection
+                .stream()
+                .filter((s) -> s.startsWith("a"))
+                .filter((s) -> s.equals("aaa1"))
+                .forEach(System.out::println);
+
+        //sorted
+        stringCollection
+                .stream()
+                .sorted((o1, o2) -> o1.compareTo(o2))
+                .forEach((s) -> System.out.println("sorted:" + s));
+
+        //map，映射
+        stringCollection
+                .stream()
+                .map((s) -> s + "__xx")
+                .forEach((s) -> System.out.println("map:" + s));
+
+        //match
+        boolean isMatch = stringCollection
+                .stream()
+                .anyMatch((s) -> s.startsWith("a"));
+        System.out.println(isMatch);
+
+        //collect
+        List<String> collect = stringCollection
+                .stream()
+                .map((s) -> s + "__yy")
+                .collect(Collectors.toList());
+        System.out.println(collect);
+
+        //count
+        long count = stringCollection
+                .stream()
+                .filter((s) -> s.startsWith("a"))
+                .count();
+        System.out.println(count);
+
+        //reduce，操作后的值作为下次操作的第一个值
+        Optional<String> reduce = stringCollection
+                .stream()
+                .reduce((s1, s2) -> {
+                    System.out.println("s1:" + s1 + ",s2:" + s2);
+                    return s1 + "|" + s2;
+                });
+        System.out.println(reduce);
     }
 
-    private static void mapReduce() {
-        // 为每个订单加上12%的税
-        // 老方法：
-        List<Integer> costBeforeTax = Arrays.asList(100, 200, 300, 400, 500);
-        double total = 0;
-        for (Integer cost : costBeforeTax) {
-            double price = cost + .12 * cost;
-            total = total + price;
+    private static void filter(List<String> names, Predicate<String> condition) {
+        //老方式
+        for (String name : names) {
+            if (condition.test(name)) {
+                System.out.println(name + " ");
+            }
         }
-        System.out.println("Total : " + total);
 
-        // 新方法：
-        List<Integer> costBeforeTax2 = Arrays.asList(100, 200, 300, 400, 500);
-        //sum + cost 与 sum = sum + cost一样
-        double bill = costBeforeTax2.stream().map((cost) -> cost + .12 * cost).reduce((sum, cost) -> sum + cost).get();
-        System.out.println("Total : " + bill);
+        //新方式
+        names.stream().filter(condition).forEach(System.out::println);
     }
+
 
     //map将集合类（例如列表）元素进行转换的
-    private static void map() {
+    private static void testMapApp() {
         // 不使用lambda表达式为每个订单加上12%的税
         List<Integer> costBeforeTax = Arrays.asList(100, 200, 300, 400, 500);
         for (Integer cost : costBeforeTax) {
@@ -147,7 +433,33 @@ public class LambdaTest {
         System.out.println(G7Countries);
     }
 
-    private static void combine(List<String> languages) {
+    private static void testMapReduceApp() {
+        // 为每个订单加上12%的税
+        // 老方法：
+        List<Integer> costBeforeTax = Arrays.asList(100, 200, 300, 400, 500);
+        double total = 0;
+        for (Integer cost : costBeforeTax) {
+            double price = cost + .12 * cost;
+            total = total + price;
+        }
+        System.out.println("Total : " + total);
+
+        // 新方法：
+        List<Integer> costBeforeTax2 = Arrays.asList(100, 200, 300, 400, 500);
+        //sum + cost 与 sum = sum + cost一样
+        double bill = costBeforeTax2.stream().map((cost) -> cost + .12 * cost).reduce((sum, cost) -> sum + cost).get();
+        double bill2 = costBeforeTax2.stream().map((cost) -> cost + .12 * cost).reduce((sum, cost) -> {
+            System.out.println("sum:" + sum + ",cost:" + cost);
+            return sum + cost;
+        }).get();
+        System.out.println("Total : " + bill + ",bill2:" + bill2);
+
+    }
+
+    private static void testCombineApp() {
+
+        List<String> languages = Arrays.asList("Java", "Scala", "C++", "Haskell", "Lisp", "Jsdf");
+
         Predicate<String> startsWithJ = (n) -> n.startsWith("J");
         Predicate<String> fourLetterLong = (n) -> n.length() == 4;
         languages.stream()
@@ -155,144 +467,55 @@ public class LambdaTest {
                 .forEach((n) -> System.out.print("nName, which starts with 'J' and four letter long is : " + n));
     }
 
-    private static void testFilter(List<String> languages) {
-        System.out.println("Languages which starts with J :");
-        filter(languages, (str) -> str.startsWith("J"));//根据filter方法的参数是Predicate推断test
-
-        System.out.println("Languages which ends with a ");
-        filter(languages, (str) -> str.endsWith("a"));
-
-        System.out.println("Print all languages :");
-        filter(languages, (str) -> true);
-
-        System.out.println("Print no language : ");
-        filter(languages, (str) -> false);
-
-        System.out.println("Print language whose length greater than 4:");
-        filter(languages, (str) -> str.length() > 4);
+    private static void testDistinctApp() {
+        List<Integer> numbers = Arrays.asList(9, 10, 3, 4, 7, 3, 4);
+        //collect输出
+        List<Integer> distinct = numbers.stream().map(i -> i * i).distinct().collect(Collectors.toList());
+        System.out.printf("Original List : %s,  Square Without duplicates : %s %n", numbers, distinct);
     }
 
-    private static void simple2Test() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("runnable 1...");
-            }
-        }).start();
-        //lambda
-        new Thread(() -> System.out.println("xxxx")).start();
+    private static void testParallelStream() {
 
-    }
-
-    public static void filter(List<String> names, Predicate<String> condition) {
-        for (String name : names) {
-            if (condition.test(name)) {
-                System.out.println(name + " ");
-            }
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 500000; i++) {
+            list.add(UUID.randomUUID().toString());
         }
+
+        long start = System.nanoTime();
+        String collect = list.stream().sorted().collect(Collectors.joining(","));
+        long end = System.nanoTime();
+        long millis = TimeUnit.NANOSECONDS.toMillis(end - start);
+        System.out.println("serial stream cost:" + millis);
+
+        Collections.reverse(list);
+
+        long start1 = System.nanoTime();
+        String collect1 = list.parallelStream().sorted().collect(Collectors.joining(","));
+        long end1 = System.nanoTime();
+        long millis1 = TimeUnit.NANOSECONDS.toMillis(end1 - start1);
+        System.out.println("serial stream cost:" + millis1);
+
+        System.out.println("equals:" + collect.equals(collect1));
     }
 
-    private static void simpleTest() {
-        Arrays.asList("a", "b", "d").forEach(e -> System.out.println(e));//参数e，方法System.out.println( e )
+    static long value = 0;
 
-        //lambda表达式内可以使用方法引用，仅当该方法不修改lambda表达式提供的参数,这仅是一个参数相同的简单方法调用
-        Arrays.asList("a", "b", "d").forEach(System.out::println);//简化,方法引用由::双冒号操作符标示
+    private static void testLazy() throws InterruptedException {
 
-        //多行要用大括号
-        Arrays.asList("a", "b", "d").forEach(e -> {
-            System.out.print(e);
-            System.out.print(e);
-        });
-
-        //返回值
-        Arrays.asList("a", "b", "d").sort((e1, e2) -> {
-            return e1.compareTo(e2);
-        });
-
-        Arrays.asList("a", "b", "d").sort((e1, e2) -> e1.compareTo(e2));
-
-        Arrays.asList("a", "b", "d").sort(String::compareTo);
-
-        //构造实例,可见lambda表达式仅仅类似于匿名对象
-        Converter<String, Integer> converter = (String from) -> {
-            System.out.println(from);
-            return Integer.valueOf(from);
-        };
-        Integer converted = converter.convert("123");
-        System.out.println(converted);    // 123
-
-        Converter<String, Integer> converter2 = (from) -> Integer.valueOf(from);
-
-        Converter<String, Integer> converter3 = Integer::valueOf;//通过静态方法引用
-        Integer converted2 = converter3.convert("123");
-        System.out.println(converted2);   // 123
-
-        //lambda内部可以使用静态、非静态和局部变量
-        //局部变量,final也可以不声明，但是不能修改
-        final int num = 1;
-        Converter<Integer, String> stringConverter =
-                (from) -> String.valueOf(from + num);
-        String convert = stringConverter.convert(123);
-        System.out.println("stringConverter==>" + convert);
-//        num=2;错误
-
-        //老式调用
-        List<String> names = Arrays.asList("peter", "anna", "mike", "xenia");
-        names.sort(new Comparator<String>() {
-            @Override
-            public int compare(String a, String b) {
-                return b.compareTo(a);
+        Stream<Long> longStream = Stream.generate(() -> {
+            System.out.println("value:" + value);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
-        System.out.println(names);
-        //简化1
-        names.sort((String a, String b) -> {
-            return b.compareTo(a);
-        });
-        //简化2，一行省略大括号
-        names.sort((String a, String b) -> b.compareTo(a));
-        //简化3，自动推断类型
-        names.sort((a, b) -> b.compareTo(a));
+            return value++;
+        }).map((p) -> p + 1);
 
+        longStream.limit(1000).count();//注释掉这行，则上面的map不执行，因为懒加载。要遇到完结方法才开始执行。
 
-        //构造函数引用
-        //Person::new获取Person类构造函数的引用,Java编译器会自动根据PersonFactory.create方法的签名来选择合适的构造函数。
-        PersonFactory<Person> personFactory = Person::new;
-        Person person = personFactory.create("Peter", "Parker");
-
-        Predicate<String> predicate = (s) -> s.length() > 0;//根据test方法定位到Predicate
-        predicate.test("foo");              // true
-        predicate.negate().test("foo");     // false
-        Predicate<String> nonNull = Objects::nonNull;
-        System.out.println("nonNull==>" + nonNull.test(null));
-        Predicate<String> isNull = Objects::isNull;
-        System.out.println("isNull==>" + isNull.test(null));
-        Predicate<String> isEmpty = String::isEmpty;
-        Predicate<String> isNotEmpty = isEmpty.negate();
-        System.out.println("isNotEmpty==>" + isNotEmpty.test(""));
-
-
-        Function<String, Integer> toInteger = Integer::valueOf;
-        Function<String, String> backToString = toInteger.andThen(String::valueOf);
-        String apply = backToString.apply("123");
-        System.out.println("apply==>" + apply);
-
-
-        List<String> stringCollection = new ArrayList<>();
-        stringCollection.add("ddd2");
-        stringCollection.add("aaa2");
-        stringCollection.add("bbb1");
-        stringCollection.add("aaa1");
-        stringCollection.add("bbb3");
-        stringCollection.add("ccc");
-        stringCollection.add("bbb2");
-        stringCollection.add("ddd1");
-
-        stringCollection
-                .stream()
-                .filter((s) -> s.startsWith("a"))
-                .forEach(System.out::println);
-
+        System.out.println("1111");
+        Thread.sleep(111111);
     }
 
     @Test
@@ -322,10 +545,10 @@ public class LambdaTest {
 
         //串行随机赋值
         Random random = new Random();
-        Arrays.setAll(arr,(i)-> random.nextInt());
+        Arrays.setAll(arr, (i) -> random.nextInt());
         System.out.println(Arrays.toString(arr));
         //并行随机赋值
-        Arrays.parallelSetAll(arr,(i)-> random.nextInt());
+        Arrays.parallelSetAll(arr, (i) -> random.nextInt());
         System.out.println(Arrays.toString(arr));
 
     }
@@ -353,7 +576,7 @@ public class LambdaTest {
 
         //异常处理
         CompletableFuture<Void> fu2 = CompletableFuture.supplyAsync(() -> callException(50))
-                .exceptionally(ex->{
+                .exceptionally(ex -> {
                     System.out.println(ex.toString());
                     return 0;
                 })
@@ -364,7 +587,7 @@ public class LambdaTest {
 
         //组合
         CompletableFuture<Void> fu3 = CompletableFuture.supplyAsync(() -> call(50))
-                .thenCompose((i)->CompletableFuture.supplyAsync(()->call(i)))
+                .thenCompose((i) -> CompletableFuture.supplyAsync(() -> call(i)))
                 .thenApply((str) -> "\"" + str + "\"")
                 .thenAccept(System.out::println);
         fu3.get();//等待call完成
@@ -411,7 +634,7 @@ public class LambdaTest {
 
     private static Integer callException(Integer para) {
 
-        return para /0;
+        return para / 0;
     }
 
 }

@@ -293,4 +293,12 @@ public class JsonTest {
         JSON.toJSON(userInfo);
     }
 
+    //在json前面加上@type
+    @Test
+    public void testWriteClassName(){
+        UserInfo userInfo = new UserInfo();
+        String s = JSON.toJSONString(userInfo, SerializerFeature.WriteClassName);
+        System.out.println(s);
+    }
+
 }
