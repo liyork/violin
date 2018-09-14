@@ -9,4 +9,6 @@ package com.wolf.test.base.reflect;
  */
 public interface A {
 	public void test();
+
+	public void printStackTraceElement() ;
 }

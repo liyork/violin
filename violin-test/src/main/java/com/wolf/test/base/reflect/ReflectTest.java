@@ -25,6 +25,8 @@ public class ReflectTest {
     public static void main(String[] args) throws Exception {
 //        testDynamicCreateBean();
 //        test();
+
+        new ReflectTest().testStackTraceElement();
     }
 
     @Test
@@ -76,15 +78,15 @@ public class ReflectTest {
         System.out.println(staticInnerClassClass.getSimpleName());
         System.out.println(staticInnerClassClass.getCanonicalName());//内部类用.
 
-        Runnable runnable = new Runnable(){
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
 
             }
         };
-        System.out.println("Runnable.class.getName:"+runnable.getClass().getName());
-        System.out.println("Runnable.class.getSimpleName:"+runnable.getClass().getSimpleName());//返回空
-        System.out.println("Runnable.class.getCanonicalName:"+runnable.getClass().getCanonicalName());//null
+        System.out.println("Runnable.class.getName:" + runnable.getClass().getName());
+        System.out.println("Runnable.class.getSimpleName:" + runnable.getClass().getSimpleName());//返回空
+        System.out.println("Runnable.class.getCanonicalName:" + runnable.getClass().getCanonicalName());//null
 
     }
 
@@ -150,7 +152,7 @@ public class ReflectTest {
         Object x = seq.get(c);
         System.out.println(x);
 
-        seq.set(c,"yyy");
+        seq.set(c, "yyy");
 
         System.out.println(c.seq);
 
@@ -180,9 +182,9 @@ public class ReflectTest {
             System.out.println("getParameters===");
             Parameter[] parameters = method.getParameters();
             for (Parameter parameter : parameters) {
-                System.out.print(parameter.getName()+" ");
-                System.out.print(parameter.getType()+" ");
-                System.out.print(parameter.getParameterizedType()+" ");
+                System.out.print(parameter.getName() + " ");
+                System.out.print(parameter.getType() + " ");
+                System.out.print(parameter.getParameterizedType() + " ");
                 System.out.print(parameter.getModifiers());
                 System.out.println();
             }
@@ -220,11 +222,11 @@ public class ReflectTest {
     public void testOperationMethod() throws Exception {
         C c = new C();
         Class cClass = c.getClass();
-        Method testbbb = cClass.getMethod("testbbb",String.class,Integer.class);
+        Method testbbb = cClass.getMethod("testbbb", String.class, Integer.class);
         Object invoke = testbbb.invoke(c, "a", 1);
         System.out.println(invoke);
 
-        Method testException = cClass.getMethod("testException",null);
+        Method testException = cClass.getMethod("testException", null);
         try {
             testException.invoke(c, null);
         } catch (IllegalAccessException e) {
@@ -234,9 +236,9 @@ public class ReflectTest {
         } catch (InvocationTargetException e) {
 //            e.printStackTrace();
             Throwable cause = e.getCause();
-            System.out.println("cause:"+cause.toString());
+            System.out.println("cause:" + cause.toString());
             String message = e.getMessage();
-            System.out.println("message:"+message);
+            System.out.println("message:" + message);
         }
 
 
@@ -247,7 +249,7 @@ public class ReflectTest {
 
         C<String> c1 = new C<String>();
         //类型擦除，C类中编译后保持E，但是这里若有get则编译后是强转(String)
-        Method testGeneric = c1.getClass().getMethod("testGeneric",Object.class);
+        Method testGeneric = c1.getClass().getMethod("testGeneric", Object.class);
         Type[] genericParameterTypes = testGeneric.getGenericParameterTypes();
         for (Type o : genericParameterTypes) {
             if (o instanceof TypeVariable) {
@@ -310,10 +312,10 @@ public class ReflectTest {
 
         String[] o = (String[]) Array.newInstance(String.class, 3);
         o[0] = "abv";
-        Array.set(o,1,"cccc");
+        Array.set(o, 1, "cccc");
 
         arr.setAccessible(true);
-        arr.set(c,o);
+        arr.set(c, o);
 
         String[] arr1 = c.arr;
         for (String s : arr1) {
@@ -385,7 +387,7 @@ public class ReflectTest {
         C obj = new C();
         try {
             Field age = cClass.getDeclaredField("age");
-            age.set(obj,111);
+            age.set(obj, 111);
         } catch (NoSuchFieldException e) {
             System.out.println("field not found:age");
         } catch (IllegalAccessException e) {
@@ -395,7 +397,7 @@ public class ReflectTest {
         try {
             Field finalTest = cClass.getDeclaredField("finalTest");
             finalTest.setAccessible(true);
-            finalTest.set(obj,"111");
+            finalTest.set(obj, "111");
             System.out.println(obj.finalTest);//debug是111，但是输出到控制台变成了abc？？？
             System.out.println(finalTest.get(obj));
         } catch (NoSuchFieldException e) {
@@ -462,5 +464,22 @@ public class ReflectTest {
         for (Field allField : allFields) {
             System.out.println(allField);
         }
+    }
+
+
+    //可以看到打印出了从目标类中使用线程开始的所有栈信息。
+    public void testStackTraceElement() {
+
+        B b = new B();
+
+        InvocationHandler invocationHandler = new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                return method.invoke(b);
+            }
+        };
+        A o1 = (A) Proxy.newProxyInstance(b.getClass().getClassLoader(), b.getClass().getInterfaces(), invocationHandler);
+
+        o1.printStackTraceElement();
     }
 }

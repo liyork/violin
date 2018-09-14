@@ -24,6 +24,18 @@
             <filter>src/main/filters/${envPrefix}.properties</filter>
         </filters>
 
+        <!--指定资源位置，被用来打入jar-->
+        <resources>
+            <resource>
+                <!--<includes></includes>-->
+                <!--<excludes></excludes>-->
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <!--maven-resources-plugin，有时间这个也可以试试。可以将copy-resources拷贝到指定目录，这样就可以编码时分开，然后打包时合并。-->
+
         <plugins>
             <!--也可以单独指定描述文件，加参数 -Ddescriptor=src/main/assembly/assembly.xml-->
             <plugin>

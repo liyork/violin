@@ -1,5 +1,7 @@
 package com.wolf.test.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * <p> Description:
  * <p/>
@@ -13,7 +15,6 @@ package com.wolf.test.json;
 public interface UserInfoInterface {
 
 	public void setName(String name);
-
 	public String getName();
 
 	public void setAge(int age);

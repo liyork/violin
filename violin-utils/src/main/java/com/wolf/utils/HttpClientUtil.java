@@ -14,6 +14,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.ConnectionConfig.Builder;
+import org.apache.http.conn.ConnectionRequest;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -21,6 +24,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpCoreContext;
@@ -37,9 +41,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description: 基于4.5.1的httpclient的实现的工具类
+ *
+ * 若是不需要keepalive，那么需要每次关闭连接。
+ *
+ * 如果采用客户端关闭链接的方法，在客户端的机器上使用netstat –an命令会看到很多TIME_WAIT的TCP链接。
+ * 如果服务器端主动关闭链接这中情况就出现在服务器端。
+ * TIME_WAIT的状态会出现在主动关闭链接的这一端。TCP协议中TIME_WAIT状态主要是为了保证数据的完整传输。
+ *
+ * 强调一下使用上面这些方法关闭链接是在我们的应用中明确知道不需要重用链接时可以主动关闭链接来释放资源。
+ * 如果你的应用是需要重用链接的话就没必要这么做，使用原有的链接还可以提供性能。
+ *
+ * HTTP KeepAlive是就是通常所称的长连接。KeepAlive即服务器端为同一客户端保持连接一段时间（不立即关闭），
+ * 以便于更多来自于此客户端的后续请求不断的利用此连接直至连接超时。
+ * KeepAlive只是表明了服务器端面对连接的一种优化策略，而客户端也完全可以主动关闭之（不利用）。
+ * KeepAlive带来的好处是可以减少HTTP连接的开销，提高性能。比如，同一页面中如有很多内嵌的图片、JS、CSS等请求，则可以利用此特新性，
+ * 使用少量的连接数（IE下一般是2个）更快的下载下来，使得网页更快的展示出来。
+ * 坏处是：
+ * 如果有大量不同的客户端同时（或瞬间）请求服务器端，且每一个客户端的都长期占用连接（比如：不关闭且
+ * ConnectionTimeOut设置过长）或服务器端也不快速失效连接（KeepAliveTimeout参数设置过大）的话，
+ * 可能会快速占满服务器连接资源，导致更多的请求被排队或被拒绝或服务器down掉。
+ *
  * <br/> Created on 2016-12-23 10:45
  *
  * @author 李超()
@@ -160,6 +185,7 @@ public class HttpClientUtil {
 		}
 		HttpClient httpClient = getHttpClient(newCharset);
 		HttpGet httpGet = new HttpGet(url);
+		httpGet.setHeader("Connection", "close");//服务器返回数据后由服务器关闭tcp，
 		String responseStr;
 		try {
 			httpGet.setConfig(getRequestConfig());
@@ -169,8 +195,11 @@ public class HttpClientUtil {
 					" charset=" + charset, e);
 		} finally {
 			if (httpGet != null) {
+				//释放到连接池，并没有关闭连接，超时后才关闭。
 				httpGet.releaseConnection();
 			}
+			//todo 如何真正设定从客户端关闭连接呢？需要吗？
+//			httpClient.getConnectionManager().releaseConnection();
 		}
 		return responseStr;
 	}
@@ -286,6 +315,7 @@ public class HttpClientUtil {
 					" charset=" + charset + " header=" + JSON.toJSONString(header), e);
 		} finally {
 			if (httpPost != null) {
+				//这个仅仅是重用，不是断开连接。
 				httpPost.releaseConnection();
 			}
 		}
@@ -301,6 +331,8 @@ public class HttpClientUtil {
 		connectionConfigBuilder.setCharset(Charset.forName(getCharset(charset)));
 		connectionConfigBuilder.build();
 		httpClientBuilder.setDefaultConnectionConfig(ConnectionConfig.custom().build());
+		BasicHttpClientConnectionManager connManager = new BasicHttpClientConnectionManager();
+		httpClientBuilder.setConnectionManager(connManager);
 		return httpClientBuilder.build();
 	}
 

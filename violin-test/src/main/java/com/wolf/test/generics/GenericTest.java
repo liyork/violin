@@ -1,6 +1,7 @@
 package com.wolf.test.generics;
 
 import com.wolf.test.entity.Person;
+import com.wolf.test.entity.Room;
 import com.wolf.test.generics.entity.Children;
 import com.wolf.test.generics.entity.SubChildren;
 import org.junit.Test;
@@ -14,6 +15,25 @@ import java.util.Arrays;
 
 /**
  * <p> Description:泛型测试
+ * 泛型参数是动态的???
+ * 泛型的本质是参数化类型，通常用于输入参数、存储类型不确定的场景。相比于直接使用 Object 的好处是：
+ * 编译期强类型检查、无需进行显式类型转换。
+ *
+ * Java 中的泛型是在编译器这个层次实现的，在生成的Java字节代码中是不包含泛型中的类型信息的
+ *
+ * 擦除规则：字节码中类型会被擦除到上限
+ * List<String>、List<T> 擦除后的类型为 List。
+ * List<String>[]、List<T>[] 擦除后的类型为 List[]。
+ * List<? extends E>、List<? super E> 擦除后的类型为 List<E>。
+ * List<T extends Serialzable & Cloneable> 擦除后类型为 List<Serializable>。
+ * <p>
+ * Java 为什么这么处理呢？有以下两个原因：
+ * 避免 JVM 的大换血。如果 JVM 将泛型类型延续到运行期，那么到运行期时 JVM 就需要进行大量的重构工作了，提高了运行期的效率。
+ * 版本兼容。 在编译期擦除可以更好地支持原生类型（Raw Type）
+ *
+ * signature 属性
+ * Java泛型的擦除并不是对所有使用泛型的地方都会擦除的，部分地方会保留泛型信息。
+ *
  * <p/>
  * Date: 2015/7/21
  * Time: 8:44
@@ -34,7 +54,10 @@ public class GenericTest {
         System.out.println(genericInterface.getRawType());
         ParameterizedType superclass = (ParameterizedType) customizeClass.getClass().getGenericSuperclass();
         Type[] actualTypeArguments1 = superclass.getActualTypeArguments();
-        System.out.println(actualTypeArguments1[0]);
+        for (Type type : actualTypeArguments1) {
+            //都是Class。应该是有哪个属性标识是接口还是类。还有其他类型吗？还有ParameterizedType类型的可能
+            System.out.println((Class)type);
+        }
         System.out.println(superclass.getOwnerType());
         System.out.println(superclass.getRawType());
 
@@ -51,12 +74,12 @@ public class GenericTest {
 
     @Test
     public void testBasicGenericClass() {
-        BasicGenericClass<Person> basicGenericClass = new BasicGenericClass<Person>();
+        BasicGenericClass<Person, Room> basicGenericClass = new BasicGenericClass<Person,Room>();
         Person person1 = new Person(111, "xx");
         basicGenericClass.setT(person1);
         Person x = basicGenericClass.getX();
         System.out.println(x.getId());
-        BasicGenericClass<Children> basicGenericClass1 = new BasicGenericClass<Children>();
+        BasicGenericClass<Children,Room> basicGenericClass1 = new BasicGenericClass<Children,Room>();
         //成功编译过后的class文件中是不包含任何泛型信息的。泛型信息不会进入到运行时阶段。
         System.out.println(basicGenericClass.getClass() == basicGenericClass1.getClass());
     }
@@ -156,5 +179,15 @@ public class GenericTest {
         }
 
     }
+
+    @Test
+    public void testTypeRef() throws NoSuchMethodException {
+        CustomizeClass<Person> customizeClass = new CustomizeClass<Person>();
+
+//        customizeClass.testxx();
+        customizeClass.testxx1();
+
+    }
+
 }
 

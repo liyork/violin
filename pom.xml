@@ -258,12 +258,12 @@
 
     </dependencies>
 
-    <!--不同侧面，通过命令：install -P test2 指定-->
+    <!--不同侧面，通过命令：install -P test2 指定。会自动糅合进相应的标签中-->
     <profiles>
         <profile>
-            <id>test1</id>
+            <id>test</id>
             <properties>
-                <envPrefix>test1</envPrefix>
+                <envPrefix>test</envPrefix>
                 <netty.version>3.2.3.Final</netty.version>
             </properties>
             <!-- 默认激活本环境 -->
@@ -290,10 +290,15 @@
 
     <build>
 
+        <!--
+        如果没有指定resources，目前认为自动会将classpath下的src/main/java下的.class文件和
+        src/main/resources下的.xml文件放到target里头的classes文件夹下的package下的文件夹里。
+        -->
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
+                <!--<targetPath></targetPath> 指定build资源到哪个目录，默认是base directory-->
+                <directory>src/main/resources</directory><!--build的过程用的文件，并且将其放到targetPath下，默认的directory是${basedir}/src/main/resources-->
+                <filtering>true</filtering><!--filtering:指定是否将filter文件(即build下的filters里定义的property文件)的变量值在这个resource文件有效-->
             </resource>
         </resources>
 
@@ -311,10 +316,10 @@
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <showWarnings>true</showWarnings>
                         <!--没有下面，报错误: 找不到符号 [ERROR] 符号:   类 ByteInputStream-->
-                        <compilerArguments>
-                            <verbose/>
-                            <bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>
-                        </compilerArguments>
+                        <!--<compilerArguments>-->
+                            <!--<verbose/>-->
+                            <!--<bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>-->
+                        <!--</compilerArguments>-->
                     </configuration>
                 </plugin>
 

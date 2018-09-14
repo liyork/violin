@@ -20,7 +20,7 @@
                   var a = {name:"a2",age:1};
                   $.ajax({
                       type: "post",
-                      contentType:"application/json",
+                      contentType:"application/json;charset=utf-8",
                       url: "helloController/testajaxRequestBody",
                       data: JSON.stringify(a),
                       dataType: "json",

@@ -29,4 +29,11 @@ public class B implements A {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void printStackTraceElement() {
+        StackTraceElement stack[] = Thread.currentThread().getStackTrace();
+        for (StackTraceElement stackTraceElement : stack) {
+            System.out.println(stackTraceElement.getClassName() + "," + stackTraceElement.getMethodName());
+        }
+    }
 }

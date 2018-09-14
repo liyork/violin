@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wolf.utils.JsonUtils;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -299,6 +301,63 @@ public class JsonTest {
         UserInfo userInfo = new UserInfo();
         String s = JSON.toJSONString(userInfo, SerializerFeature.WriteClassName);
         System.out.println(s);
+    }
+
+    @Test
+    public void testIgnore() throws JsonProcessingException {
+        String jsonString = "{\"age\":24,\"name\":\"zhangsan\"}";
+        UserInfo userInfo = JSON.parseObject(jsonString, UserInfo.class);
+
+        String s1 = JSON.toJSONString(userInfo);
+        System.out.println(s1);
+        String s2 = JSON.toJSONString(userInfo,true);
+        System.out.println(s2);
+
+        String s3 = JSON.toJSONString(userInfo);
+        System.out.println(s3);
+
+
+        String s4 = new ObjectMapper().writeValueAsString(userInfo);
+        System.out.println(s4);
+    }
+
+    @Test
+    public void testCustomConvertField() throws JsonProcessingException {
+        String jsonString = "{\"age\":24,\"age1\":88,\"name\":\"zhangsan\"}";
+        UserInfo userInfo = JSON.parseObject(jsonString, UserInfo.class);
+
+        //过滤属性
+        PropertyFilter filter=new PropertyFilter() {
+            @Override
+            public boolean apply(Object source, String name, Object value) {
+                if(name.equals("name")) {
+                    return false;
+                }
+                return true;
+            }
+        };
+
+        //过滤值
+        ValueFilter valueFilter = new ValueFilter() {
+            @Override
+            public Object process(Object object, String name, Object value) {
+                System.out.println(object);
+                if (name.equals("age1")) {
+                    return "99";
+                }
+                return value;
+            }
+        };
+
+        SerializeWriter sw = new SerializeWriter();
+        JSONSerializer serializer = new JSONSerializer(sw);
+        serializer.getPropertyFilters().add(filter);
+        serializer.getValueFilters().add(valueFilter);
+        serializer.write(userInfo);
+        //转换成json
+        String json=sw.toString();
+        System.out.println(json);
+
     }
 
 }

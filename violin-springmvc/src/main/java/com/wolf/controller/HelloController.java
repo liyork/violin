@@ -1,9 +1,11 @@
 package com.wolf.controller;
 
+import com.sun.tracing.dtrace.ModuleAttributes;
 import com.wolf.exceptionresolver.MyException;
 import com.wolf.exceptionresolver.SimpleException;
 import com.wolf.exceptionresolver.UpdateResponseStatusException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,13 @@ public class HelloController {
 		return new ModelAndView("/welcome", "result", hello);
 	}
 
+	//http://localhost:8080/springmvctest/helloController/testPath/yyyy
+	@RequestMapping(value = "/testPath/{qqqq}")
+	public String testPath(@PathVariable("qqqq") String qqqq) {
+		System.out.println("testPath,qqqq:"+qqqq);
+		return "hello";
+	}
+
 
 	/***
 	 * 用户登陆
@@ -74,6 +83,7 @@ public class HelloController {
 		}
 	}
 
+
 	/***
 	 * 验证参数是否为空
 	 * @param params
@@ -89,8 +99,9 @@ public class HelloController {
 	}
 
 
+	//@ModelAttribute主要接收来自表单或者url？para参数，将参数绑定到对象上。参数上不写则默认是ModelAttribute
 	@RequestMapping(value = "/testAutoBox")
-	public ModelAndView testAutoBox(Person person) {
+	public ModelAndView testAutoBox(@ModelAttribute Person person) {
 		System.out.println("name===>" + person.getName());
 		ModelAndView modelAndView = new ModelAndView("/autoBox");
 		modelAndView.addObject("name", person.getName());
@@ -105,6 +116,8 @@ public class HelloController {
 	}
 
 	//MappingJackson2HttpMessageConverter
+	// requestBody主要是将异步请求ajax，json字符串绑定到对象上。
+	// 只接受json字符串，所以记得使用JSON.stringif方法将json对象转成字符串，
 	@RequestMapping("/testajaxRequestBody")
 	public void testajaxRequestBody(@RequestBody Person person) {
 		System.out.println(person.getName() + "xxx");
@@ -132,6 +145,7 @@ public class HelloController {
 	}
 
 	//	http://localhost:8080/springmvc/helloController/testRequestParam?id1=1&name1=a
+	//@RequestParam用于请求别名
 	@RequestMapping(value = "/testRequestParam")
 	public String testRequestParam(@RequestParam(value = "id1") Integer id,
 								   @RequestParam(value = "name1") String name) {
@@ -140,8 +154,9 @@ public class HelloController {
 	}
 
 	//http://localhost:8080/springmvc/helloController/testJson
-	@ResponseBody
 	@RequestMapping("/testJson")
+	@ResponseBody //@responseBody注解的作用是将controller的方法返回的对象通过适当的转换器转换为指定的格式之后，
+    // 写入到response对象的body区，通常用来返回JSON数据或者是XML
 	public Person testJson() {
 		Person u = new Person();
 		u.setName("jayjay");
@@ -235,11 +250,10 @@ public class HelloController {
 		return "testModel";
 	}
 
-	//@RequestBody 会将请求中的参数注入到x中  abc=123&string1=999
+	//@RequestBody对于是form的提交而接受体是string，那么将参数用&拼接。
 	@RequestMapping(value = "/bodyAnnotation", method = RequestMethod.POST)
-	public
 	@ResponseBody
-	String readString(@RequestBody String x) {
+	public String readString(@RequestBody String x) {
 		System.out.println("Read string '" + x + "'");
 		return "Read string '" + x + "'";
 	}

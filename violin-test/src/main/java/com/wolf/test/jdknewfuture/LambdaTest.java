@@ -56,7 +56,7 @@ public class LambdaTest {
 
 //        testPreinstallFuncUse();
 
-//        testStreamRelativeFunc();
+        testStreamRelativeFunc();
 //        testMapApp();
 //        testMapReduceApp();
 //        testCombineApp();
@@ -65,7 +65,7 @@ public class LambdaTest {
 //        testLazy();
 
 //        statistics();
-        new LambdaTest().testDiffAnonymousClass();
+//        new LambdaTest().testDiffAnonymousClass();
 
     }
 
@@ -248,6 +248,7 @@ public class LambdaTest {
 
     //方法引用是Lambda表达式的一个简化写法。lambda表达式内的方法可以使用方法引用。所引用的方法，其实是那个Lambda表达式内方法体的实现
     //仅当该方法不修改lambda表达式提供的参数
+    //方法引用,lambda内似乎只有一个调用其他对象的方法，就可以这么干？
     private static void testMethodRef() {
 
         //静态方法引用
