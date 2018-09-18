@@ -1,5 +1,6 @@
 package com.wolf.utils.log;
 
+import com.wolf.utils.ArrayUtils;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +157,7 @@ public final class CustomLoggerFactory {
 			if (!match) {
 				Util.report("The requested version " + requested
 						+ " by your slf4j binding is not compatible with "
-						+ Arrays.asList(API_COMPATIBILITY_LIST).toString());
+						+ ArrayUtils.toList(API_COMPATIBILITY_LIST).toString());
 				Util.report("See " + VERSION_MISMATCH + " for further details.");
 			}
 		} catch (NoSuchFieldError nsfe) {

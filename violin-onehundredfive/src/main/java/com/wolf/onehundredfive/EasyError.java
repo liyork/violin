@@ -1,5 +1,6 @@
 package com.wolf.onehundredfive;
 
+import com.wolf.utils.ArrayUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.junit.Test;
 
@@ -503,7 +504,7 @@ public class EasyError {
 
 		Integer[] arr = {1, 3, 2, 4, 2, 3};
 
-		List<Integer> list = Arrays.asList(arr);
+		List<Integer> list = ArrayUtils.toList(arr);
 		TreeSet<Integer> ts = new TreeSet<Integer>(list);
 		//取倒数第二个
 		Integer lower = ts.lower(ts.last());
@@ -514,7 +515,7 @@ public class EasyError {
 
 		//小心原始类型数组转换成list
 		int[] arr1 = {1, 3, 2, 4, 2, 3};
-		List<int[]> ints = Arrays.asList(arr1);
+		List<int[]> ints = ArrayUtils.toList(arr1);
 	}
 
 	//列表的遍历

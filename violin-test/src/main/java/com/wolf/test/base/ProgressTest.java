@@ -1,5 +1,7 @@
 package com.wolf.test.base;
 
+import com.wolf.utils.ArrayUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -28,11 +30,10 @@ public class ProgressTest {
 
         String javaHomePath = System.getProperty("java.home").replace(File.separator + "jre", "");
 
-        List<String> args1 = new ArrayList<>(Arrays.asList(
-                javaHomePath + "/bin/java",
+        String[] strings = {javaHomePath + "/bin/java",
                 "-cp",
-                cp
-        ));
+                cp};
+        List<String> args1 = ArrayUtils.toList(strings);
 
 //        args1.add("UUIDTest");//写错时，控制台打印的信息是乱码，需要下面使用gbk，可能由于win的ProcessBuilder使用gbk导致
         args1.add("com.wolf.test.jvm.InternalParam");

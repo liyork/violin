@@ -1,5 +1,6 @@
 package com.wolf.test.spark;
 
+import com.wolf.utils.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -66,13 +67,15 @@ public class HelloSpark {
     }
 
     private static void saveAsTextFile(JavaSparkContext jsc) {
-        JavaRDD rdd4 = jsc.parallelize(Arrays.asList("a","b"));
+        String[] strings = {"a", "b"};
+        JavaRDD rdd4 = jsc.parallelize(ArrayUtils.toList(strings));
         rdd4.saveAsTextFile("D:\\qq.data");//part-00000中
     }
 
     private static void mapReduce(JavaSparkContext jsc) {
         //按照元素长度组成新rdd
-        JavaRDD rdd = jsc.parallelize(Arrays.asList("a", "bc", "def", "xet"));
+        String[] strings = {"a", "bc", "def", "xet"};
+        JavaRDD rdd = jsc.parallelize(ArrayUtils.toList(strings));
         JavaRDD result = rdd.map(
                 new Function<String, Integer>() {
                     @Override
@@ -105,7 +108,8 @@ public class HelloSpark {
     }
 
     private static void count(JavaSparkContext jsc) {
-        JavaRDD rdd4 = jsc.parallelize(Arrays.asList("a","b"));
+        String[] strings = {"a", "b"};
+        JavaRDD rdd4 = jsc.parallelize(ArrayUtils.toList(strings));
         System.out.println("count==>"+rdd4.count());
     }
 
@@ -172,26 +176,30 @@ public class HelloSpark {
     }
 
     private static void union(JavaSparkContext jsc) {
-        JavaRDD rdd4 = jsc.parallelize(Arrays.asList("a,b"));
-        JavaRDD rdd5 = jsc.parallelize(Arrays.asList("c,d"));
+        String s = "a,b";
+        JavaRDD rdd4 = jsc.parallelize(ArrayUtils.toList(s));
+        String s1 = "c,d";
+        JavaRDD rdd5 = jsc.parallelize(ArrayUtils.toList(s1));
         JavaRDD union = rdd4.union(rdd5);
         System.out.println("union==>" + union.collect());
     }
 
     private static void flatMap(JavaSparkContext jsc) {
-        JavaRDD rdd3 = jsc.parallelize(Arrays.asList("a,b", "c,d"));
+        String[] strings = {"a,b", "c,d"};
+        JavaRDD rdd3 = jsc.parallelize(ArrayUtils.toList(strings));
         JavaRDD result3 = rdd3.flatMap(
                 new FlatMapFunction<String, String>() {
                     @Override
                     public Iterator<String> call(String x) throws Exception {
-                        return Arrays.asList(x.split(",")).iterator();
+                        return ArrayUtils.toList(x.split(",")).iterator();
                     }
                 });
         System.out.println("flatMap==>" + StringUtils.join(result3.collect(), ","));
     }
 
     private static JavaRDD<Integer> getRDDFromList(JavaSparkContext jsc) {
-        List<Integer> data = Arrays.asList(1, 2, 3, 4, 5);
+        Integer[] integers = {1, 2, 3, 4, 5};
+        List<Integer> data = ArrayUtils.toList(integers);
         JavaRDD<Integer> distData = jsc.parallelize(data);//作用在现有的集合上。该集合会被拷贝到别的节点上，以供并行操作。
         System.out.println("collect==>" + distData.collect());
         return distData;

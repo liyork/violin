@@ -1,6 +1,7 @@
 package com.wolf.test.jvm;
 
 import clojure.lang.ArraySeq;
+import com.wolf.utils.ArrayUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,8 @@ public class SyntacticSugar {
     }
 
     private static void demo() {
-        List<Integer> list = Arrays.asList(1, 2, 3, 4);
+        Integer[] integers = {1, 2, 3, 4};
+        List<Integer> list = ArrayUtils.toList(integers);
 
         int sum = 0;
         for (Integer integer : list) {

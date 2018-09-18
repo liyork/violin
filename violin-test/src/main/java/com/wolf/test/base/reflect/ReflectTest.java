@@ -1,6 +1,7 @@
 package com.wolf.test.base.reflect;
 
 import com.wolf.test.base.InnerClassAndStaticTest;
+import com.wolf.utils.ArrayUtils;
 import com.wolf.utils.ReflectUtils;
 import org.junit.Test;
 
@@ -38,17 +39,17 @@ public class ReflectTest {
         System.out.println(clazz2 == clazz3);
 
         Class<?>[] classes = clazz1.getClasses();
-        System.out.println(Arrays.asList(classes));
+        System.out.println(ArrayUtils.toList(classes));
     }
 
     @Test
     public void testGetInterface() throws ClassNotFoundException {
         Class<C> clazz1 = C.class;
         Class<?>[] interfaces = clazz1.getInterfaces();//只能获取本类实现的接口
-        System.out.println(Arrays.asList(interfaces));
+        System.out.println(ArrayUtils.toList(interfaces));
 
         Class<?>[] interfaces1 = clazz1.getSuperclass().getInterfaces();
-        System.out.println(Arrays.asList(interfaces1));
+        System.out.println(ArrayUtils.toList(interfaces1));
     }
 
     @Test
@@ -331,7 +332,7 @@ public class ReflectTest {
         Field arr = cClass.getField("state");
         Class<C.State> type = (Class<C.State>) arr.getType();
         System.out.println(type.isEnum());
-        System.out.println(Arrays.asList(type.getEnumConstants()));//每个实例对象
+        System.out.println(ArrayUtils.toList(type.getEnumConstants()));//每个实例对象
 
         Class<C.State> stateClass = C.State.class;
         Field[] declaredFields = stateClass.getDeclaredFields();

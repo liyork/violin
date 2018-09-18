@@ -1,5 +1,6 @@
 package com.wolf.test.netty.inaction.spdy;
 
+import com.wolf.utils.ArrayUtils;
 import org.eclipse.jetty.npn.NextProtoNego;
 
 import java.util.Arrays;
@@ -16,7 +17,7 @@ import java.util.List;
 public class DefaultServerProvider implements NextProtoNego.ServerProvider {
     private static final List<String> PROTOCOLS =
             Collections.unmodifiableList(
-                    Arrays.asList("spdy/2", "spdy/3", "http/1.1"));
+                    ArrayUtils.toList(new String[]{"spdy/2", "spdy/3", "http/1.1"}));
     private String protocol;
 
     @Override

@@ -1,5 +1,6 @@
 package com.wolf.test.spring.customtag.filelist;
 
+import com.wolf.utils.ArrayUtils;
 import org.springframework.beans.factory.FactoryBean;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public class FileListFactoryBean implements FactoryBean<Collection<File>> {
             File dir = new File(directory);
             File[] dirFiles = dir.listFiles();
             if (dirFiles != null) {
-                files = Arrays.asList(dirFiles);
+                files = ArrayUtils.toList(dirFiles);
             }
         }
 

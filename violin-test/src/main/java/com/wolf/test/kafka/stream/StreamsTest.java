@@ -1,5 +1,6 @@
 package com.wolf.test.kafka.stream;
 
+import com.wolf.utils.ArrayUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -60,7 +61,7 @@ public class StreamsTest {
         KStream counts = source.flatMapValues(value -> {
             String[] split = pattern.split(value.toLowerCase());
             System.out.println("split:"+Arrays.toString(split));
-            return Arrays.asList(split);
+            return ArrayUtils.toList(split);
         })//应该是每次一行，拆分成一系列单词
                 .map(new KeyValueMapper<String, String, KeyValue<?, ?>>() {
                     @Override

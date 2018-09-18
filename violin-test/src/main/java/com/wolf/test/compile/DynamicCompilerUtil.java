@@ -1,5 +1,6 @@
 package com.wolf.test.compile;
 
+import com.wolf.utils.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.tools.*;
@@ -52,7 +53,7 @@ public class DynamicCompilerUtil {
             /**
              * 编译选项，在编译java文件时，编译程序会自动的去寻找java文件引用的其他的java源文件或者class。 -sourcepath选项就是定义java源文件的查找目录， -classpath选项就是定义class文件的查找目录。
              */
-            Iterable<String> options = Arrays.asList("-d", targetDir, "-sourcepath", sourceDir);
+            Iterable<String> options = ArrayUtils.toList("-d", targetDir, "-sourcepath", sourceDir);
             JavaCompiler.CompilationTask compilationTask = compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits);
             // 运行编译任务
             return compilationTask.call();

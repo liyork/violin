@@ -142,10 +142,10 @@ public class JsonTest {
     public void testJsonConfig() {
 
         SerializerFeature[] jsonConfig = {SerializerFeature.WriteMapNullValue,//字段为null按照下面3个指定的规则输出,默认：不输出null字段，空集合输出[]
-        SerializerFeature.WriteNullListAsEmpty,//空的list或者null，输出[],默认：空的list输出[],null就输出null
-        SerializerFeature.WriteNullNumberAsZero,//数值包装类如果为null,输出为0,默认：null
-        SerializerFeature.WriteNullStringAsEmpty,//字符类型如果为null,输出为”“,默认：null
-        SerializerFeature.WriteNullBooleanAsFalse//boolean为null时输出false
+                SerializerFeature.WriteNullListAsEmpty,//空的list或者null，输出[],默认：空的list输出[],null就输出null
+                SerializerFeature.WriteNullNumberAsZero,//数值包装类如果为null,输出为0,默认：null
+                SerializerFeature.WriteNullStringAsEmpty,//字符类型如果为null,输出为”“,默认：null
+                SerializerFeature.WriteNullBooleanAsFalse//boolean为null时输出false
         };
 
         ObjectForTest objectForTest = new ObjectForTest();
@@ -167,8 +167,8 @@ public class JsonTest {
         ObjectForTest objectForTest = new ObjectForTest();
 
         String s = JSON.toJSONStringZ(objectForTest, SerializeConfig.getGlobalInstance(), SerializerFeature.WriteMapNullValue, SerializerFeature.QuoteFieldNames, SerializerFeature.UseSingleQuotes,
-        //默认是带这个的，使用name(),如果去掉则使用ordinal()
-        SerializerFeature.WriteEnumUsingToString, SerializerFeature.SkipTransientField);
+                //默认是带这个的，使用name(),如果去掉则使用ordinal()
+                SerializerFeature.WriteEnumUsingToString, SerializerFeature.SkipTransientField);
         System.out.println(s);
     }
 
@@ -289,7 +289,7 @@ public class JsonTest {
     }
 
     @Test
-    public void testRecursion(){
+    public void testRecursion() {
         UserInfo userInfo = new UserInfo();
         userInfo.setAge(1111);
         JSON.toJSON(userInfo);
@@ -297,7 +297,7 @@ public class JsonTest {
 
     //在json前面加上@type
     @Test
-    public void testWriteClassName(){
+    public void testWriteClassName() {
         UserInfo userInfo = new UserInfo();
         String s = JSON.toJSONString(userInfo, SerializerFeature.WriteClassName);
         System.out.println(s);
@@ -310,7 +310,7 @@ public class JsonTest {
 
         String s1 = JSON.toJSONString(userInfo);
         System.out.println(s1);
-        String s2 = JSON.toJSONString(userInfo,true);
+        String s2 = JSON.toJSONString(userInfo, true);
         System.out.println(s2);
 
         String s3 = JSON.toJSONString(userInfo);
@@ -327,10 +327,10 @@ public class JsonTest {
         UserInfo userInfo = JSON.parseObject(jsonString, UserInfo.class);
 
         //过滤属性
-        PropertyFilter filter=new PropertyFilter() {
+        PropertyFilter filter = new PropertyFilter() {
             @Override
             public boolean apply(Object source, String name, Object value) {
-                if(name.equals("name")) {
+                if (name.equals("name")) {
                     return false;
                 }
                 return true;
@@ -355,9 +355,28 @@ public class JsonTest {
         serializer.getValueFilters().add(valueFilter);
         serializer.write(userInfo);
         //转换成json
-        String json=sw.toString();
+        String json = sw.toString();
         System.out.println(json);
 
+    }
+
+    //map中的array先转string和整体转map不一样
+    @Test
+    public void testMapAndString() {
+        String s = "abc";
+        Map<String, Object> map = new HashMap<>();
+        Integer[] integes = {1, 2};
+        map.put("a", 1);
+        map.put("ids", integes);
+
+        System.out.println(JSON.toJSONString(s));
+        System.out.println(JSON.toJSONString(map));
+
+        Map<String, Object> map2 = new HashMap<>();
+        Integer[] integes2 = {1, 2};
+        map2.put("a", 1);
+        map2.put("ids", JSON.toJSONString(integes2));
+        System.out.println(JSON.toJSONString(map2));
     }
 
 }

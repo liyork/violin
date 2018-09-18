@@ -1,5 +1,6 @@
 package com.wolf.test.jdknewfuture;
 
+import com.wolf.utils.ArrayUtils;
 import org.junit.Test;
 
 import java.util.*;
@@ -154,18 +155,18 @@ public class LambdaTest {
         Arrays.stream(array).forEach(System.out::println);
 
         //有返回值
-        Arrays.asList("a", "b", "d").sort((e1, e2) -> {
+        ArrayUtils.toList("a", "b", "d").sort((e1, e2) -> {
             return e1.compareTo(e2);
         });
 
-        Arrays.asList("a", "b", "d").sort((e1, e2) -> e1.compareTo(e2));
+        ArrayUtils.toList("a", "b", "d").sort((e1, e2) -> e1.compareTo(e2));
 
-        Arrays.asList("a", "b", "d").sort(String::compareTo);
+        ArrayUtils.toList("a", "b", "d").sort(String::compareTo);
     }
 
     private static void testEvolutionCompareSort() {
         //老式调用
-        List<String> names = Arrays.asList("peter", "anna", "mike", "xenia");
+        List<String> names = ArrayUtils.toList("peter", "anna", "mike", "xenia");
         names.sort(new Comparator<String>() {
             @Override
             public int compare(String a, String b) {
@@ -201,7 +202,7 @@ public class LambdaTest {
         converter.defaultMethod();
 
         //Iterable中的default的forEach
-        List<Integer> integers = Arrays.asList(1, 4, 5, 8, 10);
+        List<Integer> integers = ArrayUtils.toList(1, 4, 5, 8, 10);
         integers.forEach(System.out::println);
     }
 
@@ -299,7 +300,8 @@ public class LambdaTest {
 
     private static void statistics() {
         //获取数字的个数、最小值、最大值、总和以及平均值
-        List<String> primes = Arrays.asList("2", "3", "5", "7");
+        String[] strings = {"2", "3", "5", "7"};
+        List<String> primes = ArrayUtils.toList(strings);
         IntSummaryStatistics stats = primes.stream().mapToInt(Integer::parseInt).summaryStatistics();
         System.out.println("Highest prime number in List : " + stats.getMax());
         System.out.println("Lowest prime number in List : " + stats.getMin());
@@ -335,7 +337,7 @@ public class LambdaTest {
     //Stream既支持串行也支持并行
     //stream操作步骤：创建——>变化——>完结
     private static void testStreamRelativeFunc() {
-        List<String> languages = Arrays.asList("Java", "Scala", "C++", "Haskell", "Lisp", "Jsdf");
+        List<String> languages = ArrayUtils.toList("Java", "Scala", "C++", "Haskell", "Lisp", "Jsdf");
 
         System.out.println("Languages which starts with J :");
         filter(languages, (str) -> str.startsWith("J"));//根据filter方法的参数是Predicate推断test
@@ -417,19 +419,21 @@ public class LambdaTest {
     //map将集合类（例如列表）元素进行转换的
     private static void testMapApp() {
         // 不使用lambda表达式为每个订单加上12%的税
-        List<Integer> costBeforeTax = Arrays.asList(100, 200, 300, 400, 500);
+        Integer[] arr = {100, 200, 300, 400, 500};
+        ArrayList<Integer> costBeforeTax = ArrayUtils.toList(arr);
         for (Integer cost : costBeforeTax) {
             double price = cost + .12 * cost;
             System.out.println(price);
         }
 
         // 使用lambda表达式
-        List<Integer> costBeforeTax2 = Arrays.asList(100, 200, 300, 400, 500);
+        Integer[] arr1 = {100, 200, 300, 400, 500};
+        List<Integer> costBeforeTax2 = ArrayUtils.toList(arr1);
         //将其应用到流中的每一个元素
         costBeforeTax2.stream().map((cost) -> cost + .12 * cost).forEach(System.out::println);
 
         // 将字符串换成大写并用逗号链接起来
-        List<String> G7 = Arrays.asList("USA", "Japan", "France", "Germany", "Italy", "U.K.", "Canada");
+        List<String> G7 = ArrayUtils.toList("USA", "Japan", "France", "Germany", "Italy", "U.K.", "Canada");
         String G7Countries = G7.stream().map(x -> x.toUpperCase()).collect(Collectors.joining(", "));
         System.out.println(G7Countries);
     }
@@ -437,7 +441,7 @@ public class LambdaTest {
     private static void testMapReduceApp() {
         // 为每个订单加上12%的税
         // 老方法：
-        List<Integer> costBeforeTax = Arrays.asList(100, 200, 300, 400, 500);
+        List<Integer> costBeforeTax = ArrayUtils.toList(100, 200, 300, 400, 500);
         double total = 0;
         for (Integer cost : costBeforeTax) {
             double price = cost + .12 * cost;
@@ -446,7 +450,7 @@ public class LambdaTest {
         System.out.println("Total : " + total);
 
         // 新方法：
-        List<Integer> costBeforeTax2 = Arrays.asList(100, 200, 300, 400, 500);
+        List<Integer> costBeforeTax2 = ArrayUtils.toList(100, 200, 300, 400, 500);
         //sum + cost 与 sum = sum + cost一样
         double bill = costBeforeTax2.stream().map((cost) -> cost + .12 * cost).reduce((sum, cost) -> sum + cost).get();
         double bill2 = costBeforeTax2.stream().map((cost) -> cost + .12 * cost).reduce((sum, cost) -> {
@@ -459,7 +463,7 @@ public class LambdaTest {
 
     private static void testCombineApp() {
 
-        List<String> languages = Arrays.asList("Java", "Scala", "C++", "Haskell", "Lisp", "Jsdf");
+        List<String> languages = ArrayUtils.toList("Java", "Scala", "C++", "Haskell", "Lisp", "Jsdf");
 
         Predicate<String> startsWithJ = (n) -> n.startsWith("J");
         Predicate<String> fourLetterLong = (n) -> n.length() == 4;
@@ -469,7 +473,7 @@ public class LambdaTest {
     }
 
     private static void testDistinctApp() {
-        List<Integer> numbers = Arrays.asList(9, 10, 3, 4, 7, 3, 4);
+        List<Integer> numbers = ArrayUtils.toList(9, 10, 3, 4, 7, 3, 4);
         //collect输出
         List<Integer> distinct = numbers.stream().map(i -> i * i).distinct().collect(Collectors.toList());
         System.out.printf("Original List : %s,  Square Without duplicates : %s %n", numbers, distinct);
