@@ -21,8 +21,9 @@ public class CountDownLatchTest {
 
     public static void main(String[] args) throws InterruptedException {
 //        testBseFunction();
-        testBaseFunction2();
+//        testBaseFunction2();
 //        testAwaitTimeout();
+        testReduceOne();
     }
 
     private static void testBseFunction() throws InterruptedException {
@@ -101,6 +102,44 @@ public class CountDownLatchTest {
         });
 
         //等5秒,5秒内有调用countDownLatch.countDown()，则true，否则false
+        boolean await = countDownLatch.await(5l, TimeUnit.SECONDS);
+        if(await) {
+            System.out.println("xxx");
+        } else {
+            System.out.println("yyy");
+        }
+
+        executorService.shutdown();
+    }
+
+    private static void testReduceOne() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                countDownLatch.countDown();
+            }
+        });
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                countDownLatch.countDown();//多countDown一次没有关系。。tryReleaseShared返回false，但是countDown不关心结果
+            }
+        });
+
         boolean await = countDownLatch.await(5l, TimeUnit.SECONDS);
         if(await) {
             System.out.println("xxx");

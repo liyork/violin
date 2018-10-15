@@ -32,7 +32,6 @@ public class JsonTest {
 //		test3();
 //		test4();
 //		test5();
-//		testJsonArrayAndObject();
 //		testToBeanUsingInterfaceOrClass();
 
     }
@@ -82,6 +81,28 @@ public class JsonTest {
 
     }
 
+    @Test
+    public void testJsonObjectToBean() {
+
+        String json = "{\"name\":\"chenggang\",\"age\":24}";
+        JSONObject jsonObject = JsonUtils.toJSONObject(json);
+        Object a = jsonObject;
+        UserInfo userInfo = JSON.toJavaObject((JSONObject) a, UserInfo.class);
+        System.out.println("name:" + userInfo.getName() + ", age:" + userInfo.getAge());
+
+        JSONObject jsonObject1 = null;
+        JSONObject jsonObject11 = jsonObject1;
+        UserInfo userInfo1 = JSON.toJavaObject(jsonObject11, UserInfo.class);
+        System.out.println(userInfo1);
+
+        JSONObject jSONObject1 = new JSONObject();
+        System.out.println(jSONObject1.isEmpty());
+
+        UserInfo userInfo2 = JSON.toJavaObject(jSONObject1, UserInfo.class);
+        System.out.println(userInfo2);
+
+    }
+
     /**
      * 泛型的反序列化
      */
@@ -122,6 +143,12 @@ public class JsonTest {
         Object girlInfo = jsonObject.get("girlInfo");
         boolean b2 = girlInfo instanceof JSONObject;
         System.out.println("girlInfo instanceof JSONObject==>" + b2);
+
+        //测试为空会怎样
+        String jsonStr = "[]";
+        List<UserInfo> x = JSONArray.parseObject(jsonStr, new TypeReference<List<UserInfo>>() {
+        });
+        System.out.println(x.size());
     }
 
     //如果使用接口作为返回值类型，则JSON会使用动态代理，代理JSONObject，(JSONObject实现InvocationHandler)

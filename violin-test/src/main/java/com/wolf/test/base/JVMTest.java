@@ -1,6 +1,5 @@
 package com.wolf.test.base;
 
-import org.springframework.cglib.proxy.Enhancer;
 
 import java.util.HashMap;
 
