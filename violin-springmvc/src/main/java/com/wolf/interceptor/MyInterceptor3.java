@@ -19,19 +19,19 @@ public class MyInterceptor3 implements HandlerInterceptor {
 	public void afterCompletion(HttpServletRequest arg0,
 								HttpServletResponse arg1, Object arg2, Exception arg3)
 			throws Exception {
-		System.out.println("afterCompletion");
+		System.out.println("afterCompletion...");
 	}
 
 	@Override
 	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1,
 						   Object arg2, ModelAndView arg3) throws Exception {
-		System.out.println("postHandle");
+		System.out.println("postHandle...");
 	}
 
 	@Override
 	public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1,
 							 Object arg2) throws Exception {
-		System.out.println("preHandle");
+		System.out.println("preHandle...");
 		return true;
 	}
 

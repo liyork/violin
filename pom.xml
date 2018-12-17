@@ -261,7 +261,7 @@
     <!--不同侧面，通过命令：install -P test2 指定。会自动糅合进相应的标签中-->
     <profiles>
         <profile>
-            <id>test</id>
+            <id>dev</id>
             <properties>
                 <envPrefix>test</envPrefix>
                 <netty.version>3.2.3.Final</netty.version>

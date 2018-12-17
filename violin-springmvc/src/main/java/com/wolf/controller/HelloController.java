@@ -1,11 +1,10 @@
 package com.wolf.controller;
 
-import com.sun.tracing.dtrace.ModuleAttributes;
 import com.wolf.exceptionresolver.MyException;
 import com.wolf.exceptionresolver.SimpleException;
 import com.wolf.exceptionresolver.UpdateResponseStatusException;
+import com.wolf.handler.JSON;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -305,4 +304,13 @@ public class HelloController {
 		modelAndView.addObject("msg", "1111");
 		return modelAndView;
 	}
+
+	@RequestMapping(value = "/testReturnHandler")
+	@JSON(type = Person.class  , include="name")
+    public Person testReturnHandler() {
+        Person u = new Person();
+        u.setName("jayjay");
+        u.setAge(11);
+        return u;
+    }
 }

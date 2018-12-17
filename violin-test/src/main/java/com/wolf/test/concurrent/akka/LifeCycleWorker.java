@@ -1,7 +1,6 @@
 package com.wolf.test.concurrent.akka;
 
 import akka.actor.UntypedAbstractActor;
-import scala.collection.GenSeq;
 
 /**
  * Description:
