@@ -14,6 +14,16 @@
         </mvc:return-value-handlers>
     </mvc:annotation-driven>
 
+
+    <!--功能同上-->
+    <!--<bean id="handler" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">-->
+        <!--<property name="customReturnValueHandlers">-->
+            <!--<list>-->
+                <!--<bean class="com.wolf.handler.JsonReturnHandler"></bean>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
     <!--                              spring web mvc的配置ctx                                   -->
 
     <!-- scan the package and the sub package -->

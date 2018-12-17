@@ -28,6 +28,7 @@ public class JsonReturnHandler implements HandlerMethodReturnValueHandler {
                                   NativeWebRequest webRequest) throws Exception {
 
         // 设置这个就是最终的处理类了，处理完不再去找下一个类进行处理
+        //Whether the request has been handled fully within the handler
         mavContainer.setRequestHandled(true);
 
         // 获得注解并执行filter方法 最后返回
