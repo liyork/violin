@@ -32,7 +32,7 @@ public class RaftCore {
 
         for (; ; ) {
 
-            while (sleepNanos > 1000000000) {//1s误差
+            while (sleepNanos > 0) {
                 synchronized (waitObject) {
 
                     //应该醒来时间,用于再次醒来时重新计算还需睡眠时间
@@ -45,8 +45,14 @@ public class RaftCore {
                     waitObject.wait(sleepMill);
 
                     System.out.println("after systemnano:"+System.nanoTime());
-                    sleepNanos = Math.abs(System.nanoTime() - nextAwakeTime);
-                    System.out.println("sleepSecond:"+ TimeUnit.SECONDS.convert(sleepNanos, TimeUnit.NANOSECONDS));
+                    //被提前醒来，则重置时间。
+                    long diff = Math.abs(System.nanoTime() - nextAwakeTime);
+                    if (diff > 1000000000) {//1s误差
+                        System.out.println("diff:" + TimeUnit.SECONDS.convert(diff, TimeUnit.NANOSECONDS));
+                        sleepNanos = Constants.getElectionTime();
+                    } else {
+                        sleepNanos = 0;
+                    }
                 }
             }
 
@@ -72,9 +78,9 @@ public class RaftCore {
             localNode.setTerm(term);
             localNode.setVoteFor(node);
             //重置超时时间
-            long addElectionTime = Constants.getElectionTime();
-            nextAwakeTime = nextAwakeTime + addElectionTime;
-            System.out.println("reset nextAwakeTime:"+nextAwakeTime);
+            synchronized (waitObject) {
+                waitObject.notify();
+            }
         }
 
         return localNode;
