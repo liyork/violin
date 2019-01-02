@@ -14,15 +14,17 @@ public class Constants {
 
     private static Random random = new Random();
 
-    public static long getElectionTime() {
-        int duration = random.nextInt(15);
+    //随机时间10~15
+    public static long genElectionTime() {
+        int duration = random.nextInt(6);
+        duration += 10;
         long result = TimeUnit.SECONDS.toNanos(duration);
-        System.out.println("getElectionTime "+result);
+        System.out.println("genElectionTime "+result);
         return result;
     }
 
     public static long getNextElectionTime(long time) {
-        return time + getElectionTime();
+        return time + genElectionTime();
     }
 
     public static void main(String[] args) {

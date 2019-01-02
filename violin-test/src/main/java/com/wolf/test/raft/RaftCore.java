@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class RaftCore {
 
-    private static long lastSleepTime ;
-
     private static long nextAwakeTime;
 
     private static long sleepNanos;
@@ -28,7 +26,7 @@ public class RaftCore {
 
         cluster.setLocalNode(node);
 
-        sleepNanos = Constants.getElectionTime();//初始睡眠时间
+        sleepNanos = Constants.genElectionTime();//初始睡眠时间
 
         for (; ; ) {
 
@@ -36,21 +34,22 @@ public class RaftCore {
                 synchronized (waitObject) {
 
                     //应该醒来时间,用于再次醒来时重新计算还需睡眠时间
-                    System.out.println("before systemnano:"+System.nanoTime());
+                    System.out.println("before systemnano:" + System.nanoTime());
                     nextAwakeTime = System.nanoTime() + sleepNanos;
-                    System.out.println("nextAwakeTime:"+nextAwakeTime);
+                    System.out.println("nextAwakeTime:" + nextAwakeTime);
 
                     long sleepMill = TimeUnit.MILLISECONDS.convert(sleepNanos, TimeUnit.NANOSECONDS);
-                    System.out.println("wait sleepMill:"+TimeUnit.SECONDS.convert(sleepNanos, TimeUnit.NANOSECONDS));
+                    System.out.println("wait sleepMill:" + TimeUnit.SECONDS.convert(sleepNanos, TimeUnit.NANOSECONDS));
                     waitObject.wait(sleepMill);
 
-                    System.out.println("after systemnano:"+System.nanoTime());
-                    //被提前醒来，则重置时间。
+                    System.out.println("after systemnano:" + System.nanoTime());
+
                     long diff = Math.abs(System.nanoTime() - nextAwakeTime);
+                    //被提前醒来，则重置时间
                     if (diff > 1000000000) {//1s误差
                         System.out.println("diff:" + TimeUnit.SECONDS.convert(diff, TimeUnit.NANOSECONDS));
-                        sleepNanos = Constants.getElectionTime();
-                    } else {
+                        sleepNanos = Constants.genElectionTime();
+                    } else {//自然醒
                         sleepNanos = 0;
                     }
                 }
@@ -60,24 +59,27 @@ public class RaftCore {
             localNode.incrTerm();
             localNode.setVoteFor(localNode);
 
-            sleepNanos = Constants.getElectionTime();//新建超时时间
+            //新建超时时间,准备发起投票
+            sleepNanos = Constants.genElectionTime();
             //request vote to others
             System.out.println("vote for me!!");
             Thread.sleep(2000);
         }
     }
 
-    //接收请求心跳，比对term，返回
-    public static Node receiveVote(Node node) {
+    //接收请求心跳，比对term，响应
+    public static Node receiveVote(Node remoteNode) {
 
         Node localNode = cluster.getLocalNode();
 
-        int term = node.getTerm();
-        System.out.println("node term:"+term+",localTerm:"+localNode.getTerm());
+        int term = remoteNode.getTerm();
+        System.out.println("remote term:" + term + ",local term:" + localNode.getTerm());
         if (term > localNode.getTerm()) {
             localNode.setTerm(term);
-            localNode.setVoteFor(node);
-            //重置超时时间
+            localNode.setVoteFor(remoteNode);
+            //不论什么状态，接收到高投票则同意并降级(若非follower)
+            localNode.setState(Node.State.FOLLOW);
+            //唤醒，让其自己重新计数并等待
             synchronized (waitObject) {
                 waitObject.notify();
             }
