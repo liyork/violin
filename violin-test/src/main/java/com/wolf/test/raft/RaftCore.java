@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RaftCore {
 
-    private static long nextAwakeTime;
+    private static boolean isNeedRest;
 
     private static long sleepNanos;
 
@@ -35,8 +35,6 @@ public class RaftCore {
 
                     //应该醒来时间,用于再次醒来时重新计算还需睡眠时间
                     System.out.println("before systemnano:" + System.nanoTime());
-                    nextAwakeTime = System.nanoTime() + sleepNanos;
-                    System.out.println("nextAwakeTime:" + nextAwakeTime);
 
                     long sleepMill = TimeUnit.MILLISECONDS.convert(sleepNanos, TimeUnit.NANOSECONDS);
                     System.out.println("wait sleepMill:" + TimeUnit.SECONDS.convert(sleepNanos, TimeUnit.NANOSECONDS));
@@ -44,18 +42,18 @@ public class RaftCore {
 
                     System.out.println("after systemnano:" + System.nanoTime());
 
-                    long diff = Math.abs(System.nanoTime() - nextAwakeTime);
-                    //被提前醒来，则重置时间
-                    if (diff > 1000000000) {//1s误差
-                        System.out.println("diff:" + TimeUnit.SECONDS.convert(diff, TimeUnit.NANOSECONDS));
+                    if (isNeedRest) {
+                        System.out.println("isNeedRest:" + isNeedRest);
+                        isNeedRest = false;
                         sleepNanos = Constants.genElectionTime();
-                    } else {//自然醒
+                    } else {
                         sleepNanos = 0;
                     }
                 }
             }
 
             Node localNode = cluster.getLocalNode();
+            localNode.setState(Node.State.CANDIDATE);
             localNode.incrTerm();
             localNode.setVoteFor(localNode);
 
@@ -67,8 +65,8 @@ public class RaftCore {
         }
     }
 
-    //接收请求心跳，比对term，响应
-    public static Node receiveVote(Node remoteNode) {
+    //接收投票/心跳，比对term，响应
+    public static Node receiveRequest(Node remoteNode) {
 
         Node localNode = cluster.getLocalNode();
 
@@ -77,26 +75,15 @@ public class RaftCore {
         if (term > localNode.getTerm()) {
             localNode.setTerm(term);
             localNode.setVoteFor(remoteNode);
-            //不论什么状态，接收到高投票则同意并降级(若非follower)
+            //不论什么状态，接收到高投票则同意并降级(非follower)
             localNode.setState(Node.State.FOLLOW);
-            //唤醒，让其自己重新计数并等待
+            //唤醒，让自己重新计数并等待
             synchronized (waitObject) {
+                isNeedRest = true;
                 waitObject.notify();
             }
         }
 
         return localNode;
-    }
-
-    public static void receiveHeartbeat(Node node) {
-
-        Node localNode = cluster.getLocalNode();
-
-        int term = node.getTerm();
-        if (term > localNode.getTerm()) {
-            localNode.setTerm(term);
-            localNode.setVoteFor(node);
-        }
-
     }
 }

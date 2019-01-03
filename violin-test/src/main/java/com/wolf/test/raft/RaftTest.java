@@ -35,7 +35,7 @@ public class RaftTest {
 
                 Node node = new Node();
                 node.setTerm(term++);
-                RaftCore.receiveVote(node);
+                RaftCore.receiveRequest(node);
             }
         }).start();
 
