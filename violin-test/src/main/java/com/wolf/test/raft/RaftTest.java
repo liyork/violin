@@ -12,8 +12,12 @@ public class RaftTest {
     public static void main(String[] args) throws InterruptedException {
 
 //        testBaseInit();
-        testRest();
+//        testRest();
         //System.out.println(TimeUnit.SECONDS.toNanos(1));
+
+//        testFollowerHeartbeatInit();
+//        testLeaderHeartbeatInit();
+        testLeaderTurnFollowerHeartbeatInit();
     }
 
     private static void testBaseInit() throws InterruptedException {
@@ -40,5 +44,39 @@ public class RaftTest {
         }).start();
 
         RaftCore.init();
+    }
+
+    private static void testFollowerHeartbeatInit() throws InterruptedException {
+
+        Heartbeat.init();
+    }
+
+    private static void testLeaderHeartbeatInit() throws InterruptedException {
+
+        ClusterManger.init();
+        Node localNode = ClusterManger.getLocalNode();
+        localNode.setState(Node.State.LEADER);
+        Heartbeat.init();
+    }
+
+    private static void testLeaderTurnFollowerHeartbeatInit() throws InterruptedException {
+
+        ClusterManger.init();
+        Node localNode = ClusterManger.getLocalNode();
+
+        new Thread(()-> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("turn to follower");
+            Heartbeat.turnFollower();
+
+        }).start();
+
+        localNode.setState(Node.State.LEADER);
+        Heartbeat.init();
     }
 }

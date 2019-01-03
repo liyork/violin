@@ -17,16 +17,11 @@ public class RaftCore {
 
     private static Object waitObject = new Object();
 
-    private static Cluster cluster = new Cluster();
-
     public static void init() throws InterruptedException {
 
-        Node node = new Node();
-        node.setIp("127.0.0.1");
+        ClusterManger.init();
 
-        cluster.setLocalNode(node);
-
-        sleepNanos = Constants.genElectionTime();//初始睡眠时间
+        sleepNanos = TimeHelper.genElectionTime();//初始睡眠时间
 
         for (; ; ) {
 
@@ -45,30 +40,32 @@ public class RaftCore {
                     if (isNeedRest) {
                         System.out.println("isNeedRest:" + isNeedRest);
                         isNeedRest = false;
-                        sleepNanos = Constants.genElectionTime();
+                        sleepNanos = TimeHelper.genElectionTime();
                     } else {
                         sleepNanos = 0;
                     }
                 }
             }
 
-            Node localNode = cluster.getLocalNode();
+            Node localNode = ClusterManger.getLocalNode();
             localNode.setState(Node.State.CANDIDATE);
             localNode.incrTerm();
             localNode.setVoteFor(localNode);
 
             //新建超时时间,准备发起投票
-            sleepNanos = Constants.genElectionTime();
+            sleepNanos = TimeHelper.genElectionTime();
             //request vote to others
             System.out.println("vote for me!!");
-            Thread.sleep(2000);
+
+            Callback callback = new Callback();
+            HttpClient.get(callback);
         }
     }
 
     //接收投票/心跳，比对term，响应
     public static Node receiveRequest(Node remoteNode) {
 
-        Node localNode = cluster.getLocalNode();
+        Node localNode = ClusterManger.getLocalNode();
 
         int term = remoteNode.getTerm();
         System.out.println("remote term:" + term + ",local term:" + localNode.getTerm());

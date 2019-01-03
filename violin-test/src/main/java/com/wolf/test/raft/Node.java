@@ -14,6 +14,13 @@ public class Node {
     private int term;
     private State state = State.FOLLOW;
 
+    public Node() {
+    }
+
+    public Node(String ip) {
+        this.ip = ip;
+    }
+
     public void incrTerm() {
         term++;
     }

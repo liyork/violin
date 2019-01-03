@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @author 李超
  * @since 1.0.0
  */
-public class Constants {
+public class TimeHelper {
 
     private static Random random = new Random();
 
@@ -19,12 +19,17 @@ public class Constants {
         int duration = random.nextInt(6);
         duration += 10;
         long result = TimeUnit.SECONDS.toNanos(duration);
-        System.out.println("genElectionTime "+result);
+        System.out.println("genElectionTime:"+result);
         return result;
     }
 
-    public static long getNextElectionTime(long time) {
-        return time + genElectionTime();
+    //随机时间2~3
+    public static long genHeartbeatInterval() {
+        int duration = random.nextInt(2);
+        duration += 2;
+        long result = TimeUnit.SECONDS.toNanos(duration);
+        System.out.println("genHeartbeatInterval:"+result);
+        return result;
     }
 
     public static void main(String[] args) {
