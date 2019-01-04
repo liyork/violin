@@ -18,46 +18,57 @@ public class Heartbeat {
 
     private static AtomicBoolean initial = new AtomicBoolean();
 
-    public static void init() throws InterruptedException {
+    public static void init() {
 
         if (!initial.compareAndSet(false, true)) {
             System.out.println("heartbeat has already initial!");
             return;
         }
 
-        ClusterManger.init();
+        Container.getClusterManger().init();
 
-        heartbeatInterval = TimeHelper.genHeartbeatInterval();
+        new Thread(() -> {
 
-        long sleepMill = TimeUnit.MILLISECONDS.convert(heartbeatInterval, TimeUnit.NANOSECONDS);
+            heartbeatInterval = TimeHelper.genHeartbeatInterval();
 
-        for (; ; ) {
+            long sleepMill = TimeUnit.MILLISECONDS.convert(heartbeatInterval, TimeUnit.NANOSECONDS);
 
-            synchronized (waitObject) {
+            for (; ; ) {
 
-                System.out.println("Heartbeat before systemnano:" + System.nanoTime());
+                synchronized (waitObject) {
 
-                Node localNode = ClusterManger.getLocalNode();
-                if (localNode.getState() == Node.State.LEADER) {
+                    System.out.println("Heartbeat before systemnano:" + System.nanoTime());
 
-                    //send heatbeat
-                    System.out.println("send heartbeat leader,wait:" + sleepMill);
+                    Node localNode = Container.getClusterManger().getLocalNode();
+                    if (localNode.getState() == State.LEADER) {
 
-                    waitObject.wait(sleepMill);
+                        //send heatbeat
+                        System.out.println("send heartbeat leader,wait:" + sleepMill);
 
-                } else {
-                    System.out.println("send heartbeat follower,wait");
-                    waitObject.wait();//暂时常眠，
+                        try {
+                            waitObject.wait(sleepMill);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        System.out.println("send heartbeat follower,wait");
+                        try {
+                            waitObject.wait();//暂时常眠，
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-        }
+        }).start();
 
     }
 
     public static void turnFollower() {
 
-        Node localNode = ClusterManger.getLocalNode();
-        localNode.setState(Node.State.FOLLOW);
+        Node localNode = Container.getClusterManger().getLocalNode();
+        localNode.setState(State.FOLLOW);
 
         synchronized (waitObject) {
             waitObject.notify();

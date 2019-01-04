@@ -12,6 +12,7 @@ public class Node {
     private String ip;
     private Node voteFor;
     private int term;
+    private String url;
     private State state = State.FOLLOW;
 
     public Node() {
@@ -24,13 +25,6 @@ public class Node {
     public void incrTerm() {
         term++;
     }
-
-
-    enum State {
-
-        FOLLOW,CANDIDATE,LEADER
-    }
-
 
     public String getIp() {
         return ip;
@@ -54,6 +48,14 @@ public class Node {
 
     public void setTerm(int term) {
         this.term = term;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public State getState() {

@@ -13,13 +13,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ClusterManger {
 
-    private static List<String> otherNodes = new ArrayList<>();
+    private List<String> otherNodes = new ArrayList<>();
 
-    private static Node localNode ;
+    private Node localNode;
 
-    private static AtomicBoolean initial = new AtomicBoolean();
+    private AtomicBoolean initial = new AtomicBoolean();
 
-    public static void init() {
+    public void init() {
 
         if (!initial.compareAndSet(false, true)) {
             System.out.println("cluster manager has already initial!");
@@ -38,7 +38,7 @@ public class ClusterManger {
         this.otherNodes = otherNodes;
     }
 
-    public static Node getLocalNode() {
+    public Node getLocalNode() {
         return localNode;
     }
 
@@ -46,7 +46,7 @@ public class ClusterManger {
         this.localNode = localNode;
     }
 
-    public static int size() {
+    public int size() {
         //todo 待优化
         return otherNodes.size() + 1;
     }

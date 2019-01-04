@@ -1,5 +1,7 @@
 package com.wolf.test.raft;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * Description:
  * <br/> Created on 1/1/2019
@@ -17,11 +19,14 @@ public class RaftTest {
 
 //        testFollowerHeartbeatInit();
 //        testLeaderHeartbeatInit();
-        testLeaderTurnFollowerHeartbeatInit();
+//        testLeaderTurnFollowerHeartbeatInit();
+
+//        testResponseProcessOneVote();
+        testResponseProcessTwoVote();
     }
 
     private static void testBaseInit() throws InterruptedException {
-        RaftCore.init();
+        Vote.init();
     }
 
     //测试nextAwakeTime = nextAwakeTime + addElectionTime;
@@ -39,11 +44,11 @@ public class RaftTest {
 
                 Node node = new Node();
                 node.setTerm(term++);
-                RaftCore.receiveRequest(node);
+                Receive.receiveRequest(node);
             }
         }).start();
 
-        RaftCore.init();
+        Vote.init();
     }
 
     private static void testFollowerHeartbeatInit() throws InterruptedException {
@@ -53,16 +58,16 @@ public class RaftTest {
 
     private static void testLeaderHeartbeatInit() throws InterruptedException {
 
-        ClusterManger.init();
-        Node localNode = ClusterManger.getLocalNode();
-        localNode.setState(Node.State.LEADER);
+        Container.getClusterManger().init();
+        Node localNode = Container.getClusterManger().getLocalNode();
+        localNode.setState(State.LEADER);
         Heartbeat.init();
     }
 
     private static void testLeaderTurnFollowerHeartbeatInit() throws InterruptedException {
 
-        ClusterManger.init();
-        Node localNode = ClusterManger.getLocalNode();
+        Container.getClusterManger().init();
+        Node localNode = Container.getClusterManger().getLocalNode();
 
         new Thread(()-> {
             try {
@@ -76,7 +81,35 @@ public class RaftTest {
 
         }).start();
 
-        localNode.setState(Node.State.LEADER);
+        localNode.setState(State.LEADER);
         Heartbeat.init();
     }
+
+    private static void testResponseProcessOneVote() {
+
+        Container.getClusterManger().init();
+
+        ResponseProcess responseProcess = new ResponseProcess();
+
+        Node responseNode = new Node();
+        responseNode.setTerm(0);
+        responseNode.setVoteFor(new Node("127.0.0.1"));
+
+        responseProcess.invoke(JSON.toJSONString(responseNode));
+    }
+
+    private static void testResponseProcessTwoVote() {
+
+        Container.getClusterManger().init();
+
+        ResponseProcess responseProcess = new ResponseProcess();
+
+        Node responseNode = new Node();
+        responseNode.setTerm(0);
+        responseNode.setVoteFor(new Node("127.0.0.1"));
+
+        responseProcess.invoke(JSON.toJSONString(responseNode));
+        responseProcess.invoke(JSON.toJSONString(responseNode));
+    }
+
 }

@@ -7,7 +7,7 @@ package com.wolf.test.raft;
  * @author 李超
  * @since 1.0.0
  */
-public class HttpClient {
-    public static void get(Callback callback) {
-    }
+public enum State {
+
+    FOLLOW, CANDIDATE, LEADER,
 }
