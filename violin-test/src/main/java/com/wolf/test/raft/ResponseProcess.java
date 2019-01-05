@@ -3,7 +3,7 @@ package com.wolf.test.raft;
 import com.alibaba.fastjson.JSON;
 
 /**
- * Description:
+ * Description:处理每一次的发起投票后的响应
  * <br/> Created on 1/3/2019
  *
  * @author 李超
@@ -14,7 +14,8 @@ public class ResponseProcess {
     //从1开始，自己本身就是一票
     int voteCount = 1;
 
-    public void invoke(String response) {
+    //处理结果，若是同意则+1，否则不管
+    public void process(String response) {
 
         Node remoteNode = JSON.parseObject(response, Node.class);
         Node voteFor = remoteNode.getVoteFor();
@@ -45,8 +46,9 @@ public class ResponseProcess {
         }
     }
 
-    public void reset() {
-
-        voteCount = 1;
-    }
+    //担心两次请求互相影响，外面重新构造对象，而不是重用了
+//    public void reset() {
+//
+//        voteCount = 1;
+//    }
 }

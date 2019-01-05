@@ -20,9 +20,7 @@ public class Vote {
 
     private static long sleepNanos;
 
-    protected static Object waitObject = new Object();
-
-    private ResponseProcess responseProcess = new ResponseProcess();
+    protected static final Object waitObject = new Object();
 
     public static void init() {
 
@@ -71,23 +69,24 @@ public class Vote {
                 System.out.println("vote for me!!");
 
                 ResponseProcess responseProcess = new ResponseProcess();
-                Map<String, String> map = new HashMap();
+                Map<String, String> map = new HashMap<>();
                 map.put("voteNode", JSON.toJSONString(localNode));
 
-                responseProcess.reset();
-
                 for (String otherNodes : Container.getClusterManger().getOtherNodes()) {
-                    String response = null;
-                    try {
-                        response = HttpClientUtil.post(otherNodes, map);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        //投票/心跳，遇到网络问题则不管，等待下次被投票或者再发起
-                    }
 
-                    responseProcess.invoke(response);
+                    ExecutorManager.execute(() -> {
+
+                        String response = null;
+                        try {
+                            response = HttpClientUtil.post(otherNodes, map);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            //投票/心跳，遇到网络问题则不管，等待下次被投票或者再发起
+                        }
+
+                        responseProcess.process(response);
+                    });
                 }
-
             }
         }).start();
     }

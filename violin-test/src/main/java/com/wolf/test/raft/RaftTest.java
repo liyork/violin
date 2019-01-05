@@ -44,7 +44,7 @@ public class RaftTest {
 
                 Node node = new Node();
                 node.setTerm(term++);
-                Receive.receiveRequest(node);
+                RequestReceive.receive(node);
             }
         }).start();
 
@@ -95,7 +95,7 @@ public class RaftTest {
         responseNode.setTerm(0);
         responseNode.setVoteFor(new Node("127.0.0.1"));
 
-        responseProcess.invoke(JSON.toJSONString(responseNode));
+        responseProcess.process(JSON.toJSONString(responseNode));
     }
 
     private static void testResponseProcessTwoVote() {
@@ -108,8 +108,8 @@ public class RaftTest {
         responseNode.setTerm(0);
         responseNode.setVoteFor(new Node("127.0.0.1"));
 
-        responseProcess.invoke(JSON.toJSONString(responseNode));
-        responseProcess.invoke(JSON.toJSONString(responseNode));
+        responseProcess.process(JSON.toJSONString(responseNode));
+        responseProcess.process(JSON.toJSONString(responseNode));
     }
 
 }

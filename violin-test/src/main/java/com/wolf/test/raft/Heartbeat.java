@@ -14,7 +14,7 @@ public class Heartbeat {
 
     private static long heartbeatInterval;
 
-    private static Object waitObject = new Object();
+    private static final Object waitObject = new Object();
 
     private static AtomicBoolean initial = new AtomicBoolean();
 

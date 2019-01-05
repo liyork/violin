@@ -8,15 +8,18 @@ package com.wolf.test.raft;
  * @since 1.0.0
  */
 //todo controller
-public class Receive {
+public class RequestReceive {
 
     //接收投票/心跳，比对term，响应
-    public static Node receiveRequest(Node remoteNode) {
+    //todo 可能后期分开，因为两者返回数据不一样
+    public static Node receive(Node remoteNode) {
 
         Node localNode = Container.getClusterManger().getLocalNode();
 
         int term = remoteNode.getTerm();
         System.out.println("remote term:" + term + ",local term:" + localNode.getTerm());
+
+        //localNode的term会同leader一样，所以直接比对
         if (term > localNode.getTerm()) {
             localNode.setTerm(term);
             localNode.setVoteFor(remoteNode);
