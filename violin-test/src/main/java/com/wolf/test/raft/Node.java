@@ -9,7 +9,6 @@ package com.wolf.test.raft;
  */
 public class Node {
 
-    private String ip;
     private Node voteFor;
     private int term;
     private String url;
@@ -18,20 +17,12 @@ public class Node {
     public Node() {
     }
 
-    public Node(String ip) {
-        this.ip = ip;
+    public Node(String url) {
+        this.url = url;
     }
 
     public void incrTerm() {
         term++;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
     }
 
     public Node getVoteFor() {

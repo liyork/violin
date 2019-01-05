@@ -22,26 +22,26 @@ public class ResponseProcess {
 
         Node localNode = Container.getClusterManger().getLocalNode();
 
-        String localNodeIp = localNode.getIp();
+        String localNodeUrl = localNode.getUrl();
         int localNodeTerm = localNode.getTerm();
-        String voteForIp = voteFor.getIp();
+        String voteForUrl = voteFor.getUrl();
         int voteForTerm = voteFor.getTerm();
-        if (localNodeIp.equals(voteForIp) &&
+        if (localNodeUrl.equals(voteForUrl) &&
                 localNodeTerm == voteForTerm) {
-            System.out.println("receive vote for me,ip:" + localNodeIp + ",term:" + localNodeTerm +
+            System.out.println("receive vote for me,ip:" + localNodeUrl + ",term:" + localNodeTerm +
                     ",voteCount:" + voteCount);
 
             voteCount++;
 
             if (voteCount > (Container.getClusterManger().size() / 2 + 1)) {
 
-                System.out.println("receive major vote,i am leader:" + localNodeIp + ",term:" + localNodeTerm);
+                System.out.println("receive major vote,i am leader:" + localNodeUrl + ",term:" + localNodeTerm);
 
                 localNode.setState(State.LEADER);
                 Heartbeat.init();
             }
         } else {
-            System.out.println("not vote for me,localIp:" + localNodeIp + ",voteForIp:" + voteForIp +
+            System.out.println("not vote for me,localIp:" + localNodeUrl + ",voteForUrl:" + voteForUrl +
                     ",localTerm:" + localNodeTerm + ",voteForTerm:" + voteForTerm);
         }
     }

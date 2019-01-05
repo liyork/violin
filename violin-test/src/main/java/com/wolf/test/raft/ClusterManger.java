@@ -27,7 +27,9 @@ public class ClusterManger {
         }
 
         //todo 可能从某地获取
-        localNode = new Node("127.0.0.1");
+        localNode = new Node("127.0.0.1:8080");
+        otherNodes.add("127.0.0.1:8081");
+        otherNodes.add("127.0.0.1:8082");
     }
 
     public List<String> getOtherNodes() {
