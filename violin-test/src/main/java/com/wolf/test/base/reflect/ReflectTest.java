@@ -30,6 +30,8 @@ public class ReflectTest {
         new ReflectTest().testStackTraceElement();
     }
 
+    //C.getClass、new C().getClass，是C在jvm中实际运行的类,只有一份
+    //this.getClass()，是发起调用此方法的类(对实例方法，只有类的实例才能调用自己方法)在jvm中实际运行的类，只有一份
     @Test
     public void testGetClass() throws ClassNotFoundException {
         Class<C> clazz1 = C.class;
@@ -40,6 +42,15 @@ public class ReflectTest {
 
         Class<?>[] classes = clazz1.getClasses();
         System.out.println(ArrayUtils.toList(classes));
+
+        System.out.println("ReflectTest.testGetClass getclass:" + this.getClass());
+        new TestRunClass().test();
+    }
+
+    class TestRunClass{
+        private void test() {
+            System.out.println("ReflectTest.test getclass:" + this.getClass());
+        }
     }
 
     @Test

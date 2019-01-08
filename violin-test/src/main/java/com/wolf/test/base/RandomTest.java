@@ -34,10 +34,14 @@ public class RandomTest {
 	// 相同的种子会得到相同数列，而不是数值。所以如果在构造函数中指定种子，会得到同一个数列。
 	@Test
 	public void testRandomSeed() {
+
+		//自定义种子,生成的数，每次执行都是按照一样的序列：3,6,1,1,5,5,3...
 		Random random = new Random(20);
 		for (int i = 0; i < 20; i++) {
-			System.out.println(random.nextInt(10));//生成的数，每次都是按照一定规律3,6,1,1,5,5,3...
+			System.out.print(random.nextInt(10)+" ");
 		}
+
+		System.out.println();
 
 		Random random1 = new Random(20);
 		Random random2 = new Random(20);
@@ -47,5 +51,12 @@ public class RandomTest {
 			System.out.println("a2:" + random2.nextInt(10));
 			System.out.println();
 		}
+
+		//使用System.nanoTime生成种子，所以其他的random不会生成相同序列
+		Random random3 = new Random();
+		for (int i = 0; i < 20; i++) {
+			System.out.print(random3.nextInt(10)+" ");
+		}
 	}
+
 }
