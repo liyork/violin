@@ -100,6 +100,11 @@ public class ThreadTest {
         thread1.start();
     }
 
+
+    //join =================
+    //join内部也是调用了wait，监视的对象就是调用join的那个对象
+
+
     //等待一个线程执行完再执行。底层就是用了wait+notify(线程结束自动)机制
     public static void testJoin1() throws InterruptedException {
         System.out.println("before testJoin...");
@@ -201,6 +206,14 @@ public class ThreadTest {
     private static void testWaitShouldInSynScope() throws InterruptedException {
         monitor.wait();
     }
+
+
+    //wait============
+    //Causes the ```current thread``` to wait until either another thread invokes the notify() method or
+    // the notifyAll() method for this object, or a specified amount of time has elapsed.
+    //The current thread must own this object's monitor.
+    //即当前线程等待，然后进入的是调用的那个对象的等待池
+    //wait+notify机制本质上是一种基于条件队列的同步
 
     //锁自动释放
     public static void testWaitTime() {
