@@ -14,6 +14,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  * 6 共享空间满时生产者不能继续生产
  *
  * LinkedBlockingQueue内部有reentrantlock保证，即同一时间只能有一个生产者或消费者操作
+ *
+ * 消费线程中queue.take()返回之后，对应生产线程（生产该task的线程）中queue.put()及之前的行为，对于消费线程来说都是可见的。
+ * 借助queue.put()与queue.take()的偏序关系
  * <p/>
  * Date: 2016/6/12
  * Time: 12:58

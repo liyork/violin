@@ -2,7 +2,7 @@ package com.wolf.test.concurrent.productandconsumer.onetoone.usesynchronized.mul
 
 /**
  * <p> Description:
- * 假死的原因是由于使用了notify，那么如果总是唤醒的同类，就有可能大家都在等待。
+ * 假死的原因是由于使用了notify——产生了信号丢失，那么如果总是唤醒的同类，就有可能大家都在等待。
  * <p/>
  * Date: 2016/6/12
  * Time: 14:33

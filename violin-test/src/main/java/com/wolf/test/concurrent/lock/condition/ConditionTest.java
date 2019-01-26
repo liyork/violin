@@ -45,8 +45,9 @@ public class ConditionTest {
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
+
+                reentrantLock.lock();
                 try {
-                    reentrantLock.lock();
                     System.out.println(Thread.currentThread().getName() + " condition1 begin await...");
                     try {
                         condition1.await();
@@ -66,8 +67,9 @@ public class ConditionTest {
         Thread thread2 = new Thread(new Runnable() {
             @Override
             public void run() {
+
+                reentrantLock.lock();
                 try {
-                    reentrantLock.lock();
                     System.out.println(Thread.currentThread().getName() + " condition2 begin await...");
                     try {
                         condition2.await();
@@ -125,9 +127,8 @@ public class ConditionTest {
 
         void printLess3() {
             System.out.println("3333");
+            reentrantLock.lock();
             try {
-                reentrantLock.lock();
-
                 System.out.println("4444");
 
                 for (int i = 1; i <= 3; i++) {
@@ -169,8 +170,8 @@ public class ConditionTest {
         }
 
         void printLess9() {
+            reentrantLock.lock();
             try {
-                reentrantLock.lock();
                 System.out.println("111");
 
                 try {

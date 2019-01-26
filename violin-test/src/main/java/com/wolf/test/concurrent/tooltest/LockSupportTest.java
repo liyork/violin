@@ -15,8 +15,9 @@ public class LockSupportTest {
     public static void main(String[] args) throws InterruptedException {
 
 //        testBase();
-        testParkTime();
+//        testParkTime();
 //        testUnparkBeforePark();
+        testNotifyBeforeWait();
 //        testInterrupt();
     }
 
@@ -48,12 +49,12 @@ public class LockSupportTest {
     }
 
     private static void testParkTime() {
-        System.out.println("in testParkTime,"+ System.currentTimeMillis());
+        System.out.println("in testParkTime," + System.currentTimeMillis());
         LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(5));
-        System.out.println("aware testParkTime,"+ System.currentTimeMillis());
+        System.out.println("aware testParkTime," + System.currentTimeMillis());
     }
 
-    //基于信号量控制，即使先执行unpark，那么当执行park时由于了信号量则不会阻塞
+    //UNSAFE.unpark基于信号量控制，即使先执行unpark，那么当执行park时由于了信号量被设置了，所以不会阻塞
     private static void testUnparkBeforePark() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -70,6 +71,36 @@ public class LockSupportTest {
         thread.start();
 
         LockSupport.unpark(thread);
+        System.out.println(Thread.currentThread().getName() + " is running...");
+    }
+
+    //与testUnparkBeforePark相反。。先notifyall之后再wait就感知不到了。。会一直等待。
+    private static void testNotifyBeforeWait() {
+        Object lock = new Object();
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread().getName() + " is running...");
+                synchronized (lock) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        thread.start();
+
+        synchronized (lock) {
+            lock.notifyAll();
+        }
         System.out.println(Thread.currentThread().getName() + " is running...");
     }
 

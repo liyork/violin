@@ -57,8 +57,9 @@ public class ThreadTest {
 //        testStringPool();
 
 //        testGoodSuspendResume();
-        testExceptionNotAffectMainThread();
+//        testExceptionNotAffectMainThread();
 
+        testWaitNotify1();
     }
 
     /**
@@ -102,14 +103,15 @@ public class ThreadTest {
 
 
     //join =================
-    //join内部也是调用了wait，监视的对象就是调用join的那个对象
+    //join内部也是调用了wait，监视的对象就是调用join的那个对象，而等待的是当前线程
+    //监视对象内部有等待队列，谁监视，若没有获取锁，则进入等待队列
 
 
     //等待一个线程执行完再执行。底层就是用了wait+notify(线程结束自动)机制
     public static void testJoin1() throws InterruptedException {
         System.out.println("before testJoin...");
 
-        final Thread thread = new Thread(new Runnable() {
+        final Thread subThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 100; i++) {
@@ -118,10 +120,12 @@ public class ThreadTest {
             }
         }, "threadname");
 
-        thread.start();
+        subThread.start();
         //优先执行thread，后才执行main,可以注掉这行试试
-        thread.join();//主线程调用thread对象的wait进行等待,是个同步方法。当线程执行完后自动调用notifyall
-//        thread.join(10000);带超时时间
+        subThread.join();//主线程调用thread对象的wait进入thread对象的等待队列,是个同步方法。
+        // 当subThread线程执行完后(或非正常死亡时抛出InterruptedException)自动调用notifyall，
+        // 所以join中判断thrad是否存活，然后跳出来。
+//        subThread.join(10000);带超时时间
 
         System.out.println("main stop ");
 
@@ -214,6 +218,7 @@ public class ThreadTest {
     //The current thread must own this object's monitor.
     //即当前线程等待，然后进入的是调用的那个对象的等待池
     //wait+notify机制本质上是一种基于条件队列的同步
+    //wait的等待一般是有条件的，而这个条件也一般是用while，防治因为意外被唤醒但是条件却为满足而执行的错误操作。
 
     //锁自动释放
     public static void testWaitTime() {
@@ -300,6 +305,7 @@ public class ThreadTest {
 
     //在适当时机让出当前cpu，给与其他线程执行机会
     private static void testYield() {
+
         final ExecutorService exec = Executors.newFixedThreadPool(2);
 
         final Runnable add = new Runnable() {
@@ -662,13 +668,13 @@ public class ThreadTest {
         @Override
         public void run() {
             while (true) {
-                System.out.println(Thread.currentThread().getName()+" is running...");
+                System.out.println(Thread.currentThread().getName() + " is running...");
 
                 BaseUtils.simulateLongTimeOperation(800000);
-                System.out.println(Thread.currentThread().getName()+" after simulateLongTimeOperation...");
+                System.out.println(Thread.currentThread().getName() + " after simulateLongTimeOperation...");
 
                 while (isNeedSuspend) {
-                    System.out.println(Thread.currentThread().getName()+" run isNeedSuspend..."+System.currentTimeMillis());
+                    System.out.println(Thread.currentThread().getName() + " run isNeedSuspend..." + System.currentTimeMillis());
                     synchronized (this) {
                         try {
                             this.wait();
@@ -678,7 +684,7 @@ public class ThreadTest {
                     }
                 }
 
-                System.out.println(Thread.currentThread().getName()+" after while isNeedSuspend..."+System.currentTimeMillis());
+                System.out.println(Thread.currentThread().getName() + " after while isNeedSuspend..." + System.currentTimeMillis());
 
             }
         }
@@ -743,8 +749,40 @@ public class ThreadTest {
             e.printStackTrace();
         }
 
-        System.out.println(Thread.currentThread().getName()+"_11111");
+        System.out.println(Thread.currentThread().getName() + "_11111");
     }
 
+    private static void testWaitNotify1() throws InterruptedException {
 
+        Object lock = new Object();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                synchronized (lock) {
+                    try {
+                        lock.wait();//醒来第一件任务是获取锁，若未获得则一直等待。
+
+                        System.out.println("thread 1111");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println("thread 22222");
+            }
+        }).start();
+
+        Thread.sleep(2000);
+
+        System.out.println("main...before lock");
+        synchronized (lock) {
+            System.out.println("main...notify");
+            lock.notify();
+
+            System.out.println("main...sleep before,"+System.currentTimeMillis());
+            Thread.sleep(7000);
+            System.out.println("main...sleep after,"+System.currentTimeMillis());
+        }
+    }
 }

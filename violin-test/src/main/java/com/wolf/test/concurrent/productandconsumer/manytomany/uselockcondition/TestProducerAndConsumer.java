@@ -10,6 +10,8 @@ package com.wolf.test.concurrent.productandconsumer.manytomany.uselockcondition;
  * 等待的和释放的要是一个对象,不然不同步
  *
  * 相比较一把锁，有进步，但是生产者之间还是要顺序执行，消费者之间也要顺序执行，是否可以使用cas进行非阻塞操作同一个集合？
+ *
+ * 相对于原生synchronized能尝试获取锁，有超时，有中断
  * <p/>
  * Date: 2016/6/12
  * Time: 15:12

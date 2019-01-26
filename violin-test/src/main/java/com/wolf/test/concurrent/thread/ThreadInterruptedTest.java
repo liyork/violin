@@ -5,11 +5,25 @@ import com.wolf.utils.BaseUtils;
 /**
  * <p> Description: 测试中断
  * interrupt()不会中断一个正在运行的线程,只是改变了线程的运行状态
- * 这一方法实际上完成的是：在线程受到阻塞时抛出一个中断信号，这样线程就得以退出阻塞的状态。更确切的说，
- * 如果线程被Object.wait, Thread.join和Thread.sleep三种方法之一阻塞，
- * 那么，它将接收到一个中断异常（InterruptedException），从而提早地终结被阻塞状态。
- * 一个抛出了InterruptedException的线程的状态马上就会被置为非中断状态
- * 如果线程没有被阻塞，这时调用interrupt()将不起作用
+ * 如果线程没有被阻塞，这时调用interrupt()将不起作用，将会对*下次阻塞*有影响！
+ *
+ * 如果线程处于以下三种情况，那么当线程被中断的时候，能自动感知到：
+ * 1. 来自 Object 类的 wait()、wait(long)、wait(long, int)，
+ * 2. 来自 Thread 类的 join()、join(long)、join(long, int)、sleep(long)、sleep(long, int)
+ * 这几个方法的相同之处是，方法上都有: throws InterruptedException
+ * 如果线程阻塞在这些方法上，这个时候如果其他线程对这个线程进行了中断，那么这个线程会从这些方法中立即返回，抛出 InterruptedException 异常，同时重置中断状态为 false。
+ * 3.  实现了 InterruptibleChannel 接口的类中的一些 I/O 阻塞操作，如 DatagramChannel 中的 connect 方法和 receive 方法等
+ *   如果线程阻塞在这里，中断线程会导致这些方法抛出 ClosedByInterruptException 并重置中断状态。
+ * 4. Selector 中的 select 方法，这个有机会我们在讲 NIO 的时候说
+ * 以上：一个抛出了InterruptedException的线程的状态马上就会被置为非中断状态
+ * 5. 如果线程阻塞在 LockSupport.park(Object obj) 方法，也叫挂起，这个时候的中断也会导致线程唤醒，但是唤醒后不会重置中断状态，
+ * 所以唤醒后去检测中断状态将是 true。
+ *
+ * 当我们看到方法上带有 throws InterruptedException 时，我们就要知道，这个方法应该是阻塞方法
+ * 在并发包中，有非常多的这种处理中断的例子，提供两个方法，分别为响应中断和不响应中断，对于不响应中断的方法，记录中断而不是丢失这个信息
+ *
+ * 一旦中断，方法立即返回
+ *
  * <p/>
  * 内部原理:
  * 线程A在执行sleep,wait,join时,线程B调用A的interrupt方法,
@@ -25,29 +39,41 @@ import com.wolf.utils.BaseUtils;
 public class ThreadInterruptedTest {
 
     public static void main(String[] args) {
-//        testBeforeStartInterrupt();
+        testInterruptBeforeStartMethod();
 //        testInterruptSleep();
 //        testInterruptWait();
 //        testInterruptNoBlock();
 //        testInterrupted();
 //        testInterruptState();
 //        testIOReadInterrupt();
-        testInterruptJoin();
+//        testInterruptJoin();
 //        testInterruptDiff();
     }
 
-    private static void testBeforeStartInterrupt() {
+    private static void testInterruptBeforeStartMethod() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 System.out.println("111");
+
+                for (int i = 0; i < 1000; i++) {
+                    System.out.println("----");
+                }
+
+                System.out.println("curr.isInterrupted()-->"+Thread.currentThread().isInterrupted());
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        //thread.interrupt();//不起任何作用,thread.isInterrupted()返回false
+        //thread.interrupt();//不起任何作用,thread.isInterrupted()返回false，因为还没启动呢。
         thread.start();
-        thread.interrupt();
-        System.out.println(thread.isInterrupted());
+        thread.interrupt();//仅仅设定状态，thread没有响应阻塞的方法进行中所以没有反应
+        System.out.println("thread.isInterrupted()-->"+thread.isInterrupted());
     }
 
     private static void testInterruptSleep() {

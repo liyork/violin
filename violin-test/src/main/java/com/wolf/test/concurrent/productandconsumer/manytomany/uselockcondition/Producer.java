@@ -29,7 +29,11 @@ public class Producer extends Thread {
     }
 
     public void produce(int num) {
-        storage.produce(num);
+        try {
+            storage.produce(num);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getNum() {

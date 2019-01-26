@@ -33,9 +33,10 @@ public class Storage {
     private final Condition consumerCondition = lock.newCondition();
 
     // 生产num个产品
-    public void produce(int num) {
+    public void produce(int num) throws InterruptedException {
+
         // 获得锁
-        lock.lock();
+        lock.lockInterruptibly();
         try {
             try {
                 Thread.sleep(1000);
@@ -68,7 +69,9 @@ public class Storage {
 
             // 生产条件满足情况下，生产num个产品
             for (int i = 1; i <= num; ++i) {
-                list.add(new Object());
+                Object e = new Object();
+                list.add(e);
+                System.out.println("producer " + e);
             }
 
             System.out.println(Thread.currentThread().getName() + "【已经生产产品数】:" + num + "/t【现仓储量为】:" + list.size());
@@ -83,10 +86,10 @@ public class Storage {
     }
 
     // 消费num个产品
-    public void consume(int num) {
+    public void consume(int num) throws InterruptedException {
 
         // 获得锁
-        lock.lock();
+        lock.lockInterruptibly();
         try {
             try {
                 Thread.sleep(1000);
@@ -109,7 +112,8 @@ public class Storage {
 
             // 消费条件满足情况下，消费num个产品
             for (int i = 1; i <= num; ++i) {
-                list.remove();
+                Object remove = list.remove();
+                System.out.println("consumer :" + remove);
             }
 
             System.out.println(Thread.currentThread().getName() + "【已经消费产品数】:" + num + "/t【现仓储量为】:" + list.size());

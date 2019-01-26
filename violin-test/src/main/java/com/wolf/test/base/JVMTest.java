@@ -14,8 +14,6 @@ public class JVMTest {
 
     public static void main(String[] args) {
         //testHook();
-        testIntern();
-
     }
 
     private static void testHook() {
@@ -43,15 +41,4 @@ public class JVMTest {
 
         System.exit(0);//如果使用intellij的stop按钮，不会触发钩子
     }
-
-    //1.7 intern只会将堆中存在的对象引用拷贝一份到方法区中，"计算机软件"构造stringbuilder后和方法区中是一个引用，
-    // 而"java"早就存在方法区中，所以和新的stringbuilder不是一个引用
-    public static void testIntern(){
-        String str1 = new StringBuilder("计算机").append("软件").toString();
-        System.out.println(str1.intern() == str1);
-
-        String str2 = new StringBuilder("ja").append("va").toString();
-        System.out.println(str2.intern() == str2);
-    }
-
 }

@@ -113,6 +113,7 @@ public class ReentrantLockTest {
                 //一直试图获取lock，期间可被打断
                 reentrantLock.lockInterruptibly();
             } else {
+                //一直阻塞，直到能上锁
                 reentrantLock.lock();
             }
 

@@ -9,6 +9,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * ConditionBoundedBuffer
+ *
+ * 同一时间只有一个线程执行，
+ * put操作直到满才会等待,直到isFull被唤醒，每次放入都唤醒一个isEmpty
+ * take操作直到空才会等待,直到isEmpty被唤醒，每次拿取都唤醒一个isFull
+ * 不会产生信号丢失，因为put都等在了isFull,而take都等在了isEmpty，put每次唤醒一个isEmpty，take每次唤醒一个sFull
+ * 条件队列谓词单一，所以唤醒一个就用了不会丢失，而这个还能唤醒反方向的。
+ *
  * <p/>
  * Bounded buffer using explicit condition variables
  * 将多个谓词放在多个条件队列中

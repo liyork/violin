@@ -29,7 +29,11 @@ public class Consumer extends Thread {
     }
 
     public void consume(int num) {
-        storage.consume(num);
+        try {
+            storage.consume(num);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getNum() {

@@ -1284,8 +1284,9 @@ class A{
 //		b.test2();
 //	}
 	public void test1(){
+
+		lock.lock();
 		try {
-			lock.lock();
 			System.out.println("a.test1");
 			try {
 				Thread.sleep(3000);
@@ -1335,8 +1336,9 @@ class B{
 //	}
 
 	public void test1(){
+
+		lock.lock();
 		try {
-			lock.lock();
 			System.out.println("b.test1");
 			try {
 				Thread.sleep(3000);
@@ -1354,8 +1356,9 @@ class B{
 //	}
 
 	public void test2(){
+
+		lock.lock();
 		try {
-			lock.lock();
 			System.out.println("b.test2");
 		} finally {
 			lock.unlock();
