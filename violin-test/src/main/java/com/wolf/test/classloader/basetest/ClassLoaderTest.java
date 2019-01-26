@@ -1,7 +1,5 @@
 package com.wolf.test.classloader.basetest;
 
-import com.wolf.test.jvm.loadclass.HotSwapURLClassLoader;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
