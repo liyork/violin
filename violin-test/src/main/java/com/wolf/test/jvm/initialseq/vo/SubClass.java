@@ -1,4 +1,4 @@
-package com.wolf.test.base.initialseq;
+package com.wolf.test.jvm.initialseq.vo;
 
 /**
  * Description:
@@ -7,11 +7,13 @@ package com.wolf.test.base.initialseq;
  * @author 李超
  * @since 1.0.0
  */
-public class SubClass extends SuperClass{
+public class SubClass extends SuperClass {
 
     public static int b = 4;
 
     static {
+
+        System.out.println("a:" + a);//父类优先初始化，这里就能用了
         System.out.println("SubClass static ");
     }
 }

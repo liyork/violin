@@ -1,7 +1,5 @@
 package com.wolf.test.classloader.hotswap;
 
-import com.wolf.utils.PathGettingUtils;
-
 import java.io.FileInputStream;
 import java.net.URL;
 
@@ -15,7 +13,8 @@ import java.net.URL;
 public class TestHotSwap {
 
     public static void main(String[] args) throws Exception {
-        URL resourceFromClassPath = PathGettingUtils.getResourceFromClassPath(TestHotSwap.class, "com/wolf/test/classloader/hotswap/TargetServerClass.class");
+
+        URL resourceFromClassPath = TestHotSwap.class.getClassLoader().getResource("com/wolf/test/classloader/hotswap/TargetServerClass.class");
         FileInputStream fileInputStream = new FileInputStream(resourceFromClassPath.getPath());
         byte[] b = new byte[fileInputStream.available()];
         fileInputStream.read(b);

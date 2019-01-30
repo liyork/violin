@@ -1,4 +1,4 @@
-package com.wolf.test.base.initialseq;
+package com.wolf.test.jvm.initialseq.vo;
 
 /**
  * Description:
@@ -8,8 +8,14 @@ package com.wolf.test.base.initialseq;
  * @since 1.0.0
  */
 public class Parent {
-    private int v1 = 5;
+
+    protected int v1 = 5;
     private int v2 = getV1();
+
+    {
+        System.out.println("Parent instance");
+    }
+
     private static int qq = getV3();
 
     static {
@@ -17,7 +23,7 @@ public class Parent {
     }
 
     public Parent() throws Exception {
-        System.out.println("Parent");
+        System.out.println("Parent,v2:"+v2);
     }
 
     public int getV1() {
@@ -26,7 +32,6 @@ public class Parent {
     }
 
     public int getV2() {
-        System.out.println("getV2");
         return v2;
     }
 

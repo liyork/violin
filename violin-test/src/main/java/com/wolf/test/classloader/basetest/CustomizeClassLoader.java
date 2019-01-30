@@ -48,24 +48,45 @@ public class CustomizeClassLoader extends ClassLoader {
 
     //如果没有通过构造函数指定parent是null,那么系统(app)加载器为父类,加载类走委派模式,如果为null则父类是bootstrap
     //有无父类加载器影响loadClass查找顺序,有：子类可以找到父类加载的类。
-    public CustomizeClassLoader(String baseDir) {
-        //设定ext类加载器为父类
-        super(ClassLoader.getSystemClassLoader().getParent());
+    public CustomizeClassLoader(String baseDir,ClassLoader parent) {
+        //演示设定ext类加载器为父类，即向上寻找的就是ext了，app里面的不找了。
+//        super(ClassLoader.getSystemClassLoader().getParent());
         //不指定父类
 //		super(null);
+
+        super(parent);
 
         this.baseDir = baseDir;
     }
 
-    //自定义classloader建议重写findClass方法
+    //自定义classloader需要重写findClass方法
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
 
         //接口由系统类加载器加载
-        String substring = name.substring(name.lastIndexOf("") + 1);
-        if (substring.equals("NonClassPathClassInterface") || name.startsWith("java") || substring.equals("Key")) {
-            return ClassLoader.getSystemClassLoader().loadClass(name);
+//        String substring = name.substring(name.lastIndexOf("") + 1);
+//        if (substring.equals("NonClassPathClassInterface") || name.startsWith("java") || substring.equals("Key")) {
+//            return ClassLoader.getSystemClassLoader().loadClass(name);
+//        }
+
+        byte[] data = readFile(baseDir,name);
+
+        if (null != data) {
+            try {
+                return defineClass(name, data, 0, data.length);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+        //上面没找到交给父加载器
+        return super.findClass(name);
+    }
+
+    public static byte[] readFile(String baseDir,String name) {
+        byte[] data = null;
+
+        String substring = name.replace(".", "/");
 
         FileInputStream is = null;
         ByteArrayOutputStream bos = null;
@@ -83,9 +104,8 @@ public class CustomizeClassLoader extends ClassLoader {
                 e.printStackTrace();
             }
 
-            byte[] data = bos.toByteArray();
+            data = bos.toByteArray();
 
-            return defineClass(name, data, 0, data.length);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -104,10 +124,7 @@ public class CustomizeClassLoader extends ClassLoader {
                 }
             }
         }
-
-        //交给父加载器
-        return super.findClass(name);
-
+        return data;
     }
 
 

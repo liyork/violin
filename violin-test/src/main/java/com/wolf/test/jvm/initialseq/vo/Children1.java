@@ -1,4 +1,4 @@
-package com.wolf.test.base.initialseq;
+package com.wolf.test.jvm.initialseq.vo;
 
 /**
  * Description:
@@ -9,8 +9,16 @@ package com.wolf.test.base.initialseq;
  */
 public class Children1 extends Parent {
 
+    static {
+        System.out.println("Children1 static ");
+    }
+
+    {
+        System.out.println("Children1 instance ");
+    }
+
     public Children1() throws Exception {
-        System.out.println("default children");
+        System.out.println("default children1");
     }
 
     public static void test1(){

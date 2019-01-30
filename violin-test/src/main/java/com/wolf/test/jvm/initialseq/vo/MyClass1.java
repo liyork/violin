@@ -1,4 +1,4 @@
-package com.wolf.test.base;
+package com.wolf.test.jvm.initialseq.vo;
 
 /**
  * Description:
@@ -12,6 +12,6 @@ public class MyClass1 {
     static int a = 1;
 
     static {//静态块
-        System.out.println("static block ");
+        System.out.println("MyClass1 static block ");
     }
 }

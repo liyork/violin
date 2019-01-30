@@ -1,4 +1,6 @@
-package com.wolf.test.base.initialseq;
+package com.wolf.test.jvm.initialseq.vo;
+
+import java.util.Random;
 
 /**
  * Description:
@@ -16,4 +18,6 @@ public class SuperClass {
     public static int a = 3;
 
     public static final String HELLO = "hello";
+
+    public static final int RANDOM = new Random().nextInt();
 }
