@@ -1,5 +1,7 @@
 package com.wolf.test.jvm;
 
+import com.wolf.test.base.MemoryObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +24,10 @@ public class JConsoleTestCase {
 
     //jstat
     private static void testMemory() throws InterruptedException {
-        List<MObject> list = new ArrayList<>();
+        List<MemoryObject> list = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
             Thread.sleep(50);
-            list.add(new MObject());
+            list.add(new MemoryObject());
         }
 
         System.out.println("before gc");

@@ -149,9 +149,9 @@ public class OutOfMemoryTest {
 
     //-Xms2m -Xmx2m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/Users/chaoli/workspace
     public static void testHeapOOM() throws InterruptedException {
-        List<OOMObject> oomObjects = new ArrayList<>();
+        List<MemoryObject> memoryObjects = new ArrayList<>();
         while (true) {
-            oomObjects.add(new OOMObject());
+            memoryObjects.add(new MemoryObject());
            //Thread.sleep(1);
         }
     }
@@ -179,7 +179,7 @@ public class OutOfMemoryTest {
     public static void testMethodAreaOOM(){
         while (true) {
             Enhancer enhancer = new Enhancer();
-            enhancer.setSuperclass(OOMObject.class);
+            enhancer.setSuperclass(MemoryObject.class);
             enhancer.setUseCache(false);
             enhancer.setCallback(new MethodInterceptor() {
                 @Override
