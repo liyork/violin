@@ -3,6 +3,7 @@ package com.wolf.test.jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wolf.test.entity.Room;
 import com.wolf.test.entity.RoomImpl;
+import com.wolf.test.entity.RoomImpl2;
 
 import java.util.Map;
 
@@ -16,7 +17,8 @@ public class JacksonTest {
 
     public static void main(String[] args) {
 
-        testInterface();
+//        testInterface();
+        testHasNotProperty();
     }
 
     private static void testInterface() {
@@ -27,9 +29,21 @@ public class JacksonTest {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = mapper.convertValue(room, Map.class);
 
-//        Room room1 = mapper.convertValue(map, Room.class);//报错
-        Room room1 = mapper.convertValue(map, RoomImpl.class);
-        System.out.println(room+" "+room1);
-        System.out.println(room1.getId()+" "+room.getName());
+        Room room1 = mapper.convertValue(map, Room.class);//报错
+//        Room room1 = mapper.convertValue(map, RoomImpl.class);
+        System.out.println(room + " " + room1);
+        System.out.println(room1.getId() + " " + room.getName());
+    }
+
+    private static void testHasNotProperty() {
+        Room room = new RoomImpl();
+        room.setId(1);
+        room.setName("xxxxx");
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = mapper.convertValue(room, Map.class);
+
+        //少个字段,Unrecognized field "name"，需要添加@JsonIgnoreProperties(ignoreUnknown = true)
+        RoomImpl2 room1 = mapper.convertValue(map, RoomImpl2.class);
     }
 }
