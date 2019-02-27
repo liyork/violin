@@ -18,6 +18,7 @@
 		<module>violin-springmvc</module>
         <module>violin-testassembly</module>
         <module>violin-datealgorithm</module>
+        <module>../violin-bigdate</module>
     </modules>
 
     <!--属性可被使用-->

@@ -14,6 +14,7 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
  * @since 1.0.0
  */
 public class ProtoBufInitializer extends ChannelInitializer<Channel> {
+
     private final MessageLite lite;
 
     public ProtoBufInitializer(MessageLite lite) {

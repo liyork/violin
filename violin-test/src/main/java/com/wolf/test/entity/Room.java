@@ -8,4 +8,12 @@ package com.wolf.test.entity;
  * @since 1.0.0
  */
 public interface Room {
+
+    public int getId() ;
+
+    public void setId(int id);
+
+    public String getName() ;
+
+    public void setName(String name) ;
 }

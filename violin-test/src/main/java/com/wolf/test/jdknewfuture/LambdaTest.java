@@ -30,9 +30,9 @@ import java.util.stream.Stream;
  * lambda不仅仅是功能，而是创建了一个函数(对象)。不过真正用时还要执行调用。
  * <p>
  * 作为开发人员，我发现学习和掌握lambda表达式的最佳方法就是勇于尝试，尽可能多练习lambda表达式例子
- *
+ * <p>
  * javap -c -v XXXX(class位置)
- *
+ * <p>
  * <br/> Created on 2017/12/20 18:10
  *
  * @author 李超
@@ -57,7 +57,7 @@ public class LambdaTest {
 
 //        testPreinstallFuncUse();
 
-        testStreamRelativeFunc();
+//        testStreamRelativeFunc();
 //        testMapApp();
 //        testMapReduceApp();
 //        testCombineApp();
@@ -68,6 +68,9 @@ public class LambdaTest {
 //        statistics();
 //        new LambdaTest().testDiffAnonymousClass();
 
+//        testFlagMap();
+//        testOptional();
+        testGroupby();
     }
 
     private static void show() {
@@ -642,4 +645,67 @@ public class LambdaTest {
         return para / 0;
     }
 
+    private static void testFlagMap() {
+
+        List<Integer> integers = new ArrayList<>();
+        integers.add(1);
+        integers.add(2);
+        integers.add(3);
+
+        //map操作stream中每一个
+        integers.stream().map(i -> i + 1).forEach(System.out::println);
+
+        System.out.println("xxxxxx");
+
+        List<List<Integer>> outer = new ArrayList<>();
+        List<Integer> inner1 = new ArrayList<>();
+        inner1.add(1);
+        List<Integer> inner2 = new ArrayList<>();
+        inner1.add(2);
+        List<Integer> inner3 = new ArrayList<>();
+        inner1.add(3);
+        List<Integer> inner4 = new ArrayList<>();
+        inner1.add(4);
+        List<Integer> inner5 = new ArrayList<>();
+        inner1.add(5);
+        outer.add(inner1);
+        outer.add(inner2);
+        outer.add(inner3);
+        outer.add(inner4);
+        outer.add(inner5);
+        List<Integer> result = outer.stream()
+                //对stream中每个元素再stream+map，对每个元素放入list
+                .flatMap(inner -> inner.stream().map(i -> i + 1))
+                .collect(Collectors.toList());
+        System.out.println(result);
+    }
+
+    private static void testOptional() {
+
+        //不允许为空
+        Optional<Integer> optionalInteger = Optional.of(111);
+        Integer integer = optionalInteger.map(i -> i + 1).orElse(null);
+        System.out.println(integer);
+
+        String a = null;
+        String s = Optional.ofNullable(a).map(Object::toString).orElse(null);
+        System.out.println(s);
+    }
+
+    private static void testGroupby() {
+
+        List<Person> persons = new ArrayList<>();
+        persons.add(new Person("a", "1"));
+        persons.add(new Person("b", "1"));
+        persons.add(new Person("c", "2"));
+
+        Map<String, List<Person>> collect = persons.stream()
+                .collect(Collectors.groupingBy(Person::getLastName));
+
+        for (Map.Entry<String, List<Person>> entry : collect.entrySet()) {
+            String key = entry.getKey();
+            List<Person> values = entry.getValue();
+            System.out.println("key:" + key + " values:" + values);
+        }
+    }
 }
