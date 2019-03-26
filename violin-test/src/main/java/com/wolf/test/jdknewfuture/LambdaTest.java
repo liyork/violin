@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -70,7 +71,8 @@ public class LambdaTest {
 
 //        testFlagMap();
 //        testOptional();
-        testGroupby();
+//        testGroupby();
+        testMerge();
     }
 
     private static void show() {
@@ -707,5 +709,26 @@ public class LambdaTest {
             List<Person> values = entry.getValue();
             System.out.println("key:" + key + " values:" + values);
         }
+    }
+
+    private static void testMerge() {
+
+        Map<String, Integer> collect = new HashMap<>();
+        collect.put("a", 1);
+
+        Integer a = collect.merge("a", 2, (o, n) -> o + n);
+        System.out.println("new a:" + a);
+        System.out.println("new a:" + collect.get("a"));
+
+        Map<String, AtomicInteger> collect1 = new HashMap<>();
+        collect1.put("a", new AtomicInteger(1));
+
+        AtomicInteger newAtomic = collect1.merge("a", new AtomicInteger(2),
+                (o, n) -> {
+                    o.addAndGet(n.get());
+                    return o;
+                });
+        System.out.println("new a1:" + newAtomic.get());
+        System.out.println("new a1:" + collect1.get("a").get());
     }
 }
