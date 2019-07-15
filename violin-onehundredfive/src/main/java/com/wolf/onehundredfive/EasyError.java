@@ -703,7 +703,9 @@ public class EasyError {
 		Object[] nu1 = nu;
 		Integer[] nu11 = (Integer[]) nu1;
 
-		//泛型不支持协变与逆变，
+        //泛型不支持协变与逆变，只能一模一样。
+        // 对于class A<E extends Number>，子类B可以用class B<Integer> extends A，
+        // 但是方法methodx(Class<? extends Number>)，子类就不能用methodx(Class<? extends Integer>)重写了
 		ArrayList<Integer> test = new ArrayList<Integer>();
 		//报错，ArrayList<Number>和ArrayList<Integer>两者没有关系
 //		ArrayList<Number> test1 = new ArrayList<Integer>();

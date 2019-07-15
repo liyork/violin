@@ -9,6 +9,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Description:没有反射就没有框架
@@ -493,5 +495,20 @@ public class ReflectTest {
         A o1 = (A) Proxy.newProxyInstance(b.getClass().getClassLoader(), b.getClass().getInterfaces(), invocationHandler);
 
         o1.printStackTraceElement();
+    }
+
+    @Test
+    public void testUpdateAnnotationValue() throws Exception {
+        Method getCityName = ClassHasAnnotation4Test.class.getMethod("test", null);
+        Annotation4Test annotation = getCityName.getAnnotation(Annotation4Test.class);
+        //注解本质上就是一个接口，它的实质定义为: interface SomeAnnotation extends Annotation
+        //annotation就是Proxy
+        System.out.println(annotation.domain());
+        InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
+        Field memberValues = invocationHandler.getClass().getDeclaredField("memberValues");
+        memberValues.setAccessible(true);
+        Map map = (Map)memberValues.get(invocationHandler);
+        map.put("domain", "xx123");
+        System.out.println(annotation.domain());
     }
 }

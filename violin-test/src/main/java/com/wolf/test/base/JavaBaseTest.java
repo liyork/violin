@@ -5,6 +5,8 @@ import org.junit.Test;
 
 /**
  * Description:
+ * 接口的方法都默认是public abstract，变量都是public static final的。
+ * abstract不能和final一起修饰方法，因为abstract就是为了子类重写，final就是禁止子类重写。。
  * <br/> Created on 2017/3/23 10:26
  *
  * @author 李超

@@ -612,6 +612,19 @@ public class LambdaTest {
 
     }
 
+    //forEach中的return类似于continue
+    @Test
+    public void testReturn() {
+
+        IntStream.range(0, 3).forEach(i -> {
+            if (i == 1) {
+                return;
+            }
+
+            System.out.println("xxxx:" + i);
+        });
+    }
+
     static class AskThread implements Runnable {
         CompletableFuture<Integer> re = null;
 

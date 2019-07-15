@@ -16,7 +16,7 @@ import java.util.Arrays;
  * @author 李超
  * @since 1.0.0
  */
-public class BasicTest {
+public class JavassistBasicTest {
 
     /**
      * 处理类的基本用法
