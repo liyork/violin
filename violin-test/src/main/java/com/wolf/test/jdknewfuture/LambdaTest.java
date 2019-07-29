@@ -744,4 +744,17 @@ public class LambdaTest {
         System.out.println("new a1:" + newAtomic.get());
         System.out.println("new a1:" + collect1.get("a").get());
     }
+
+    //经过filter之后是空，对map无影响，不报错
+    @Test
+    public void testFilterNull() {
+
+        List<Integer> list = Arrays.asList(1, 2, 3).stream()
+                .filter(i -> i > 3)
+                .map(i -> i + 1)
+                .collect(Collectors.toList());
+
+        System.out.println(list);
+
+    }
 }

@@ -16,7 +16,6 @@ public class NewFutureIn7 {
         supportStringInSwitch();
 
         autoInfer();
-
     }
 
     private static void autoInfer() {
