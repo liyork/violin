@@ -1,9 +1,10 @@
 package com.wolf.test.classloader.basetest;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -37,9 +38,8 @@ public class ClassLoaderTest {
 //        testClassLoaderHierarchy();
 //		testDecodeClassLoader();
         testContextClassLoader();
-//		testLoadFromJar();
 
-//        testNamespace();
+        //        testNamespace();
     }
 
     private static void baseTest() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
@@ -229,13 +229,12 @@ public class ClassLoaderTest {
 		}
 	}
 
-	private static void testLoadFromJar() throws ClassNotFoundException, MalformedURLException {
+	@Test
+	public void testLoadClassFromJar() throws Exception {
 		URL[] urls = new URL[1];
-		urls[0] = new File("D:\\intellijWrkSpace\\violin\\violin-test\\target\\classes\\hot.jar").toURI().toURL();
+		urls[0] = new File("/Users/lichao30/intellij_workspace/violin/violin-test/target/classes/hot3.jar").toURI().toURL();
 		URLClassLoader classLoader = new URLClassLoader(urls);
-		Class hotClazz = classLoader.loadClass("com.wolf.test.jvm.loadclass.Hot2");
+		Class hotClazz = classLoader.loadClass("com.wolf.test.jvm.loadclass.Hot3");
 		System.out.println(hotClazz);
 	}
-
-
 }

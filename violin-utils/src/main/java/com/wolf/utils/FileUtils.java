@@ -419,8 +419,6 @@ public class FileUtils {
 //		writeContent2File(fileName, "123哈123哈123", true, "utf-8");
 
         createTempFile("tmp", ".txt");
-
-
     }
 
     public static void printFileName(String path) {

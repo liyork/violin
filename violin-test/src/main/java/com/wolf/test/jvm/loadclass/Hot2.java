@@ -1,7 +1,7 @@
 package com.wolf.test.jvm.loadclass;
 
 /**
- * Description:用来打jar用的类
+ * Description:用来打jar用的类，参见TestHotSwap
  * <br/> Created on 2018/1/22 9:45
  *
  * @author 李超
