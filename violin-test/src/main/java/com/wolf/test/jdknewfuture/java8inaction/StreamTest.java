@@ -1,11 +1,7 @@
 package com.wolf.test.jdknewfuture.java8inaction;
 
-import com.wolf.utils.ArrayUtils;
-import javafx.scene.layout.VBox;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -167,6 +163,7 @@ public class StreamTest {
                 .distinct()
                 .forEach(System.out::println);
 
+        //flatmap将mapper生成的流合并或者扁平到本流中
         System.out.println("flatmap..");
         List<String> strings2 = Arrays.asList("hello", "world");
         strings2.stream()
