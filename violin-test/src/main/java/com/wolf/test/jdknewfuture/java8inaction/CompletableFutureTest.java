@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -27,7 +28,7 @@ public class CompletableFutureTest {
         System.out.println("invoke time :" + (System.nanoTime() - start) / 1_000_000 + " ms");
 
         System.out.println("do other thing");
-        TimeUtils.sleep(1);
+        TimeUtils.sleepSecond(1);
 
         future.get(2000, TimeUnit.MILLISECONDS);
         System.out.println("retrieval time :" + (System.nanoTime() - start) / 1_000_000 + " ms");
@@ -96,7 +97,7 @@ public class CompletableFutureTest {
     }
 
     private ExecutorService newExecutor() {
-        ExecutorService executor = Executors.newFixedThreadPool(Math.min(3, 100),//根据公式得出最大100线程
+        return Executors.newFixedThreadPool(Math.min(3, 100),//根据公式得出最大100线程
                 new ThreadFactory() {
                     private AtomicInteger count = new AtomicInteger();
 
@@ -107,10 +108,6 @@ public class CompletableFutureTest {
                         return thread;
                     }
                 });
-        executor.submit(() -> {
-            System.out.println("executor run xxxx");
-        });
-        return executor;
     }
 
     @Test
@@ -140,6 +137,24 @@ public class CompletableFutureTest {
         List<Shop> shops = Arrays.asList(new Shop("a"), new Shop("b"), new Shop("c"));
         findPricesDiscount3(shops, "apple", executor);
         System.out.println("findPricesDiscount3 duration is " + (System.nanoTime() - start) / 1_000_000 + " ms");
+    }
+
+    @Test
+    public void testGetPriceStream() throws Exception {
+
+        ExecutorService executor = newExecutor();
+        long start = System.nanoTime();
+        List<Shop> shops = Arrays.asList(new Shop("a"), new Shop("b"), new Shop("c"));
+
+        CompletableFuture[] completableFutures = findPricesStream(shops, "apple", executor)
+                //有结果就展示-相当于callback。使用当前线程执行，避免上下文切换开销，以及等待线程池进行调度的开销。或thenAcceptAsync
+                .map(c -> c.thenAccept(price -> System.out.println(price + " done is " +
+                        (System.nanoTime() - start) / 1_000_000 + " ms")))
+                .toArray(CompletableFuture[]::new);
+        //等待所有都执行完毕。或anyOf
+        CompletableFuture.allOf(completableFutures).join();
+
+        System.out.println("testGetPriceStream duration is " + (System.nanoTime() - start) / 1_000_000 + " ms");
     }
 
     //顺序执行,互相阻塞
@@ -230,7 +245,7 @@ public class CompletableFutureTest {
                 .collect(Collectors.toList());
     }
 
-    //使用thenCombine组合，实现类似countdownlatch功能，两个CompletableFuture执行后再执行fn
+    //使用thenCombine组合，实现类似countdownlatch功能，两个CompletableFuture都执行完再执行fn
     public List<Double> findPricesDiscount3(List<Shop> shops, String product, ExecutorService executor) {
 
         return shops.stream()
@@ -242,11 +257,24 @@ public class CompletableFutureTest {
                                     System.out.println("get other sth..");
                                     return 1;
                                 }, executor),
-                        (price, rate) -> price * rate
+                        (price, rate) -> price * rate//前俩都执行完再执行fn
                 ))
                 .collect(Collectors.toList())
                 .stream()
                 .map(CompletableFuture::join)
                 .collect(Collectors.toList());
+    }
+
+    //不再等待所有返回再显示，而是有返回价格流
+    public Stream<CompletableFuture<String>> findPricesStream(List<Shop> shops, String product, ExecutorService executor) {
+
+        return shops.stream()
+                .map(shop -> CompletableFuture.supplyAsync(
+                        () -> shop.getPriceDiscount(product), executor))
+                .map(c -> c.thenApply(Quote::parse))
+                .map(c -> c.thenCompose(
+                        quote -> CompletableFuture.supplyAsync(
+                                () -> Discount.applyDiscount(quote), executor)));
+
     }
 }

@@ -16,6 +16,8 @@ public class Shop {
 
     private String name;
 
+    private static Random random = new Random();
+
     public Shop(String name) {
         this.name = name;
     }
@@ -64,19 +66,25 @@ public class Shop {
 
     //使用工厂方法
     public Future<Double> getPriceAsyncSupplier(String product) {
-        return CompletableFuture.supplyAsync(() -> calculatePrice(product));
+        return CompletableFuture.supplyAsync(() -> calculatePrice2(product));
     }
 
     //ShopName:price:DiscountCode
     public String getPriceDiscount(String product) {
-        double price = calculatePrice(product);
-        Discount.Code code = Discount.Code.values()[new Random().nextInt(Discount.Code.values().length)];
+        double price = calculatePrice2(product);
+        Discount.Code code = Discount.Code.values()[random.nextInt(Discount.Code.values().length)];
         return String.format("%s:%.2f:%s", name, price, code);
     }
 
     private double calculatePrice(String product) {
-        TimeUtils.sleep(1);
-        return new Random().nextDouble() * product.charAt(0) + product.charAt(1);
+        TimeUtils.sleepSecond(1);
+        return random.nextDouble() * product.charAt(0) + product.charAt(1);
+    }
+
+    private double calculatePrice2(String product) {
+        int i = 500 + random.nextInt(2000);
+        TimeUtils.sleepMillisecond(i);
+        return random.nextDouble() * product.charAt(0) + product.charAt(1);
     }
 
     public String getName() {

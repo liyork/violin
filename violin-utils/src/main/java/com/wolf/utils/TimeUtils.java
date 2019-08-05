@@ -10,9 +10,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimeUtils {
 
-    public static void sleep(int second) {
+    public static void sleepSecond(int seconds) {
         try {
-            TimeUnit.SECONDS.sleep(second);
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sleepMillisecond(int milliseconds) {
+        try {
+            TimeUnit.MILLISECONDS.sleep(milliseconds);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

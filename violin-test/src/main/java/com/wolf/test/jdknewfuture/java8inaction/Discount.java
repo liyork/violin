@@ -20,12 +20,11 @@ public class Discount {
 
     public static String applyDiscount(Quote quote) {
         return quote.getShopName() + " price is " +
-                Discount.apply(quote.getPrice(),
-                        quote.getDiscountCode());
+                Discount.apply(quote.getPrice(),quote.getDiscountCode());
     }
 
     private static double apply(double price, Code code) {
-        TimeUtils.sleep(1);
+        TimeUtils.sleepSecond(1);
         return price * (100 - code.percentage) / 100;
     }
 }
