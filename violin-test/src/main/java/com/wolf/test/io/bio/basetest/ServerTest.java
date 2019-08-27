@@ -31,8 +31,9 @@ public class ServerTest {
 //        }
         String temp;
         int index;
-        while ((len=reader.read(chars)) != -1) {//这种肯定会有tcp粘包现象，不过只是简单测试而已。
+        while ((len = reader.read(chars)) != -1) {//这种肯定会有tcp粘包现象，不过只是简单测试而已。
             temp = new String(chars, 0, len);
+            System.out.println("temp:" + temp);
             if ((index = temp.indexOf("eof")) != -1) {//遇到eof时就结束接收
                 sb.append(temp.substring(0, index));
                 break;

@@ -1,12 +1,5 @@
 package com.wolf.test.redis;
 
-/**
- * <b>功能</b>
- *
- * @author 李超
- * @Date 2015/6/19
- */
-
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,15 +9,19 @@ import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.util.JedisClusterCRC16;
 
+import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @author: flychao88
- * Time: 2012.5.7 16:23:15
+ * <b>功能</b>
+ *
+ * @author 李超
+ * @Date 2015/6/19
  */
 public class JedisTest {
 
@@ -108,7 +105,7 @@ public class JedisTest {
         System.out.println(jedis.hvals("user"));//返回map对象中的所有value  [minxr, password]
 
         Iterator<String> iter = jedis.hkeys("user").iterator();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             String key = iter.next();
             System.out.println(key + ":" + jedis.hmget("user", key));
         }
@@ -220,7 +217,7 @@ public class JedisTest {
 
         jedis.set(key, "1");
 
-        for(int i = 0; i < Integer.MAX_VALUE; i++) {
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
             Long incr = jedis.incr(key);
             System.out.println(incr);
         }
@@ -265,7 +262,7 @@ public class JedisTest {
 
         int latestN = 3;
         List<String> lrange = jedis.lrange(key, 0, latestN - 1);
-        for(String s : lrange) {
+        for (String s : lrange) {
             System.out.println(s);
         }
 
@@ -275,7 +272,7 @@ public class JedisTest {
 
         //这里取出的数据如果不够n，可以从db中获取
         List<String> lrange1 = jedis.lrange(key, 0, latestN - 1);
-        for(String s : lrange1) {
+        for (String s : lrange1) {
             System.out.println(s);
         }
 
@@ -301,7 +298,7 @@ public class JedisTest {
 
         int topN = 3;
         Set<String> zrange = jedis.zrange(key, 0, topN - 1);
-        for(String s : zrange) {
+        for (String s : zrange) {
             System.out.println(s);
         }
     }
@@ -337,7 +334,7 @@ public class JedisTest {
         //前几名代表时间较长的数据，可以用来删除，然后用这个时间戳当做索引去数据中删除
         int topN = 3;
         Set<String> zrange = jedis.zrange(key, 0, topN - 1);
-        for(String s : zrange) {
+        for (String s : zrange) {
             System.out.println(s);
         }
     }
@@ -385,7 +382,7 @@ public class JedisTest {
         jedis.sadd(key, "4");
 
         Set<String> sinter = jedis.sinter(key);
-        for(String s : sinter) {
+        for (String s : sinter) {
             System.out.println(s);
         }
 
@@ -408,7 +405,7 @@ public class JedisTest {
         jedis.lpush(key, "4");
 
         List<String> lrange = jedis.lrange(key, 0, jedis.llen(key) - 1);
-        for(String s : lrange) {
+        for (String s : lrange) {
             System.out.println(s);
         }
 
@@ -434,7 +431,7 @@ public class JedisTest {
         Pipeline pipelined = jedis.pipelined();
         pipelined.set("age", "123");
 
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             pipelined.incr("age");
         }
 
@@ -463,8 +460,8 @@ public class JedisTest {
         }
 
         //模拟请求1秒3次
-        for(int i = 0; i < 19; i++) {
-            if(rateLimit.isExceedRate("rate.frequency.limiting:" + "/xxx/yy/qqq", 5, 10)) {//5秒10次
+        for (int i = 0; i < 19; i++) {
+            if (rateLimit.isExceedRate("rate.frequency.limiting:" + "/xxx/yy/qqq", 5, 10)) {//5秒10次
                 System.out.println("2222");
             } else {
                 System.out.println("1111");
@@ -491,7 +488,7 @@ public class JedisTest {
         pipelined.multi();
         pipelined.set("age", "123");
 
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             pipelined.incr("age");
         }
 
@@ -544,7 +541,7 @@ public class JedisTest {
         JedisPool pool = new JedisPool(poolConfig, "127.0.0.1");
 
         final ExecutorService executorService = Executors.newFixedThreadPool(5000);
-        for(int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 5000; i++) {
             try {
                 final Jedis jedis = pool.getResource();
                 executorService.execute(new Runnable() {
@@ -575,22 +572,22 @@ public class JedisTest {
      */
     public Jedis getJedis() {
         int timeoutCount = 0;
-        while(true) // 如果是网络超时则多试几次
+        while (true) // 如果是网络超时则多试几次
         {
             try {
                 return pool.getResource();
             } catch (Exception e) {
                 // 底层原因是SocketTimeoutException，不过redis已经捕捉且抛出JedisConnectionException，不继承于前者
-                if(e instanceof JedisConnectionException || e instanceof SocketTimeoutException) {
+                if (e instanceof JedisConnectionException || e instanceof SocketTimeoutException) {
                     timeoutCount++;
                     logger.warn("getJedis timeoutCount={}", timeoutCount);
-                    if(timeoutCount > 3) {
+                    if (timeoutCount > 3) {
                         break;
                     }
                 } else {
                     logger.warn("jedisInfo。NumActive=" + pool.getNumActive() + //
-                    ", NumIdle=" + pool.getNumIdle() + ", NumWaiters=" + pool.getNumWaiters() +//
-                    ", isClosed=" + pool.isClosed());
+                            ", NumIdle=" + pool.getNumIdle() + ", NumWaiters=" + pool.getNumWaiters() +//
+                            ", isClosed=" + pool.isClosed());
                     logger.error("getJedis error", e);
                     break;
                 }
@@ -603,11 +600,22 @@ public class JedisTest {
     @Test
     public void testConfig() {
         List<String> slaveof = jedis.configGet("slaveof");
-        if(!CollectionUtils.isEmpty(slaveof)) {
-            for(String s : slaveof) {
+        if (!CollectionUtils.isEmpty(slaveof)) {
+            for (String s : slaveof) {
                 System.out.println(s);
             }
         }
+    }
+
+    @Test
+    public void testSourceCode() throws UnsupportedEncodingException {
+        byte[] keyBytes = "testa".getBytes(StandardCharsets.UTF_8);
+        String set = jedis.set(keyBytes, "a".getBytes(StandardCharsets.UTF_8));
+        System.out.println("set:" + set);
+
+        byte[] bytes = jedis.get(keyBytes);
+        String s = new String(bytes, StandardCharsets.UTF_8);
+        System.out.println("get:" + s);
     }
 
 }
