@@ -3,6 +3,8 @@ package com.wolf.test.jdknewfuture.java8inaction;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -85,7 +87,7 @@ public class CollectorTest {
         }));
         System.out.println("group2:" + group2);
 
-        //子分组进一步归约
+        //子分组进一步分组
         Map<Dish.Type, Map<CaloricLevel, List<Dish>>> group3 = Data.menu.stream().collect(
                 groupingBy(Dish::getType,
                         groupingBy(d -> {
@@ -132,7 +134,7 @@ public class CollectorTest {
                         }, toSet())));
         System.out.println("group8:" + group8);
 
-        //控制set类型
+        //输出为set类型
         Data.menu.stream().collect(
                 groupingBy(Dish::getType,
                         mapping(d -> {
@@ -145,7 +147,66 @@ public class CollectorTest {
                             }
                         }, toCollection(HashSet::new))));
         System.out.println("group8:" + group8);
+
+        //使用groupingBy比较直观知道你要对什么分组，然后对value再转换
+        Map<String, List<Integer>> collect = Data.menu.stream()
+                .collect(groupingBy(
+                        m -> m.getName(),
+                        mapping(
+                                m -> m.getCalories(),
+                                toList()
+                        )));
+        System.out.println(collect);
     }
+
+    //使用最单纯的Collector.of查看原理。推荐就用mapping了
+    //groupingBy的Function<? super T, ? extends K> classifier用来生成key，
+    //Collector<? super T, A, D> downstream用来产生Collector需要的函数
+    //整体返回的是Collector
+    //当执行collect时就会循环调用Collector中的方法
+    @Test
+    public void testSourceCode() {
+        Data.menu.stream().collect(
+                groupingBy(Dish::getType,
+                        Collector.of(HashSet::new,
+                                (Set<CaloricLevel> l, Dish d) -> {
+                                    CaloricLevel caloricLevel;
+                                    if (d.getCalories() <= 400) {
+                                        caloricLevel = CaloricLevel.DIET;
+                                    } else if (d.getCalories() <= 700) {
+                                        caloricLevel = CaloricLevel.NORMAL;
+                                    } else {
+                                        caloricLevel = CaloricLevel.FAT;
+                                    }
+
+                                    l.add(caloricLevel);
+                                },
+                                (Set<CaloricLevel> left, Set<CaloricLevel> right) -> {
+                                    left.addAll(right);
+                                    return left;
+                                }
+                        )));
+    }
+
+    @Test
+    public void testGroupSort() {
+        //3 apple, 2 banana, others 1
+        List<String> items =
+                Arrays.asList("apple", "apple", "banana",
+                        "apple", "orange", "banana", "papaya");
+        Map<String, Long> result = items
+                .stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        System.out.println(result);
+
+        Map<String, Long> finalMap = new LinkedHashMap<>();
+        //reversed 反排序
+        result.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .forEachOrdered(e -> finalMap.put(e.getKey(), e.getValue()));
+        System.out.println(finalMap);
+    }
+
 
     enum CaloricLevel {DIET, NORMAL, FAT}
 
@@ -178,9 +239,14 @@ public class CollectorTest {
 
     @Test
     public void testCustomCollector() {
-        Data.menu.stream().collect(ToListCollectors.toList());
+
+        //jdk
         Data.menu.stream().collect(Collectors.toList());
 
+        //自定义
+        Data.menu.stream().collect(ToListCollector.toList());
+
+        //lambda
         Data.menu.stream().collect(
                 () -> new ArrayList<>(),
                 (List<Dish> l, Dish a) -> {
@@ -223,5 +289,29 @@ public class CollectorTest {
         );
     }
 
+    @Test
+    public void testToMap() {
 
+        //一般转换map存在2个问题：1.对于重复key报错  2.对于value为null报错
+//      Map<String, Integer> mapx = Data.menu.stream()
+//          .collect(Collectors.toMap(Dish::getName, Dish::getCalories));
+//      System.out.println(mapx);
+
+        //解决方式1
+        Map<String, Integer> map1 = Data.menu.stream()
+                .collect(HashMap::new, (map, menu) ->
+                        map.put(menu.getName(), menu.getCalories()), Map::putAll);
+        System.out.println("map1:" + map1);
+
+        //解决方式2
+        Map<String, Integer> map2 = Data.menu.stream()
+                .collect(Collector.of(
+                        HashMap::new,
+                        (map, menu) -> map.put(menu.getName(), menu.getCalories()),
+                        (hmap1, hmap2) -> {
+                            throw new UnsupportedOperationException();
+                        }
+                        , new Collector.Characteristics[]{Collector.Characteristics.IDENTITY_FINISH}));
+        System.out.println("map2:" + map2);
+    }
 }

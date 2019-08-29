@@ -8,13 +8,14 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 /**
- * Description:
+ * Description: 自定义实现tolist的Collector
  *
  * @author 李超
  * @date 2019/07/23
  */
-public class ToListCollectors<T> implements Collector<T, List<T>, List<T>> {//流中元素类型、累加器类型、收集结果类型
+public class ToListCollector<T> implements Collector<T, List<T>, List<T>> {//流中元素类型、累加器类型、收集结果类型
 
+    //容器
     @Override
     public Supplier<List<T>> supplier() {
         return ArrayList::new;//给accumulator使用
@@ -34,11 +35,13 @@ public class ToListCollectors<T> implements Collector<T, List<T>, List<T>> {//�
         };
     }
 
+    //最终执行
     @Override
     public Function<List<T>, List<T>> finisher() {
         return Function.identity();//原样返回
     }
 
+    //特性
     @Override
     public Set<Characteristics> characteristics() {
         return Collections.unmodifiableSet(
@@ -47,6 +50,6 @@ public class ToListCollectors<T> implements Collector<T, List<T>, List<T>> {//�
     }
 
     public static Collector toList() {
-        return new ToListCollectors<>();
+        return new ToListCollector<>();
     }
 }
