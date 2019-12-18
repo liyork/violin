@@ -26,6 +26,7 @@ public class CloneTest implements Cloneable {
         System.out.println("default constructor..");
     }
 
+    //protected方法保证只有类、包、子类才可以clone。否则需要改成public
     @Override
     protected Object clone() throws CloneNotSupportedException {
         CloneTest clone = (CloneTest) super.clone();

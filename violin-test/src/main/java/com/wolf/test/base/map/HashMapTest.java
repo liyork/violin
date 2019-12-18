@@ -13,15 +13,16 @@ import java.util.*;
 public class HashMapTest {
 
     public static void main(String[] args) {
-//        baseTest();
+        baseTest();
 //        testResize();
 //        testSetInitialSize();
-        testTreeifyBinInJdk8();
+//        testTreeifyBinInJdk8();
     }
 
     private static void baseTest() {
         HashMap<String, Integer> map = new HashMap<>();
         map.put("a", 1);
+        map.put("a", 2);//key重复，则值被覆盖
         map.put("b", 2);
         map.put("c", 3);
         map.put("d", 4);
@@ -33,11 +34,15 @@ public class HashMapTest {
         System.out.println(c);
 
         Set<String> keys = map.keySet();//简单构造KeySet
-        Iterator<String> iterator = keys.iterator();//构造KeyIterator HashIterator，初始化一些变量next、index，用于后期遍历
+        Iterator<String> iterator = keys.iterator();//构造KeyIterator extends HashIterator，初始化一些变量next、index，用于后期遍历
         //过程：从数组第一个不为null的槽开始，一直到next为null，下个槽，直到最后一个槽
         while (iterator.hasNext()) {
             String next = iterator.next();
             System.out.println(next);
+        }
+        System.out.println();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue());
         }
     }
 
@@ -71,7 +76,7 @@ public class HashMapTest {
         }
     }
 
-
+    // 测试jdk8hashmap的链表组织方式
     private static void testTreeifyBinInJdk8() {
         HashMap<Integer, List<String>> map2 = new HashMap<Integer, List<String>>();
         int h;
@@ -97,6 +102,4 @@ public class HashMapTest {
             }
         }
     }
-
-
 }

@@ -23,6 +23,7 @@ public class InnerClassAndStaticTest {
 
     }
 
+    // 成员内部类
     public class InnerClass {
 
         private int aa;
@@ -73,7 +74,7 @@ class OuterClass {
 
     public static void main(String[] args) {
         InnerClassAndStaticTest innerClassAndStaticTest = new InnerClassAndStaticTest();
-        //一般内部类构造时需要外部类对象
+        // 成员内部类构造时需要外部类对象先被实例化
         InnerClassAndStaticTest.InnerClass innerClass = innerClassAndStaticTest.new InnerClass();
         innerClass.test();
 

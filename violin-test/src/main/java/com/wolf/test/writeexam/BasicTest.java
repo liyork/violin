@@ -16,12 +16,12 @@ import java.util.Map;
  */
 public class BasicTest extends SuperClass {
 
-    //final native getClass,不可继承，不论调用super和this都是用的父类的方法，获取的是运行时的真正对象
+    //final native getClass,不可重写，不论调用super和this都是用的Object的方法，获取的是运行时的真正对象
     @Test
     public void testGetClassName() {
         System.out.println(super.getClass().getName());
         System.out.println(this.getClass().getSimpleName());
-        //获取父类的名称
+        // 正确获取父类的名称
         System.out.println(this.getClass().getSuperclass().getName());
         System.out.println(this.getClass().getClass());
 
@@ -72,7 +72,7 @@ public class BasicTest extends SuperClass {
     public void testJDK7NewFeature() throws ClassNotFoundException {
         //先用string的hascode定位到case，然后再用equals
         String a = "1";
-        switch(a) {
+        switch (a) {
             case "a":
             case "b":
 
@@ -80,7 +80,7 @@ public class BasicTest extends SuperClass {
 
         //支持多catch
         int b = 2;
-        if(b == 1) {
+        if (b == 1) {
             try {
                 throw new InterruptedException("xxx");
             } catch (InterruptedException | RuntimeException e) {
@@ -97,8 +97,8 @@ public class BasicTest extends SuperClass {
         Map<String, Integer> map = new HashMap<>();
 
         //try-with-resources 编译代码时自动加上final关闭资源语句
-        try(InputStream fis = new FileInputStream("D:\\a.txt");) {
-            while(fis.read() != -1) System.out.println(fis.read());
+        try (InputStream fis = new FileInputStream("D:\\a.txt");) {
+            while (fis.read() != -1) System.out.println(fis.read());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -108,42 +108,82 @@ public class BasicTest extends SuperClass {
 
     //private修饰的属性，不能被实例变量使用，不能为子类继承、使用
 
-
+    // finally块的作用就是为了保证无论出现什么情况，finally块里的代码一定被执行。
+    // 程序执行return就意味着结束对当前函数的调用并跳出这个函数体，因此任何语句要执行都只能在return前(除非exit)，finally也一样。
     @Test
     public void testReturnInMiddle() throws ClassNotFoundException {
-        System.out.println(test1());
-        System.out.println(test2());
+//        System.out.println(testFinally1());
+//        System.out.println(testFinally2());
+//        System.out.println(testFinally3());
+//        System.out.println(testFinally4());
+//        testFinally5();
+        testFinally6();
     }
 
-    private static int test1() {
+    // 测试return和finally执行顺序
+    private static int testFinally1() {
+        try {
+            return 1;
+        } finally {
+            System.out.println("exe finally");
+        }
+    }
+
+    // 测试return返回值
+    private static int testFinally2() {
         int x = 1;
         try {
-            //先放在罐子里，执行finally，然后再返回结果
+            return x;
+        } finally {
+            // 会覆盖其他return语句。
+            return 3;
+        }
+    }
+
+    // 测试finally对return的值(基本类型)影响
+    private static int testFinally3() {
+        int x = 1;
+        try {
+            // 执行到return时先将返回值存储在一个指定位置，然后执行finally块，最后返回值。
             return x;
         } finally {
             ++x;
         }
     }
 
-    int test2() {
+    // 测试finally对return的值(引用类型)影响
+    private static StringBuilder testFinally4() {
+        StringBuilder x = new StringBuilder("1");
         try {
-            return func1();
+            // 执行到return时先将返回值存储在一个指定位置，然后执行finally块，最后返回值。finally中对指定引用修改了。
+            return x;
         } finally {
-            //当finnaly中也有return时将把try中的return结果覆盖
-            return func2();
+            x.append("abc");
         }
     }
 
-    private int func1() {
-        System.out.println("func1");
-        return 1;
+    // try之前出现异常，不执行finally
+    private static void testFinally5() {
+        int i = 5 / 0;
+        try {
+            System.out.println("try block");
+        } catch (Exception e) {
+            System.out.println("catch block");
+        } finally {
+            System.out.println("finally block");
+        }
     }
 
-    private int func2() {
-        System.out.println("func2");
-        return 2;
+    private static void testFinally6() {
+        try {
+            System.out.println("try block");
+            System.exit(0);
+        } catch (Exception e) {
+            System.out.println("catch block");
+        } finally {
+            System.out.println("finally block");
+        }
     }
-
 }
 
 

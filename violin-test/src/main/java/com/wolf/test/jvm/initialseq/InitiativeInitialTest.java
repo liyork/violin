@@ -5,7 +5,7 @@ import com.wolf.test.jvm.initialseq.vo.SuperClass;
 
 /**
  * Description: 主动加载、被动加载
- *
+ * <p>
  * <br/> Created on 11/1/17 7:25 PM
  *
  * @author 李超
@@ -46,13 +46,11 @@ public class InitiativeInitialTest {
     //没有任何class加载
     //通过反编译可以看到，由于是常量，已被常量传播优化，直接放在了InitializationTest中的常量池中
     private static void testStaticFinal() {
-
         System.out.println(SuperClass.HELLO);
     }
 
     //由于加载、连接阶段不能计算出来值，所以只有初始化后才能得到结果。所以属于主动使用
     private static void testStaticFinal2() {
-
         System.out.println(SuperClass.RANDOM);
     }
 }

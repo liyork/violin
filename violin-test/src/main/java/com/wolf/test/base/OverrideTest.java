@@ -3,7 +3,7 @@ package com.wolf.test.base;
 import java.util.List;
 
 /**
- * Description:
+ * Description:重载测试
  * <br/> Created on 2018/6/21 10:08
  *
  * @author 李超
@@ -24,4 +24,9 @@ public class OverrideTest {
     public void test(Object... list) {
 
     }
+
+    //方法签名包含：方法名+参数，不包含返回值。所以这也算是相同方法。
+//    public String test(List<String> list) {
+//        return "11";
+//    }
 }
