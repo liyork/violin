@@ -74,7 +74,7 @@ public class ByteTest {
         return b;
     }
 
-    //计算机使用补码
+    //计算机使用补码来"表示/存储"
     @Test
     public void testBinaryCode() {
         String s1 = Integer.toBinaryString(5);
@@ -84,8 +84,8 @@ public class ByteTest {
         System.out.println(s2);
     }
 
-    // 有符号数 最高位是符号位
-    // 计算机里负数用补码表示，为的是减法可以用加法器执行。
+    // 有符号数:最高位是符号位
+    // 计算机用补码，为的是减法可以用加法器执行。
     // 整型数在计算机中用补码存储的，就是下面展示的，若想求得原值(人类使用的)，需要计算(补码取反(除符号位)+1)。
     // 原值取反(除符号位)-1=补码
     @Test
@@ -100,6 +100,10 @@ public class ByteTest {
 
         int i3 = (byte) 0b00000000;
         System.out.println(i3);
+
+        // 溢出，进位舍去最高位
+        byte a = (byte) ((byte) 0b01111111 + 1);
+        System.out.println(a);
     }
 
     @Test

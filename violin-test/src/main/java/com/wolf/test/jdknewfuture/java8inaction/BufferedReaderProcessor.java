@@ -14,4 +14,7 @@ public interface BufferedReaderProcessor {
 
     //显示抛出异常，lambda内不用捕获，外层需要捕获。
     String read(BufferedReader bufferedReader) throws IOException;
+
+    public static final Dish PERSON=new Dish("1",false,1, Dish.Type.FISH);
+    int a = 1;
 }

@@ -15,7 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @since 1.0.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("/*.xml")
+@ContextConfiguration("/spring-dependency-injection.xml")
+//@Import({DependenceInjection.class, ServiceImpl2.class})
 public class InjectionTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired

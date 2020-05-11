@@ -50,5 +50,29 @@ public class JavaBaseTest {
     @Test
     public void testFloat() {
 //        float a=1.3;//若不指定f，那么就认为double
+
+        float a = 3 * 0.1f;
+        float b = 0.3f;
+        System.out.println(a == b);
+
+        double a1 = 3 * 0.1;
+        double b1 = 0.3;
+        System.out.println(a1);
+        System.out.println(b1);
+        System.out.println(a1 == b1);
     }
+
+    @Test
+    public void testContinue() {
+        int a = 0;
+        for (int i = 0; i < 1; i++) {
+            if (i == 0) {
+                continue;// 直接继续下次循环，从头开始，不执行后面任何逻辑。
+            }
+            a++;
+        }
+
+        System.out.println(a);
+    }
+
 }

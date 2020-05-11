@@ -1,13 +1,9 @@
 package com.wolf.algorithm;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.junit.Test;
-
-import java.util.*;
-
 /**
- * <p> Description:桶排序，先将各元素划分到桶中，然后将同种元素排序，分开排序，最后顺序输出数组
- * 时间复杂度：O(n)
+ * <p> Description:桶排序，先将各元素划分到桶中，然后将同种元素排序，分开排序，最后顺序输出数组。一般适用于关键字取值范围较小情况，
+ * 否则所需桶数据太多导致浪费存储空间和计算时间。
+ * 平均时间复杂度：O(n)，最坏为O(n^2)
  * 假设输入的待排序元素是等可能的落在等间隔的值区间内
  * <p/>
  * Date: 2015/12/24
@@ -19,51 +15,46 @@ import java.util.*;
  */
 public class BucketSort {
 
-	public static void main(String[] args) {
-		double array[] = {0.78, 0.17, 0.39, 0.26, 0.72, 0.94, 0.21, 0.12, 0.23, 0.68};
-		bucketSort(array);
-		for (double anArray : array) {
-			System.out.print(anArray + " ");
-		}
-	}
+    private static void bucketSort(int[] keys, int bucketSize) {
+        int size = keys.length;
+        Node[] bucket = new Node[bucketSize];
+        for (int i = 0; i < bucketSize; i++) {
+            bucket[i] = new Node();
+        }
 
-	private static void bucketSort(double[] array) {
+        for (int i = 0; i < size; i++) {
+            Node node = new Node();
+            node.key = keys[i];
+            int index = keys[i] / 10;
+            Node p = bucket[index];
+            if (p.key == 0) {
+                bucket[index].next = node;
+                bucket[index].key++;
+            } else {
+                // 插入排序，p.next是最小，依次连接
+                while (p.next != null && p.next.key <= node.key) {
+                    p = p.next;
+                }
+                node.next = p.next;
+                p.next = node;
+                bucket[index].key++;
+            }
+        }
 
-		//定义11个元素，下标从0-10
-		Map<Integer, List<Double>> map = new HashMap<Integer, List<Double>>();
+        for (int i = 0; i < bucketSize; i++) {
+            for (Node k = bucket[i].next; k != null; k = k.next) {
+                System.out.print(k.key + " ");
+            }
+        }
+    }
 
-		for (Double v : array) {
-			int decimal = (int) (v * 10);
-			if (null == map.get(decimal)) {
-				map.put(decimal, new ArrayList<Double>());
-			}
-			map.get(decimal).add(v);
-		}
+    static class Node {
+        int key;// 当前桶中数据量
+        Node next;
+    }
 
-		int count = 0;
-		for (Map.Entry<Integer, List<Double>> entry : map.entrySet()) {
-			List<Double> element = entry.getValue();
-			if (CollectionUtils.isNotEmpty(element)) {
-				Collections.sort(element);
-				for (Double aDouble : element) {
-					array[count] = aDouble;
-					count++;
-				}
-			}
-		}
-	}
-
-	//hashmap会根据key生成hashcode放入内部数组中，不能保证放入时的顺序
-	@Test
-	public void testHashMapOrder(){
-		//定义11个元素，下标从0-10
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("a2", "a");
-		map.put("a1", "b");
-		map.put("a3", "b");
-
-		for (Map.Entry<String, String> entry : map.entrySet()) {
-			System.out.println(entry.getKey());
-		}
-	}
+    public static void main(String[] args) {
+        int array[] = {49, 38, 65, 97, 13, 27, 11, 14, 16};
+        bucketSort(array, 10);
+    }
 }

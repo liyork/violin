@@ -23,7 +23,7 @@ public class DynamicBalance {
         map.put("d", new AtomicInteger());
         map.put("e", new AtomicInteger());
 
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             System.out.println(balance1(map));
         }
     }
@@ -47,7 +47,6 @@ public class DynamicBalance {
     }
 
     /**
-     *
      * 从左到右选择一个最小负载的,如果第一个最小则赋值firstValue后，他就是最小的了。
      * 执行结果：abcdeabcdeabcde
      *
@@ -59,9 +58,9 @@ public class DynamicBalance {
         long firstValue = Long.MAX_VALUE;
         Map.Entry<String, AtomicInteger> firstEntry = null;
 
-        for(Map.Entry<String, AtomicInteger> entry : map.entrySet()) {
+        for (Map.Entry<String, AtomicInteger> entry : map.entrySet()) {
             long value = entry.getValue().get();
-            if(value < firstValue) {
+            if (value < firstValue) {
                 firstValue = value;
                 firstEntry = entry;
             }
@@ -84,7 +83,7 @@ public class DynamicBalance {
         List<Integer> blockCountList = new ArrayList<Integer>();
         List<Integer> subsectionList = new ArrayList<Integer>();
 
-        for(String ip : ips) {
+        for (String ip : ips) {
             Integer count = Integer.parseInt(blockCount.get(ip).toString());
             blockCountList.add(count);
             sumBlockCount = sumBlockCount + count;
@@ -92,7 +91,7 @@ public class DynamicBalance {
 
         //分段的开始下标，下个负载从下个分段开始
         int subsectionStartIndex = 0;
-        for(Integer localCount : blockCountList) {
+        for (Integer localCount : blockCountList) {
             //sumBlockCount - localCount，机器本身如果权重阻塞很小，则得到的分段越大
             subsectionStartIndex = subsectionStartIndex + (sumBlockCount - localCount);
             subsectionList.add(subsectionStartIndex);
@@ -101,8 +100,8 @@ public class DynamicBalance {
         Random rand = new Random();
         int randNum = rand.nextInt(subsectionStartIndex);
         //分段大的区间被随机的概率大
-        for(int i = 0; i < subsectionList.size(); i++) {
-            if(randNum < subsectionList.get(i)) {
+        for (int i = 0; i < subsectionList.size(); i++) {
+            if (randNum < subsectionList.get(i)) {
                 j = i;
                 break;
             }

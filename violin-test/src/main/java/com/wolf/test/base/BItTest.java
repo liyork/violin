@@ -27,6 +27,9 @@ public class BItTest {
         i >>>= 1;
         System.out.println(Integer.toBinaryString(i));//01111111111111111111111111111110
         System.out.println(i);
+
+        System.out.println(Integer.toBinaryString(1 << 16) );// 从第一位开始移动，向左移动16位，最后到达左边第17位
+        System.out.println(Integer.toBinaryString((1 << 16) - 1));
     }
 
     @Test
@@ -53,5 +56,11 @@ public class BItTest {
     @Test
     public void replaceMulti() {
         System.out.println(3 << 4);
+    }
+
+    @Test
+    public void testF() {
+        System.out.println(0x7fffffff);
+        System.out.println(Integer.MAX_VALUE);
     }
 }

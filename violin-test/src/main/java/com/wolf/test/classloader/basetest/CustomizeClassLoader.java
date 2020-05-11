@@ -59,6 +59,8 @@ public class CustomizeClassLoader extends ClassLoader {
         this.baseDir = baseDir;
     }
 
+
+
     //自定义classloader需要重写findClass方法
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {

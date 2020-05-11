@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Description:构造方法中尽量不要调用依赖属性，spring构造bean后再解决依赖问题
+ * Description:构造方法中尽量不要调用依赖属性，spring构造bean(实例化)后再解决依赖问题(填充属性)
  * 复杂耗时的逻辑仿造构造器中是不合适的，会影响系统启动速度
  * <br/> Created on 2017/10/17 18:12
  *

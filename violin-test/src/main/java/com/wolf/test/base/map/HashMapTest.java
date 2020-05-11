@@ -1,5 +1,7 @@
 package com.wolf.test.base.map;
 
+import org.junit.Test;
+
 import java.util.*;
 
 /**
@@ -13,8 +15,8 @@ import java.util.*;
 public class HashMapTest {
 
     public static void main(String[] args) {
-        baseTest();
-//        testResize();
+//        baseTest();
+        testResize();
 //        testSetInitialSize();
 //        testTreeifyBinInJdk8();
     }
@@ -47,7 +49,7 @@ public class HashMapTest {
     }
 
     /**
-     * 默认长度16，加载因子是0.75，阈值就是16*0.75=12，当size>=阈值时resize为2倍
+     * 默认长度16，加载因子是0.75，阈值就是16*0.75=12，当size>阈值时resize为2倍
      * 容量一定是2的幂次方
      */
     private static void testResize() {
@@ -100,6 +102,20 @@ public class HashMapTest {
             if (value.size() > 1) {
                 System.out.println("key:" + entry.getKey() + " value:" + value);
             }
+        }
+    }
+
+    //hashmap会根据key生成hashcode放入内部数组中，不能保证放入时的顺序
+    @Test
+    public void testHashMapOrder() {
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("a2", "a");
+        map.put("a1", "b");
+        map.put("a3", "b");
+
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            System.out.println(entry.getKey());
         }
     }
 }
