@@ -3,13 +3,12 @@ package com.wolf.test.base.reflect;
 import com.wolf.test.base.InnerClassAndStaticTest;
 import com.wolf.utils.ArrayUtils;
 import com.wolf.utils.ReflectUtils;
+import io.netty.util.internal.PlatformDependent;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -49,7 +48,7 @@ public class ReflectTest {
         new TestRunClass().test();
     }
 
-    class TestRunClass{
+    class TestRunClass {
         private void test() {
             System.out.println("ReflectTest.test getclass:" + this.getClass());
         }
@@ -507,8 +506,25 @@ public class ReflectTest {
         InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
         Field memberValues = invocationHandler.getClass().getDeclaredField("memberValues");
         memberValues.setAccessible(true);
-        Map map = (Map)memberValues.get(invocationHandler);
+        Map map = (Map) memberValues.get(invocationHandler);
         map.put("domain", "xx123");
         System.out.println(annotation.domain());
     }
+
+    @Test
+    public void testUpdateFinal() throws Exception {
+        System.out.println(PlatformDependent.BIG_ENDIAN_NATIVE_ORDER);
+
+        Class<PlatformDependent> clazz = PlatformDependent.class;
+        Field field = clazz.getDeclaredField("BIG_ENDIAN_NATIVE_ORDER");
+        field.setAccessible(true);
+
+        Field modifiers = field.getClass().getDeclaredField("modifiers");
+        modifiers.setAccessible(true);
+        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(null, true);
+
+        System.out.println(PlatformDependent.BIG_ENDIAN_NATIVE_ORDER);
+    }
+
 }

@@ -1,14 +1,14 @@
 package com.wolf.test.netty.inaction.customprotocol;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.UnpooledByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 import java.net.InetSocketAddress;
 
@@ -38,7 +38,7 @@ public class EchoServer {
                             ch.config().setAllocator(PooledByteBufAllocator.DEFAULT);
 
                             System.out.println("connected...; Client:" + ch.remoteAddress());
-                            //用4个字节表示整个包的长度，并且废弃掉这四个字节。
+                            //用4个字节表示整个包的长度，并且跳过这四个字节。
                             ch.pipeline().addLast(new MyLengthFieldBasedFrameDecoder(1024 * 1024, 0, 4, 0, 4))
                                     .addLast(new EchoServerHandler());//todo 这还有顺序？
                         }

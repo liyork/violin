@@ -11,7 +11,7 @@ import org.junit.Test;
 public class MathTest {
 
     // 坐标轴  ------ 0 ++++++
-    // 正数，四舍向左移动，五入向右移动。负数，六以上向左移动，五以下向右移动
+    // 正数，四舍五入。负数，六以上向左移动，五及以下向右移动
     @Test
     public void testRound() {
         System.out.println(Math.round(1.4));

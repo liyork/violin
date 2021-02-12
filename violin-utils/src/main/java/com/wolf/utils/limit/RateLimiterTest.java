@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Description:容量是固定的，按照比率进行放入，取出时根据已有存量使用
+ * 每次访问时验证消逝时间若>0则重新生成令牌，对于并发可能就不一定每个线程都消逝时间>0则只有一个线程生成。
  * <br/> Created on 2018/6/22 11:40
  *
  * @author 李超
@@ -20,38 +21,31 @@ public class RateLimiterTest {
          * 创建一个限流器，设置每秒放置的令牌数：2个。速率是每秒可以2个的消息。
          * 返回的RateLimiter对象可以保证1秒内不会给超过2个令牌，并且是固定速率的放置。达到平滑输出的效果
          */
-        RateLimiter r = RateLimiter.create(2);//固定频率放入，没人取也放入
+        RateLimiter r = RateLimiter.create(2);//每秒放入数量
 
         for (int i = 0; i < 10; i++) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        /**
-                         * acquire()获取一个令牌，并且返回这个获取这个令牌所需要的时间。如果桶里没有令牌则等待，直到有令牌。
-                         * acquire(N)可以获取多个令牌。
-                         */
-                        double acquire = r.acquire(1);
-                        //可以看到时间，1s内只有两个线程
-                        System.out.println(DateUtils.format(new Date()) + "_" + Thread.currentThread().getName() + "_" + acquire);
-                    }
+            new Thread(() -> {
+                while (true) {
+                    /**
+                     * acquire()获取一个令牌，如果桶里没有令牌则等待，直到有令牌，并且返回这个获取这个令牌已等待的时间。
+                     * acquire(N)可以获取多个令牌。
+                     */
+                    double acquire = r.acquire(1);
+                    //可以看到时间，1s内只有两个线程
+                    System.out.println(DateUtils.format(new Date()) + "_" + Thread.currentThread().getName() + "_" + acquire);
                 }
             }).start();
         }
     }
 
-
     public static void testTryAcquire() {
         RateLimiter r = RateLimiter.create(2);
 
         for (int i = 0; i < 10; i++) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        boolean isAcquire = r.tryAcquire(1);
-                        System.out.println(DateUtils.format(new Date()) + "_" + Thread.currentThread().getName() + "_" + isAcquire);
-                    }
+            new Thread(() -> {
+                while (true) {
+                    boolean isAcquire = r.tryAcquire(1);
+                    System.out.println(DateUtils.format(new Date()) + "_" + Thread.currentThread().getName() + "_" + isAcquire);
                 }
             }).start();
         }
@@ -76,7 +70,7 @@ public class RateLimiterTest {
         while (true) {
             System.out.println(r.acquire(1));//取一个
             Thread.sleep(5000);
-            System.out.println(r.acquire(1));//还有2个(已有的+等待时补充的),取1个,用时0.0
+            System.out.println(r.acquire(1));//还有2个(已有的+等待5s时补充的),取1个,用时0.0
             System.out.println(r.acquire(1));//还有2个(等待时补充的),取1个,用时0.0
             System.out.println(r.acquire(1));//还有1个(新放的),取1个,用时0.0
             System.out.println(r.acquire(1));//没了等0.5s
@@ -151,7 +145,7 @@ public class RateLimiterTest {
 //        testAbruptMore();
 //        testAbruptLess();
 //        testAbruptLess2();
-//        testNoCache();
-        testCache();
+        testNoCache();
+//        testCache();
     }
 }

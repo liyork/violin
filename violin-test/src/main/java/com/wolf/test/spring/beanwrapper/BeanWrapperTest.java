@@ -97,25 +97,6 @@ public class BeanWrapperTest {
 	}
 
 	@Test
-	public void testInstanceOf() {
-		String x = "x";
-		//支持多层
-		print(String.class.isInstance(x), Object.class.isInstance(x), Math.class.isInstance(x));
-		//支持多层
-		print(x instanceof String, x instanceof Object, String.class.isAssignableFrom(x.getClass()));
-		System.out.println(Object.class.isAssignableFrom(x.getClass()));
-		System.out.println(Math.class.isAssignableFrom(x.getClass()));
-
-		print(int.class.isPrimitive(), String.class.isPrimitive(), Company.class.isPrimitive());
-	}
-
-	private void print(boolean primitive, boolean primitive2, boolean primitive3) {
-		System.out.println(primitive);
-		System.out.println(primitive2);
-		System.out.println(primitive3);
-	}
-
-	@Test
 	public void testModifier() {
 		Company company = new Company();
 		BeanWrapperImpl beanWrapper = new BeanWrapperImpl(company);

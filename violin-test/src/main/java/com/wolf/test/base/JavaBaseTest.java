@@ -55,6 +55,8 @@ public class JavaBaseTest {
         float b = 0.3f;
         System.out.println(a == b);
 
+        System.out.println();
+        // 有些浮点数不能完全精确的表示出来
         double a1 = 3 * 0.1;
         double b1 = 0.3;
         System.out.println(a1);
@@ -73,6 +75,35 @@ public class JavaBaseTest {
         }
 
         System.out.println(a);
+    }
+
+    // 支持跨层属于
+    @Test
+    public void testInstanceOf() {
+        String x = "x";
+        print(String.class.isInstance(x), Object.class.isInstance(x), Math.class.isInstance(x));
+        print(x instanceof String, x instanceof Object, String.class.isAssignableFrom(x.getClass()));
+        System.out.println(Object.class.isAssignableFrom(x.getClass()));
+        System.out.println(Math.class.isAssignableFrom(x.getClass()));
+
+        // 变量必须是引用类型，不能是基本类型
+//        int a = 1;
+//        System.out.println(a instanceof Integer);
+//        System.out.println(a instanceof Object);
+
+        Integer a = 1;
+        System.out.println(a instanceof Integer);
+        System.out.println(a instanceof Object);
+
+        System.out.println();
+        print(int.class.isPrimitive(), String.class.isPrimitive(), JavaBaseTest.class.isPrimitive());
+    }
+
+    private void print(boolean primitive, boolean primitive2, boolean primitive3) {
+        System.out.println(primitive);
+        System.out.println(primitive2);
+        System.out.println(primitive3);
+        System.out.println();
     }
 
 }

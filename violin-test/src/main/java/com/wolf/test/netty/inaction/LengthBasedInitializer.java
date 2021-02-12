@@ -11,10 +11,10 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
  * LengthFieldBasedFrameDecoder(32 * 1024, 2, 4, -4, 6);
  *
  * 魔数  总长度(包括fieldLength长度+data)   内容字节
- *  2    4       16
+ *  2    4       16              xxx
  * |--|----|----------------|
  *
- * 若是lengthFieldLength包含字节在内，则lengthAdjustment需要为负值，即调整
+ * 若是lengthFieldLength包含字节在[总长度]内，则lengthAdjustment需要为负值，即调整
  *
  * 原理：
  * lengthFieldEndOffset(6) = lengthFieldOffset(2) + lengthFieldLength(4); // lengthField所在结尾

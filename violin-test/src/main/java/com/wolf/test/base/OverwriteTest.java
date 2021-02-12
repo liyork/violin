@@ -10,8 +10,8 @@ package com.wolf.test.base;
 public class OverwriteTest {
 
     class ParentA {
-        public void test(String s) throws Exception {
-
+        public Number test(String s) throws Exception {
+            return 1;
         }
     }
 
@@ -22,9 +22,16 @@ public class OverwriteTest {
 //            return "aa";
 //        }
 
-        //只允许抛出比父类若的异常类型，不能强于父类如Throwable
+        //只允许抛出比父类弱的异常类型，不能强于父类，如Throwable
+//        @Override
+//        public Number test(String s) throws RuntimeException {
+//            return 2;
+//        }
+
+        // 子类抛出异常必须等同父类的异常或子类异常
         @Override
-        public void test(String s) throws RuntimeException {
+        public Integer test(String s) throws RuntimeException {
+            return 2;
         }
     }
 }

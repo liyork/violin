@@ -5,16 +5,10 @@ import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.junit.Test;
 
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Description:相比较nio使用position，通过两个位置指针操作，互不影响
@@ -39,19 +33,21 @@ public class ByteBufTest {
     }
 
     private ByteBuf getHeapBuf() {
+        //UnpooledByteBufAllocator$InstrumentedUnpooledUnsafeHeapByteBuf(ridx: 0, widx: 12, cap: 256)
         ByteBuf byteBuf = Unpooled.buffer();
-        byteBuf.writeInt(1);
+        byteBuf.writeInt(1);// 4byte
         byteBuf.writeInt(2);
         byteBuf.writeInt(3);
-        if (byteBuf.hasArray()) {
+        if (byteBuf.hasArray()) {//InstrumentedUnpooledUnsafeHeapByteBuf.hasArray永远返回true
             byte[] array = byteBuf.array();
             int offset = byteBuf.arrayOffset();
             int length = byteBuf.readableBytes();
             System.out.println(offset + " " + length + " " + array.length);
 
-            for (int i = 0; i < byteBuf.capacity(); i++) {
-                System.out.println((char) byteBuf.getByte(i));//does not modify readerIndex or writerIndex of this buffer.
-            }
+//            for (int i = 0; i < length; i++) {
+//                System.out.println((char) byteBuf.getByte(i));//does not modify readerIndex or writerIndex of this buffer.
+//            }
+            System.out.println(byteBuf.getInt(0) + " " + byteBuf.getInt(4) + " " + byteBuf.getInt(8));//does not modify readerIndex or writerIndex of this buffer.
         }
         return byteBuf;
     }
@@ -59,15 +55,15 @@ public class ByteBufTest {
     @Test
     public void testDirectBuf() {
         getDirectBuf();
-
     }
 
     private ByteBuf getDirectBuf() {
+        // UnpooledByteBufAllocator$InstrumentedUnpooledUnsafeNoCleanerDirectByteBuf(ridx: 0, widx: 0, cap: 256)
         ByteBuf byteBuf = Unpooled.directBuffer();
         byteBuf.writeInt(1);
         byteBuf.writeInt(2);
         byteBuf.writeInt(3);
-        System.out.println(byteBuf.hasArray());
+        System.out.println(byteBuf.hasArray());// InstrumentedUnpooledUnsafeNoCleanerDirectByteBuf.hasArray永远返回false
 
         byte[] array = new byte[byteBuf.readableBytes()];
         byteBuf.getBytes(0, array);
@@ -77,10 +73,11 @@ public class ByteBufTest {
 
     @Test
     public void testCompositeBuf() {
+        // CompositeByteBuf
         CompositeByteBuf byteBuf = Unpooled.compositeBuffer();
         byteBuf.addComponent(getHeapBuf());
         byteBuf.addComponent(getDirectBuf());
-        System.out.println(byteBuf.hasArray());
+        System.out.println(byteBuf.hasArray());// CompositeByteBuf.hasArray依据components.size()
 
         for (Iterator<ByteBuf> it = byteBuf.iterator(); it.hasNext(); ) {
             Object o = it.next();
@@ -112,6 +109,7 @@ public class ByteBufTest {
         System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
     }
 
+    // readerIndex = writerIndex = 0
     @Test
     public void testClear() throws UnsupportedEncodingException {
         ByteBuf byteBuf = Unpooled.buffer();
@@ -190,6 +188,7 @@ public class ByteBufTest {
 
         byteBuf.readInt();
 
+        // 从int fromIndex, int toIndex找value
         int i1 = byteBuf.indexOf(0, byteBuf.capacity(), (byte) 3);
         System.out.println(i1);
         System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
@@ -200,9 +199,10 @@ public class ByteBufTest {
         System.out.println(byteBuf.arrayOffset() + " " + byteBuf.readerIndex() + " " + byteBuf.writerIndex());
     }
 
-    //引用一个，create a view of an existing buffer
+    // 底层引用一个，create a view of an existing buffer
     @Test
     public void testSlice() throws UnsupportedEncodingException {
+        // 0~22
         ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in action rocks!", charset);
         ByteBuf slice = byteBuf.slice(0, 14);
         System.out.println(slice.toString(charset));
@@ -212,10 +212,9 @@ public class ByteBufTest {
         System.out.println(slice.getByte(0) == byteBuf.getByte(0));
     }
 
-    //两个对象
+    //两个对象,修改之一互不影响
     @Test
     public void testCopy() throws UnsupportedEncodingException {
-
         ByteBuf byteBuf = Unpooled.copiedBuffer("Netty in action rocks!", charset);
         ByteBuf copy = byteBuf.copy(0, 14);
         System.out.println(copy.toString(charset));
@@ -345,17 +344,22 @@ public class ByteBufTest {
     public void testRefCount() throws Exception {
         ByteBuf byteBuf = Unpooled.buffer(2);
 
+        // Increases the reference count by 1
         byteBuf.retain();
 
         byteBuf.writeInt(2);
         byteBuf.writeInt(3);
 
-        byteBuf.release();
+        // Decreases the reference count by 1 and deallocates this object if the reference count reaches at 0
+        // getAndAdd(-1),返回0则true
         boolean release = byteBuf.release();
         System.out.println(release);
 
+        release = byteBuf.release();
+        System.out.println(release);
+
         System.out.println(byteBuf.readerIndex() + " " + byteBuf.writerIndex());
-        int i = byteBuf.readInt();//异常IllegalReferenceCountException: refCnt: 0s
+        byteBuf.readInt();//异常IllegalReferenceCountException: refCnt: 0s,被释放成0后就不能再用了
     }
 
     @Test
@@ -374,4 +378,49 @@ public class ByteBufTest {
         System.out.println(byteBuffer.position() + " " + byteBuffer.limit());
     }
 
+
+    @Test
+    public void testSimpleUse() {
+        ByteBuf buf = Unpooled.buffer(10);
+        System.out.println("buf.toString====================>" + buf.toString());
+        System.out.println("ByteBuf中的内容为===============>" + Arrays.toString(buf.array()) + "\n");
+
+        byte[] bytes = {1, 2, 3, 4, 5};
+        buf.writeBytes(bytes);
+        System.out.println("写入内容后buf.toString===========>" + buf.toString());
+        System.out.println("ByteBuf中的内容为===============>" + Arrays.toString(buf.array()) + "\n");
+
+        byte b1 = buf.readByte();
+        byte b2 = buf.readByte();
+        System.out.println("读取的bytes为====================>" + Arrays.toString(new byte[]{b1, b2}));
+        System.out.println("读取一段内容后buf.toString===========>" + buf.toString());
+        System.out.println("ByteBuf中的内容为===============>" + Arrays.toString(buf.array()) + "\n");
+
+        buf.discardReadBytes();
+        System.out.println("将读取的内容丢弃后buf.toString========>" + buf.toString());// 未读的不被丢弃
+        System.out.println("ByteBuf中的内容为===============>" + Arrays.toString(buf.array()) + "\n");
+
+        // 只清指针
+        buf.clear();
+        System.out.println("clear后buf.toString==========>" + buf.toString());
+        System.out.println("ByteBuf中的内容为===============>" + Arrays.toString(buf.array()) + "\n");
+
+        byte[] bytes2 = {1, 2, 3};
+        buf.writeBytes(bytes2);
+        System.out.println("再写入的bytes====================>" + Arrays.toString(bytes2));
+        System.out.println("写入一段内容后buf.toString===========>" + buf.toString());
+        System.out.println("ByteBuf中的内容为===============>" + Arrays.toString(buf.array()) + "\n");
+
+        // 从index位置清理len数据为0,ridx,widx不变
+        buf.setZero(0, buf.capacity());
+        System.out.println("将内容清零后buf.toString==============>" + buf.toString());
+        System.out.println("ByteBuf中的内容为================>" + Arrays.toString(buf.array()) + "\n");
+
+        // 扩容
+        byte[] bytes3 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+        buf.writeBytes(bytes3);
+        System.out.println("再写入的bytes为====================>" + Arrays.toString(bytes3));
+        System.out.println("写入一段内容后buf.toString===========>" + buf.toString());
+        System.out.println("8.ByteBuf中的内容为===============>" + Arrays.toString(buf.array()) + "\n");
+    }
 }

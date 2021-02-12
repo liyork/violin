@@ -94,16 +94,23 @@ public class ByteTest {
         int i1 = (byte) 0b11111111;
         System.out.println(i1);
 
-        // -128比较特殊，规定-0的值代表，+0则表示0
+        // -128比较特殊，规定-0的值代表
         int i2 = (byte) 0b10000000;
         System.out.println(i2);
 
+        // +0则表示0
         int i3 = (byte) 0b00000000;
         System.out.println(i3);
 
         // 溢出，进位舍去最高位
         byte a = (byte) ((byte) 0b01111111 + 1);
         System.out.println(a);
+
+        int i4 = (byte) 0b00000001;
+        System.out.println(i4);
+
+        int i5 = (byte) 0b01111111;
+        System.out.println(i5);
     }
 
     @Test

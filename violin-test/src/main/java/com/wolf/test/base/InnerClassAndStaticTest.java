@@ -82,6 +82,16 @@ class OuterClass {
         InnerClassAndStaticTest.StaticInnerClass staticInnerClass = new InnerClassAndStaticTest.StaticInnerClass();
         staticInnerClass.test();
 
+        String a1 = "b";
+        // 1.8中若是没有下面赋值，则不会报错,但是innerclass中使用外部变量是要求final即不能变的常量。
+//        a1 = "c";
+        new Thread() {
+            @Override
+            public void run() {
+                System.out.println(a1);
+            }
+        }.start();
+
     }
 
 }

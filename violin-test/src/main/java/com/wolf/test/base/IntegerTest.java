@@ -15,5 +15,7 @@ public class IntegerTest {
         // integer不可变，导致++会将新值2赋予b
         Integer c = b++;
         System.out.println(a + "_" + b + "_" + c);
+
+        System.out.println(Integer.TYPE);
     }
 }
