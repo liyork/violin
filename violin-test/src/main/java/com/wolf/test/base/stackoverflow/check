@@ -24,7 +24,7 @@ java.lang.StackOverflowError
 	at java.lang.ClassLoader.loadClass(ClassLoader.java:411)
 	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)
 	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
-	at com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:46)  --这个是错误的根源
+	at com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:46)  --这个是错误的根源
 
 
 去掉46 的System.out.println("xxxxxxxxxxx q1:"+q);得到
@@ -35,7 +35,7 @@ java.lang.StackOverflowError
 	at java.util.concurrent.locks.ReentrantLock$Sync.tryRelease(ReentrantLock.java:149)
 	at java.util.concurrent.locks.AbstractQueuedSynchronizer.release(AbstractQueuedSynchronizer.java:1261)
 	at java.util.concurrent.locks.ReentrantLock.unlock(ReentrantLock.java:457)
-	at com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:47)
+	at com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:47)
 
 错了。
 java.lang.StackOverflowError
@@ -65,7 +65,7 @@ java.lang.StackOverflowError
 	at java.lang.ClassLoader.loadClass(ClassLoader.java:411)
 	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)
 	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
-	at com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:45)
+	at com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:45)
 从异常看，应该是最后一次调用plus时触发了StackOverFlow，然后打印yyyyyyyy然后 e.printStackTrace然后执行finnaly
 哦，不是，是倒数第二次执行plus然后内部调用plus，执行System.out.println("yyyyyyyy,");然后又触发了StackOverFlow
 不对啊，没有异常为什么会进入catch？还是得现有异常然后，打印yyyyyyyy然后打印e.printStackTrace时就打印出了当前异常栈
@@ -84,8 +84,8 @@ java.lang.ClassLoader.loadClass(ClassLoader.java:404)
 java.lang.ClassLoader.loadClass(ClassLoader.java:411)
 sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)
 java.lang.ClassLoader.loadClass(ClassLoader.java:357)
-com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:48)
-com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:43)
+com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:48)
+com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:43)
 
 
 但是
@@ -112,7 +112,7 @@ java.lang.StackOverflowError
 	at java.lang.ClassLoader.loadClass(ClassLoader.java:411)
 	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)
 	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
-	at com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:46)
+	at com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:46)
 这种日志，是不是由于System.out.println导致的二次溢出?
 直接打印e.printStackTrace();不行。
 
@@ -130,7 +130,7 @@ java.lang.StackOverflowError
 	at java.util.concurrent.locks.ReentrantLock$Sync.tryRelease(ReentrantLock.java:149)
 	at java.util.concurrent.locks.AbstractQueuedSynchronizer.release(AbstractQueuedSynchronizer.java:1261)
 	at java.util.concurrent.locks.ReentrantLock.unlock(ReentrantLock.java:457)
-	at com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:51)
+	at com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:51)
 
 是不是说明，在最后一次调用溢出之后执行了本次的finnaly，但是由于执行lock.unlock();又产生了溢出?
 
@@ -144,9 +144,9 @@ java.lang.ClassLoader.loadClass(ClassLoader.java:404)
 java.lang.ClassLoader.loadClass(ClassLoader.java:411)
 sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)
 java.lang.ClassLoader.loadClass(ClassLoader.java:357)
-com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:49)
-com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:45)
-com.jd.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:45)
+com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:49)
+com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:45)
+com.xx.jsf.gd.registry.StackOverFlow.plus(StackOverFlow.java:45)
 
 i++;放在try之外最后的finnaly就是i=1
 这能不能证明是调用lock时发生了意外，但是try并没有包住，然后finnaly就少了一次！
