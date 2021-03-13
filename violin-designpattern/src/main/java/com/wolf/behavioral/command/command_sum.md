@@ -6,6 +6,8 @@ The Command1 class implements the Command interface by performing an action on a
 The UML sequence diagram shows the run-time interactions: The Invoker object calls execute() on a Command1 object. 
 Command1 calls action1() on a Receiver1 object, which performs the request.
 
+关键是command内部自己可以完成好自己的功能，对于外界仅仅是一个触发机制
+
 users
 GUI buttons and menu items 
 In Swing and Borland Delphi programming, an Action is a command object. In addition to the ability to 
@@ -24,6 +26,7 @@ an internal queue of tasks waiting to be done. It maintains a pool of threads th
 queue. The items in the queue are command objects. Typically these objects implement a common interface such
  as java.lang.Runnable that allows the thread pool to execute the command even though the thread pool class 
  itself was written without any knowledge of the specific tasks for which it would be used.
+
 Transactional behavior 
 Similar to undo, a database engine or software installer may keep a list of operations that have been or will 
 be performed. Should one of them fail, all others can be reversed or discarded (usually called rollback). For
