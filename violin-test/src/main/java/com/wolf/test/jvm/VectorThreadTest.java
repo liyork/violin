@@ -17,12 +17,9 @@ public class VectorThreadTest {
 
         int i =0;
         while (i <20) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i = 0; i < 10; i++) {
-                        vector.remove(i);
-                    }
+            new Thread(() -> {
+                for (int i1 = 0; i1 < 10; i1++) {
+                    vector.remove(i1);
                 }
             }, "remove thread").start();
 
