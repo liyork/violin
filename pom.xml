@@ -14,8 +14,8 @@
         <module>violin-designpattern</module>
         <module>violin-mybatis</module>
         <module>violin-onehundredfive</module>
-		<module>violin-webtest</module>
-		<module>violin-springmvc</module>
+        <module>violin-webtest</module>
+        <module>violin-springmvc</module>
         <module>violin-testassembly</module>
         <module>violin-datealgorithm</module>
         <module>dependence</module>
@@ -30,6 +30,7 @@
         <slf4j.version>1.7.2</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
         <spring.version>4.1.6.RELEASE</spring.version>
+        <jackson.version>2.11.3</jackson.version>
     </properties>
 
     <!--用来提供了一种方式来统一依赖版本号-->
@@ -40,14 +41,44 @@
                 <artifactId>zookeeper</artifactId>
                 <version>3.4.6</version>
             </dependency>
+
+            <!--jackson-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
         <!--<dependency>-->
-            <!--<groupId>log4j</groupId>-->
-            <!--<artifactId>log4j</artifactId>-->
-            <!--<version>1.2.17</version>-->
+        <!--<groupId>log4j</groupId>-->
+        <!--<artifactId>log4j</artifactId>-->
+        <!--<version>1.2.17</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -137,7 +168,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.3.2</version>
         </dependency>
-
 
 
         <dependency>
@@ -285,8 +315,10 @@
         <resources>
             <resource>
                 <!--<targetPath></targetPath> 指定build资源到哪个目录，默认是base directory-->
-                <directory>src/main/resources</directory><!--build的过程用的文件，并且将其放到targetPath下，默认的directory是${basedir}/src/main/resources-->
-                <filtering>true</filtering><!--filtering:指定是否将filter文件(即build下的filters里定义的property文件)的变量值在这个resource文件有效-->
+                <directory>src/main/resources
+                </directory><!--build的过程用的文件，并且将其放到targetPath下，默认的directory是${basedir}/src/main/resources-->
+                <filtering>true
+                </filtering><!--filtering:指定是否将filter文件(即build下的filters里定义的property文件)的变量值在这个resource文件有效-->
             </resource>
         </resources>
 
@@ -305,8 +337,8 @@
                         <showWarnings>true</showWarnings>
                         <!--没有下面，报错误: 找不到符号 [ERROR] 符号:   类 ByteInputStream-->
                         <!--<compilerArguments>-->
-                            <!--<verbose/>-->
-                            <!--<bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>-->
+                        <!--<verbose/>-->
+                        <!--<bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>-->
                         <!--</compilerArguments>-->
                     </configuration>
                 </plugin>
@@ -329,17 +361,17 @@
 
                 <!--生成Javadoc包,mac上死活找不到JAVA_HOME暂时注掉-->
                 <!--<plugin>-->
-                    <!--<groupId>org.apache.maven.plugins</groupId>-->
-                    <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-                    <!--<version>2.7</version>-->
-                    <!--<executions>-->
-                        <!--<execution>-->
-                            <!--<id>attach-javadocs</id>-->
-                            <!--<goals>-->
-                                <!--<goal>jar</goal>-->
-                            <!--</goals>-->
-                        <!--</execution>-->
-                    <!--</executions>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-javadoc-plugin</artifactId>-->
+                <!--<version>2.7</version>-->
+                <!--<executions>-->
+                <!--<execution>-->
+                <!--<id>attach-javadocs</id>-->
+                <!--<goals>-->
+                <!--<goal>jar</goal>-->
+                <!--</goals>-->
+                <!--</execution>-->
+                <!--</executions>-->
                 <!--</plugin>-->
             </plugins>
         </pluginManagement>

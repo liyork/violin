@@ -1,0 +1,25 @@
+<Class>
+    <Teacher>
+        <Name>t1name</Name>
+        <Gender>1</Gender>
+        <Age>25</Age>
+        <TypeCode type="0">t1value</TypeCode>
+    </Teacher>
+    <Students>
+        <Stu stu_id="001">
+            <Name>s1name</Name>
+            <Gender>1</Gender>
+            <Age>18</Age>
+        </Stu>
+        <Stu stu_id="002">
+            <Name>s2name</Name>
+            <Gender>1</Gender>
+            <Age>18</Age>
+        </Stu>
+        <Stu stu_id="003">
+            <Name>s3name</Name>
+            <Gender>0</Gender>
+            <Age>18</Age>
+        </Stu>
+    </Students>
+</Class>
