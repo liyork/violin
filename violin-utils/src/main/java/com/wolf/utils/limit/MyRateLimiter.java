@@ -20,7 +20,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.checkerframework.checker.nullness.compatqual.MonotonicNonNullDecl;
+//import org.checkerframework.checker.nullness.compatqual.MonotonicNonNullDecl;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -183,7 +183,8 @@ public abstract class MyRateLimiter {
     private final SleepingStopwatch stopwatch;
 
     // Can't be initialized in the constructor because mocks don't call the constructor.
-    @MonotonicNonNullDecl private volatile Object mutexDoNotUseDirectly;
+    //@MonotonicNonNullDecl
+    private volatile Object mutexDoNotUseDirectly;
 
     private Object mutex() {
         Object mutex = mutexDoNotUseDirectly;

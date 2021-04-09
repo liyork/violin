@@ -78,3 +78,10 @@ a、创建请求pdu，即创建PDU类的对象，调用PDU类中的add()方法�
 b、通过PDU的构造方法  public SNMP(TransportMapping transportingMapping),或者其他构造方法来生成pdu,之后调用 ResopnseEvent send(PDU pdu,Target target)发送pdu，该方法返回一个ResponseEvent对象
 ⑦、通过ResponseEvent对象来获得SNMP请求的应答pdu，方法：public PDU getResponse()
 ⑧、通过应答pdu获得mib信息（之前绑定的OID的值），方法：VaribleBinding get（int index）
+
+六、
+1. 核心对象SNMP的初始化
+2. 核心对象Target
+   CommunityTarget用于SNMPv1和SNMPv2c这两个版本，而UserTarget用于SNMPV3版本
+3. 核心对象PDU
+   PDUv1用于SNMPv1和SNMPv2c这两个版本，而ScopedPDU用于SNMPV3版本
