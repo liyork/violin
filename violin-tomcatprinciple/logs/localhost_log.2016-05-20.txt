@@ -1,7 +1,0 @@
-2016-05-20 00:18:46 HostConfig[localhost]: Deploying web application directory myadmin
-2016-05-20 00:18:46 StandardHost[localhost]: Installing web application at context path /myadmin from URL file:D:\intellijWrkSpace\mybatistest\webapps\myadmin
-2016-05-20 00:18:46 WebappLoader[/myadmin]: Deploying class repositories to work directory D:\intellijWrkSpace\mybatistest\work\Standalone\localhost\myadmin
-2016-05-20 00:18:46 WebappLoader[/myadmin]: Deploy class files /WEB-INF/classes to D:\intellijWrkSpace\mybatistest\webapps\myadmin\WEB-INF\classes
-2016-05-20 00:18:46 ContextConfig[/myadmin]: Missing default web.xml, using application web.xml only
-2016-05-20 00:18:49 StandardManager[/myadmin]: Seeding random number generator class java.security.SecureRandom
-2016-05-20 00:18:49 StandardManager[/myadmin]: Seeding of random number generator has been completed

@@ -11,13 +11,7 @@
     <modules>
         <module>violin-utils</module>
         <module>violin-test</module>
-        <module>violin-designpattern</module>
-        <module>violin-mybatis</module>
-        <module>violin-onehundredfive</module>
-        <module>violin-webtest</module>
-        <module>violin-springmvc</module>
         <module>violin-testassembly</module>
-        <module>violin-datealgorithm</module>
         <module>dependence</module>
     </modules>
 
@@ -116,13 +110,6 @@
             <type>pom</type>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -135,6 +122,11 @@
             <version>1.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

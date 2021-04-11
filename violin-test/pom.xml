@@ -364,30 +364,30 @@
             </plugin>
 
             <!--根据schema生成java代码-->
-            <plugin>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro-maven-plugin</artifactId>
-                <version>1.7.7</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <!-- Schema序列化 -->
-                            <!-- <goal>schema</goal> -->
-                            <!-- RPC协议通讯 -->
-                            <goal>protocol</goal>
-                        </goals>
-                        <configuration>
-                            <!-- 源目录，用于存放 avro的schema文件及protocol文件 -->
-                            <sourceDirectory>../../violin-bigdate/src/main/resources/avro/</sourceDirectory>
-                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
-                        </configuration>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.avro</groupId>-->
+<!--                <artifactId>avro-maven-plugin</artifactId>-->
+<!--                <version>1.7.7</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <goals>-->
+<!--                            &lt;!&ndash; Schema序列化 &ndash;&gt;-->
+<!--                            &lt;!&ndash; <goal>schema</goal> &ndash;&gt;-->
+<!--                            &lt;!&ndash; RPC协议通讯 &ndash;&gt;-->
+<!--                            <goal>protocol</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            &lt;!&ndash; 源目录，用于存放 avro的schema文件及protocol文件 &ndash;&gt;-->
+<!--                            <sourceDirectory>../../violin-bigdate/src/main/resources/avro/</sourceDirectory>-->
+<!--                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>-->
+<!--                        </configuration>-->
 
-                    </execution>
+<!--                    </execution>-->
 
-                </executions>
+<!--                </executions>-->
 
-            </plugin>
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>
