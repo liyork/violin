@@ -1,5 +1,6 @@
 package com.wolf.test.base;
 
+import com.sun.tools.doclets.internal.toolkit.util.PackageListWriter;
 import org.junit.Test;
 
 /**
@@ -28,7 +29,7 @@ public class BItTest {
         System.out.println(Integer.toBinaryString(i));//01111111111111111111111111111110
         System.out.println(i);
 
-        System.out.println(Integer.toBinaryString(1 << 16) );// 从第一位开始移动，向左移动16位，最后到达左边第17位
+        System.out.println(Integer.toBinaryString(1 << 16));// 从第一位开始移动，向左移动16位，最后到达左边第17位
         System.out.println(Integer.toBinaryString((1 << 16) - 1));
     }
 

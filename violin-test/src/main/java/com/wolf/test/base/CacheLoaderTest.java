@@ -57,7 +57,7 @@ public class CacheLoaderTest {
                 .build(new CacheLoader<Integer, String>() {
                     public String load(Integer key) throws InterruptedException { // no checked exception
                         System.out.println(Thread.currentThread().getName() + " load ..");
-                        Thread.sleep(2000);
+                        Thread.sleep(5000);
                         return key.toString();
                     }
                 });
@@ -79,7 +79,10 @@ public class CacheLoaderTest {
                 }
             }
         }).start();
-        cache.get(1);
+
+        String s = cache.get(1);
+        s = cache.get(1);
+        System.out.println("main s:" + s);
     }
 
     // 这样也不会重复load
@@ -140,7 +143,10 @@ public class CacheLoaderTest {
                 .build(new CacheLoader<Integer, String>() {
                     public String load(Integer key) {
                         System.out.println("load .." + key);
-                        blockingQueue.add(key);
+                        boolean add = blockingQueue.add(key);
+                        if (!add) {
+                            System.out.println("queue is full!");
+                        }
                         return "-1";// 默认正在查询
                     }
                 });
@@ -176,7 +182,7 @@ public class CacheLoaderTest {
             Thread.sleep(100);
         }
 
-        // 写
+        // 写，后台查询线程
         Thread writeThread = new Thread(() -> {
             while (true) {
                 try {
@@ -241,7 +247,6 @@ public class CacheLoaderTest {
         //                return "-1";
         //            }
         //        }, Executors.newSingleThreadExecutor()));
-
 
         // 方式2
         ListeningExecutorService backgroundRefreshPools =
