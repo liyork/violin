@@ -16,4 +16,12 @@ public class StringBuilderTest {
         s.reverse();
         System.out.println(s);
     }
+
+    @Test
+    public void testClear() {
+        StringBuilder s = new StringBuilder("abcde");
+        System.out.println(s);
+        s.setLength(0);
+        System.out.println(s);
+    }
 }
