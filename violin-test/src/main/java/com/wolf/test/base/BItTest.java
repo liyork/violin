@@ -64,4 +64,18 @@ public class BItTest {
         System.out.println(0x7fffffff);
         System.out.println(Integer.MAX_VALUE);
     }
+
+    @Test
+    public void testComplement() {
+        // java中byte是8位，范围是-128~127之间,
+        // int是32bit，在转化前需将高24位置零，这样就不会出现补码导致的转换错误。
+        // 存储在计算机中的数据是以补码形式(正数补码是正数，负数补码是负数的二进制取反+1)
+
+        byte by = (byte) 200;
+        System.out.println(by);
+        // 200在int中占用32位，而第一位是0，所以是正数，而转换成byte仅仅用到最后8位，所以变成了
+        // 11001000  --这个对于byte就是负数，所以要转成补码
+        // 00110111+1  --取反+1
+        // 00111000  --得到-56
+    }
 }
