@@ -1,4 +1,4 @@
-package com.xx.baseModules.openAPI.core.manage;
+package com.xxx.baseModules.openAPI.core.manage;
 
 import java.io.Serializable;
 

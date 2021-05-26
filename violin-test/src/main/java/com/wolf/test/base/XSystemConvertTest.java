@@ -3,16 +3,16 @@ package com.wolf.test.base;
 import org.junit.Test;
 
 /**
- * Description:
+ * Description: 进制转换
  * Created on 2021/4/22 9:59 AM
  *
  * @author 李超
  * @version 0.0.1
  */
-public class ConvertTest {
+public class XSystemConvertTest {
 
     @Test
-    public void testInt2BitStr() {
+    public void testDecimal2BinaryStr() {
         System.out.println(Integer.toBinaryString(5));
         System.out.println(Integer.toBinaryString(15));
         System.out.println(Integer.toBinaryString(Integer.parseInt("D", 16)));
@@ -39,6 +39,11 @@ public class ConvertTest {
         System.out.println(Integer.parseInt("111"));
         System.out.println(Integer.parseInt("111", 10));// 字符串中是10进制的数
         System.out.println(Integer.parseInt("f", 16));// 字符串中是16进制的数
+    }
+
+    @Test
+    public void testBinary2Int() {
+        System.out.println(Integer.valueOf("0101", 2));
     }
 
     // 0 1 2 3 4 5 6 7 8 9 a b c d e f

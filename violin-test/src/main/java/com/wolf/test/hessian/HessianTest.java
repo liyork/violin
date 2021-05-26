@@ -2,7 +2,7 @@ package com.wolf.test.hessian;
 
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
-import com.xx.baseModules.openAPI.core.manage.ServerNode;
+import com.xxx.baseModules.openAPI.core.manage.ServerNode;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
