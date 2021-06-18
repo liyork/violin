@@ -10,7 +10,9 @@ import java.io.*;
 import java.util.HashSet;
 
 /**
- * Description: 需要工程中引入violin-test/lib包
+ * Description:
+ * 需要工程中引入violin-test/lib包
+ * 将所需class放入browser目录下
  * Created on 2021/6/18 5:23 PM
  *
  * @author 李超
