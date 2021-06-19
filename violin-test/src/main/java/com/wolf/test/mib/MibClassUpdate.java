@@ -12,7 +12,8 @@ import java.util.HashSet;
 /**
  * Description:
  * 需要工程中引入violin-test/lib包
- * 将所需class放入browser目录下
+ * 将目录放入/Users/chaoli/Downloads/tmp/mib/目录下
+ * 一劳永逸，直接修改对比时间,永不过期！
  * Created on 2021/6/18 5:23 PM
  *
  * @author 李超
@@ -23,21 +24,32 @@ public class MibClassUpdate {
     static HashSet<String> filePath = new HashSet<>();
 
     public static void main(String[] args) {
-        String dir = "/Users/chaoli/intellijWrkSpace/violin/violin-test/src/main/resources/browser";
+        //test();
+        update();
+    }
+
+    private static void test() {
+        long l = System.currentTimeMillis() - 1619539737799L;
+        //if (l > 3888000000L || l < 0L) {
+        //if (l > 999999999999999999L || l < 0L) {
+        //
+        //}
+    }
+
+    private static void update() {
+        String dir = "/Users/chaoli/Downloads/tmp/mib";
         filesDirs(new File(dir));
 
-        int a = 1;
-        if (a == 1) {
-            return;
-        }
+        //int a = 1;
+        //if (a == 1) {
+        //    return;
+        //}
 
         for (String filePath : filePath) {
-            //String filePath = "/Users/chaoli/intellijWrkSpace/concurrenttest/src/main/resources/test/";
             FileInputStream fis = null;
             try {
                 fis = new FileInputStream(filePath);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -49,6 +61,7 @@ public class MibClassUpdate {
             int count = infos.length;
             for (int i = 0; i < count; i++) {
                 if (infos[i] != null) {
+                    // 用于查看，注释掉
                     //System.out.print(i);
                     //System.out.print(" = ");
                     //try {
@@ -59,13 +72,17 @@ public class MibClassUpdate {
                     //}
                     //System.out.print(" = ");
                     //System.out.println(infos[i].getTagVerbose());
+
                     if (infos[i] instanceof ConstantLongInfo) {
                         ConstantLongInfo uInfo = (ConstantLongInfo) infos[i];
-                        if (uInfo.getLong() == 1623679729980L) {
-                            uInfo.setLong(System.currentTimeMillis());
+                        if (uInfo.getLong() == 3888000000L) {
+                            //System.out.println(filePath);// 用于查看，注释掉
+                            // 修改
+                            uInfo.setLong(999999999999999999L);
                             infos[i] = uInfo;
                         }
                     }
+                    // 按照下标修改
                     //if(i == 004){
                     //    ConstantLongInfo uInfo = (ConstantLongInfo)infos[i];
                     //    uInfo.setLong(1111111111);
@@ -77,21 +94,15 @@ public class MibClassUpdate {
             try {
                 fis.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             File f = new File(filePath);
             try {
                 ClassFileWriter.writeToFile(f, cf);
-            } catch (InvalidByteCodeException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
+            } catch (InvalidByteCodeException | IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     //使用递归遍历文件夹及子文件夹中文件
@@ -109,14 +120,12 @@ public class MibClassUpdate {
                 }
             } else {
                 if (file.getName().endsWith(".class")) {
-                    System.out.println(file.getAbsolutePath());
-                    //filePath.add(file.getAbsolutePath());
+                    //System.out.println(file.getAbsolutePath());// 临时打印
+                    filePath.add(file.getAbsolutePath());// 收集
                 }
             }
         } else {
             System.out.println("文件不存在");
         }
-
-
     }
 }
