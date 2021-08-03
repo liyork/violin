@@ -1,5 +1,6 @@
 package com.wolf.test.jackson;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -7,10 +8,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.wolf.test.entity.Room;
 import com.wolf.test.entity.RoomImpl;
 import com.wolf.test.entity.RoomImpl2;
+import com.wolf.test.entity.RoomImpl3;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -21,10 +22,11 @@ import java.util.Map;
  */
 public class JacksonTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws JsonProcessingException {
 
 //        testInterface();
-        testHasNotProperty();
+//        testHasNotProperty();
+        testJsonSerialize();
     }
 
     private static void testInterface() {
@@ -51,6 +53,15 @@ public class JacksonTest {
 
         //少个字段,Unrecognized field "name"，需要添加@JsonIgnoreProperties(ignoreUnknown = true)
         RoomImpl2 room1 = mapper.convertValue(map, RoomImpl2.class);
+    }
+
+    private static void testJsonSerialize() throws JsonProcessingException {
+        RoomImpl3 room = new RoomImpl3();
+        room.setId(1);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String s = mapper.writeValueAsString(room);
+        System.out.println(s);
     }
 
 
