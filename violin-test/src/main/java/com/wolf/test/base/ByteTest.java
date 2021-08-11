@@ -102,15 +102,15 @@ public class ByteTest {
         int i3 = (byte) 0b00000000;
         System.out.println(i3);
 
-        // 溢出，进位舍去最高位
+        int i5 = (byte) 0b01111111;
+        System.out.println(i5);
+
+        // 正好得到0b10000000，即-128，一个轮回
         byte a = (byte) ((byte) 0b01111111 + 1);
         System.out.println(a);
 
         int i4 = (byte) 0b00000001;
         System.out.println(i4);
-
-        int i5 = (byte) 0b01111111;
-        System.out.println(i5);
     }
 
     @Test
