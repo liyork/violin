@@ -4,18 +4,18 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
-import sun.instrument.InstrumentationImpl;
-import sun.instrument.TransformerManager;
-import sun.launcher.LauncherHelper;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
-import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//import sun.instrument.InstrumentationImpl;
+//import sun.instrument.TransformerManager;
+//import sun.launcher.LauncherHelper;
 
 /**
  * Description:preagent不能修改原有方法内容，只能换名字。

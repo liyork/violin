@@ -1,9 +1,7 @@
 package com.wolf.test.base.serialize;
 
-import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
 import com.caucho.hessian.io.SerializerFactory;
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 
 import java.io.*;
 
@@ -47,16 +45,16 @@ public class SerializeTest {
         objectOutputStream.close();
 
 
-        ByteInputStream byteInputStream = new ByteInputStream(bytes, bytes.length);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteInputStream);
-        Object o = objectInputStream.readObject();
-        System.out.println(o);
-        //这是错误的，可能连接符【+】的级别比【==】高，所以"if === ? "+serializeObject先被转化成string然后再用【==】进行比较
-//		System.out.println("if === ? "+serializeObject == o);
-        System.out.println(serializeObject == o);
-
-        byteInputStream.close();
-        objectInputStream.close();
+//        ByteInputStream byteInputStream = new ByteInputStream(bytes, bytes.length);
+//        ObjectInputStream objectInputStream = new ObjectInputStream(byteInputStream);
+//        Object o = objectInputStream.readObject();
+//        System.out.println(o);
+//        //这是错误的，可能连接符【+】的级别比【==】高，所以"if === ? "+serializeObject先被转化成string然后再用【==】进行比较
+////		System.out.println("if === ? "+serializeObject == o);
+//        System.out.println(serializeObject == o);
+//
+//        byteInputStream.close();
+//        objectInputStream.close();
     }
 
     private static void testJavaSerialize() throws IOException, ClassNotFoundException {
@@ -77,14 +75,14 @@ public class SerializeTest {
         objectOutputStream.close();
 
 
-        ByteInputStream byteInputStream = new ByteInputStream(bytes, bytes.length);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteInputStream);
-        Object o = objectInputStream.readObject();
-        System.out.println(o);
-        System.out.println("if === ? " + serializeObject == o);
-
-        byteInputStream.close();
-        objectInputStream.close();
+        //ByteInputStream byteInputStream = new ByteInputStream(bytes, bytes.length);
+        //ObjectInputStream objectInputStream = new ObjectInputStream(byteInputStream);
+        //Object o = objectInputStream.readObject();
+        //System.out.println(o);
+        //System.out.println("if === ? " + serializeObject == o);
+        //
+        //byteInputStream.close();
+        //objectInputStream.close();
     }
 
     private static void testHessianSerialize() throws IOException, ClassNotFoundException {
@@ -104,14 +102,14 @@ public class SerializeTest {
         byteOutputStream.close();
         hessianOutput.close();
 
-        ByteInputStream byteInputStream = new ByteInputStream(bytes, bytes.length);
-        HessianInput hessianInput = new HessianInput(byteInputStream);
-        hessianInput.setSerializerFactory(serializerFactory);
-        Object o = hessianInput.readObject();
-        System.out.println(o);
-
-        byteInputStream.close();
-        hessianInput.close();
+        //ByteInputStream byteInputStream = new ByteInputStream(bytes, bytes.length);
+        //HessianInput hessianInput = new HessianInput(byteInputStream);
+        //hessianInput.setSerializerFactory(serializerFactory);
+        //Object o = hessianInput.readObject();
+        //System.out.println(o);
+        //
+        //byteInputStream.close();
+        //hessianInput.close();
     }
 
 

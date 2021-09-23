@@ -119,7 +119,7 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.4</version>
+            <version>1.10</version>
         </dependency>
 
         <dependency>
@@ -239,6 +239,12 @@
             <version>${slf4j.version}</version>
         </dependency>
         <!-- logging end -->
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.6.2</version>
+        </dependency>
 
 
         <!--展示可以使用开闭区间,[2.0,3.0)表示2.0<=ver<3.0取最新的-->

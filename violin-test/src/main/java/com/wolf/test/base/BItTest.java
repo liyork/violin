@@ -1,6 +1,5 @@
 package com.wolf.test.base;
 
-import com.sun.tools.doclets.internal.toolkit.util.PackageListWriter;
 import org.junit.Test;
 
 /**
