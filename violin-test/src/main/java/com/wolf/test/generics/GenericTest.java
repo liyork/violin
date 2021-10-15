@@ -5,11 +5,11 @@ import com.wolf.test.entity.Room;
 import com.wolf.test.generics.entity.Children;
 import com.wolf.test.generics.entity.SubChildren;
 import org.junit.Test;
-import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -62,7 +62,7 @@ public class GenericTest {
         System.out.println(superclass.getRawType());
 
         Method setEntity = customizeClass.getClass().getMethod("setEntity", Object.class);
-        TypeVariableImpl type = (TypeVariableImpl) setEntity.getGenericParameterTypes()[0];
+        TypeVariable type = (TypeVariable) setEntity.getGenericParameterTypes()[0];
         System.out.println(type.getName());
         System.out.println(Arrays.toString(type.getBounds()));
         System.out.println(type.getGenericDeclaration());

@@ -7,9 +7,9 @@ import com.sun.tools.attach.VirtualMachine;
  * 用SimpleAgentMain打jar
  * 先运行TargetVM.java测试
  * 再执行此main
- *
+ * <p>
  * agent似乎是在defineclass之前执行，由于一次attach时是classloader第一次加载class时，以后当app运行时就会从缓存中取class
- *
+ * <p>
  * SimpleAgentMain没有修改class文件，仅仅打印一些信息，下次执行VirtualMachineTest.main则还会打印，不会永久保存
  * <p>
  * <p>

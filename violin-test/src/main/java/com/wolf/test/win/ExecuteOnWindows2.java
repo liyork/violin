@@ -2,6 +2,8 @@ package com.wolf.test.win;
 
 import com.xebialabs.overthere.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import static com.xebialabs.overthere.ConnectionOptions.*;
@@ -10,16 +12,13 @@ import static com.xebialabs.overthere.cifs.CifsConnectionBuilder.CONNECTION_TYPE
 import static com.xebialabs.overthere.cifs.CifsConnectionType.WINRM_INTERNAL;
 
 /**
- * Description: 用exec直接将结果输出到console
- * 底层就是开了俩线程，一个接收错误，一个接收信息，用countdownlatch进行waitfor
- * 针对winrm内容
- * 就是一个http调用，不过用的是soap，而有一个协议是叫ws-manager-protocol
+ * Description: 调用startProcess自己接收返回信息
  * Created on 2021/9/3 5:48 PM
  *
  * @author 李超
  * @version 0.0.1
  */
-public class ExecuteOnWindows {
+public class ExecuteOnWindows2 {
     public static void main(String[] args) throws InterruptedException {
 
         ConnectionOptions options = new ConnectionOptions();
@@ -34,8 +33,25 @@ public class ExecuteOnWindows {
         try {
             //connection.execute(CmdLine.build("type", "\\windows\\system32\\drivers\\etc\\hosts"));
 
-            int dir = connection.execute(CmdLine.build("dir"));
-            System.out.println("dir==>" + dir);
+            OverthereProcess dir = connection.startProcess(CmdLine.build("dir"));
+
+            byte[] buf = new byte[1024];
+            new Thread(() -> {
+                InputStream stdout = dir.getStdout();
+                while (true) {
+                    try {
+                        int read = stdout.read(buf);
+                        if (-1 == read) {
+                            break;
+                        }
+                        String s = new String(buf, 0, read);
+                        System.out.println("sssss=>" + s);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            dir.waitFor();
         } finally {
             connection.close();
         }

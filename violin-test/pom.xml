@@ -368,6 +368,11 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
             <!--根据schema生成java代码-->
             <!--            <plugin>-->
             <!--                <groupId>org.apache.avro</groupId>-->

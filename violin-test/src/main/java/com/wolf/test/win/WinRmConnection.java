@@ -97,16 +97,18 @@ public class WinRmConnection implements ProcessConnection {
             final PipedInputStream callersStderr = new PipedInputStream();
             final PipedOutputStream toCallersStderr = new PipedOutputStream(callersStderr);
 
+            // 先创建shell
             winRmClient.createShell();
 
             StringBuilder sb = new StringBuilder("powershell -encodedcommand ");
-            // 不要用java.util.Base64！性能差
             String encodedScript = BaseEncoding.base64().encode("gwmi Win32_Process|select ProcessId,ParentProcessId,CreationDate, ExecutionState,Status,HandleCount,WorkingSetSize,ProcessName".getBytes(StandardCharsets.UTF_16LE));
             sb.append(encodedScript);
 
+            // 再执行command
             final String commandId = winRmClient.executeCommand(sb.toString());
 
             final Exception[] inputReaderTheaException = new Exception[1];
+            // 从fromCallersStdin一直读，通过winRmClient.sendInput发送到远端，可以从外界输入内容给其然后发送到远端
             final Thread inputReaderThead = new Thread(format("WinRM input reader for command [%s]", commandId)) {
                 @Override
                 public void run() {
@@ -114,6 +116,7 @@ public class WinRmConnection implements ProcessConnection {
                         byte[] buf = new byte[STDIN_BUF_SIZE];
                         for (; ; ) {
                             int n = fromCallersStdin.read(buf);
+                            System.out.println("xxxxxxxxxxxx");
                             if (n == -1)
                                 break;
                             if (n == 0)
@@ -134,6 +137,7 @@ public class WinRmConnection implements ProcessConnection {
             inputReaderThead.start();
 
             final Exception[] outputReaderThreadException = new Exception[1];
+            // 从远程获取返回内容，写入toCallersStdout，错误写入toCallersStderr
             final Thread outputReaderThread = new Thread(format("WinRM output reader for command [%s]", commandId)) {
                 @Override
                 public void run() {
@@ -157,12 +161,12 @@ public class WinRmConnection implements ProcessConnection {
                 boolean processTerminated = false;
 
                 @Override
-                public synchronized OutputStream getStdin() {
+                public synchronized OutputStream getStdin() {  // 这里调用的地方会通过callersStdin写入内容
                     return callersStdin;
                 }
 
                 @Override
-                public synchronized InputStream getStdout() {
+                public synchronized InputStream getStdout() {  // 可以调用此方法获取input然后自己读，写入的内容是远程的返回结果
                     return callersStdout;
                 }
 
@@ -185,7 +189,7 @@ public class WinRmConnection implements ProcessConnection {
                             processTerminated = true;
                             try {
                                 winRmClient.deleteShell();
-                            }catch (Throwable t){
+                            } catch (Throwable t) {
                                 logger.warn("Failure while deleting winrm shell", t);
                             }
                         }
