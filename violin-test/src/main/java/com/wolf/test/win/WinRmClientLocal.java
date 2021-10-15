@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * 支持中文的WINRM
  *
- * @author liwenheng
  */
 public class WinRmClientLocal extends WinRmClient {
     private static final Logger logger = LoggerFactory.getLogger(WinRmClientLocal.class);
@@ -79,7 +78,7 @@ public class WinRmClientLocal extends WinRmClient {
         //connection.execute(CmdLine.build("wmic process get name,executablepath,commandline,processid,parentprocessid,threadcount,workingsetsize/value"));
         connection.execute(CmdLine.build(sb.toString()));
 
-        //WinRmClientLocal winRmClientLocal = new WinRmClientLocal("administrator","ruijie_123",
+        //WinRmClientLocal winRmClientLocal = new WinRmClientLocal("administrator","xxxx",
         //        new URL("http", "172.17.189.219", 5985, "/wsman"),"172.17.189.219",5985,
         //        new DefaultSocketFactory());
         //winRmClientLocal.setWinRmTimeout("5000");
@@ -89,12 +88,12 @@ public class WinRmClientLocal extends WinRmClient {
         //winRmClientLocal.createShell()
         //String dis = winRmClientLocal.executeCommand("dis");
         //System.out.println(dis);
-        //winrm.Session('172.17.189.219', auth=('administrator', 'ruijie_123'))
+        //winrm.Session('172.17.189.219', auth=('administrator', 'xxxx'))
 
         //ConnectionOptions options = new ConnectionOptions();
         //options.set(ADDRESS, "172.17.189.219");
         //options.set(USERNAME, "'administrator'");
-        //options.set(PASSWORD, "'ruijie_123'");
+        //options.set(PASSWORD, "'xxxx'");
         //options.set(OPERATING_SYSTEM, WINDOWS);
         //options.set(CONNECTION_TYPE, TELNET);
         //OverthereConnection connection = Overthere.getConnection("cifs", options);

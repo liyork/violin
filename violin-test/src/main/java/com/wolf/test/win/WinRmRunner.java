@@ -19,7 +19,6 @@ package com.wolf.test.win;//package com.wolf.test.win;
 ///**
 // * WinRM执行器
 // *
-// * @author liwenheng
 // */
 //@Slf4j
 //public class WinRmRunner implements AutoCloseable {

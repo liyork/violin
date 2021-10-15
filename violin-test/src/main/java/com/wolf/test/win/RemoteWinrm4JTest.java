@@ -1,10 +1,5 @@
-package com.wolf.test.win;//package cn.com.ruijie.liebao.disco.center.engine.win;
-//
-//import io.cloudsoft.winrm4j.client.WinRmClientContext;
-//import io.cloudsoft.winrm4j.winrm.WinRmTool;
-//import io.cloudsoft.winrm4j.winrm.WinRmToolResponse;
-//import org.apache.http.client.config.AuthSchemes;
-//
+package com.wolf.test.win;
+
 ///**
 // * Description: jdk8可以执行
 // * Created on 2021/9/3 5:36 PM
@@ -15,7 +10,6 @@ package com.wolf.test.win;//package cn.com.ruijie.liebao.disco.center.engine.win
 //public class RemoteWinrm4JTest {
 //    public static void main(String[] args) {
 //        WinRmClientContext context = WinRmClientContext.newInstance();
-//        //WinRmTool.Builder builder = WinRmTool.Builder.builder("172.17.189.219", "administrator", "ruijie_123");
 //        WinRmTool.Builder builder = WinRmTool.Builder.builder("172.17.189.214", "administrator", "Passw0rd");
 //        builder.setAuthenticationScheme(AuthSchemes.NTLM);
 //        builder.port(5985);
